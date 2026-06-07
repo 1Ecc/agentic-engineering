@@ -5,17 +5,16 @@ export function formatSetupReport({ created, skipped, target, dryRun }) {
     `- ${installedLabel}: ${created.length} (${summarize(created)})`,
     `- Skipped: ${skipped.length} (${summarize(skipped)})`,
     `- Target: ${target}`,
-    `- Next: edit config/ae-rules.md (optional), then run \`ae init "<goal>"\`.`,
+    `- Next: run \`ae init "<goal>"\`.`,
   ].join('\n');
 }
 
-export function formatInitReport({ created, skipped, target, rules, dryRun }) {
+export function formatInitReport({ created, skipped, target, dryRun }) {
   const createdLabel = dryRun ? 'Would create' : 'Created';
   return [
     dryRun ? 'AE init dry run complete' : 'AE init complete',
     `- ${createdLabel}: ${created.length} (${summarize(created)})`,
     `- Skipped: ${skipped.length} (${summarize(skipped)})`,
-    `- Rules: ${rules}`,
     `- Target: ${target}`,
   ].join('\n');
 }

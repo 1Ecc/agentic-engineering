@@ -1,6 +1,6 @@
-import { mkdir, readFile, stat } from 'node:fs/promises';
+import { mkdir, stat } from 'node:fs/promises';
 import path from 'node:path';
-import { createDirectories, renderEntryFiles, syncRulesBlock, RulesMarkerError } from '../skeleton.js';
+import { createDirectories, renderEntryFiles } from '../skeleton.js';
 import { templatesPath } from '../utils/paths.js';
 import { formatInitReport } from '../utils/report.js';
 
@@ -10,9 +10,7 @@ const HELP = `Usage: ae init [goal] [options]
 
 Options:
   --target <path>  Initialize this project directory. Defaults to cwd.
-  --rules <path>   Read AE:RULES content from this markdown file.
-                   Defaults to <target>/config/ae-rules.md when present.
-  --dry-run        Show what would be created or synced without writing files.
+  --dry-run        Show what would be created without writing files.
   -h, --help       Show help`;
 
 export async function run(argv = []) {
@@ -51,16 +49,10 @@ export async function run(argv = []) {
     created.push(...entries.created);
     skipped.push(...entries.skipped);
 
-    const rules = await syncRules(target, options);
-
-    console.log(formatInitReport({ created, skipped, target, rules, dryRun: options.dryRun }));
+    console.log(formatInitReport({ created, skipped, target, dryRun: options.dryRun }));
     return 0;
   } catch (error) {
-    if (error instanceof RulesMarkerError) {
-      console.error(`AE init failed: ${error.message}`);
-    } else {
-      console.error(`AE init failed: ${error instanceof Error ? error.message : String(error)}`);
-    }
+    console.error(`AE init failed: ${error instanceof Error ? error.message : String(error)}`);
     process.exitCode = 1;
     return 1;
   }
@@ -69,7 +61,6 @@ export async function run(argv = []) {
 function parseArgs(argv) {
   const options = {
     target: undefined,
-    rules: undefined,
     goalParts: [],
     dryRun: false,
     help: false,
@@ -88,13 +79,6 @@ function parseArgs(argv) {
       }
       options.target = value;
       index += 1;
-    } else if (arg === '--rules') {
-      const value = argv[index + 1];
-      if (!value) {
-        throw new Error('--rules requires a path');
-      }
-      options.rules = value;
-      index += 1;
     } else if (arg.startsWith('-')) {
       throw new Error(`Unknown option for init: ${arg}`);
     } else {
@@ -104,7 +88,6 @@ function parseArgs(argv) {
 
   return {
     target: options.target,
-    rules: options.rules,
     dryRun: options.dryRun,
     help: options.help,
     goal: options.goalParts.length > 0 ? options.goalParts.join(' ') : undefined,
@@ -134,41 +117,6 @@ async function hasInstalledAssets(target) {
   );
 }
 
-async function syncRules(target, options) {
-  const rulesPath = options.rules
-    ? path.resolve(process.cwd(), options.rules)
-    : path.join(target, 'config', 'ae-rules.md');
-
-  const rulesInfo = await statMaybe(rulesPath);
-  if (!rulesInfo) {
-    if (options.rules) {
-      throw new Error(`rules file does not exist: ${rulesPath}`);
-    }
-    return 'skipped (no rules file)';
-  }
-
-  if (rulesInfo.isDirectory()) {
-    throw new Error(`expected a file, got directory: ${rulesPath}`);
-  }
-  if (!rulesInfo.isFile()) {
-    throw new Error(`expected a file: ${rulesPath}`);
-  }
-
-  const rulesContent = await readFile(rulesPath, 'utf8');
-  const agents = path.join(target, 'AGENTS.md');
-  const claude = path.join(target, 'CLAUDE.md');
-  const agentsExists = await exists(agents);
-  const claudeExists = await exists(claude);
-
-  if (options.dryRun && (!agentsExists || !claudeExists)) {
-    return 'would sync';
-  }
-
-  await syncRulesBlock(agents, rulesContent, { dryRun: options.dryRun });
-  await syncRulesBlock(claude, rulesContent, { dryRun: options.dryRun });
-  return options.dryRun ? 'would sync' : 'synced';
-}
-
 async function statMaybe(value) {
   try {
     return await stat(value);
@@ -178,10 +126,6 @@ async function statMaybe(value) {
     }
     throw error;
   }
-}
-
-async function exists(value) {
-  return Boolean(await statMaybe(value));
 }
 
 async function isDirectory(value) {

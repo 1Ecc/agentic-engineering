@@ -37,7 +37,6 @@ S0 is now a two-step CLI flow:
 
 ```bash
 ae setup
-# optional: edit config/ae-rules.md
 ae init "one-line project goal"
 ```
 
@@ -45,7 +44,6 @@ ae init "one-line project goal"
 
 - `.claude/skills/`
 - `.codex/skills/`
-- `config/ae-rules.md`
 
 `ae init` creates the standard project skeleton:
 
@@ -53,7 +51,7 @@ ae init "one-line project goal"
 - `reference/`, `data/`, `scripts/`
 - `spec/README.md`, `spec/INDEX.md`, `spec/needs/`, `spec/ADR/`
 
-It also syncs `config/ae-rules.md` into the managed `AE:RULES` block in `AGENTS.md` and `CLAUDE.md`. The CLI is strict and idempotent: create missing files, skip existing files, and only rewrite the managed rules block.
+Project-specific rules are written directly in `AGENTS.md` under `## Project-Specific Rules`. `CLAUDE.md` is a short pointer to `AGENTS.md`, so users maintain one canonical instructions file. The CLI is strict and idempotent: create missing files and skip existing files.
 
 Details: [`docs/scenarios/s0-bootstrap.md`](scenarios/s0-bootstrap.md)
 
@@ -128,14 +126,14 @@ The npm package contains:
 
 - `skills/` - selected and customized skills
 - `templates/entries/` - entry file templates rendered by `ae init`
-- `templates/ae-rules.md` - the starter rules file installed by `ae setup`
 - `src/` and `bin/` - the zero-dependency CLI
 
 User projects receive skills under both `.claude/skills/` and `.codex/skills/`. Slash command assets are no longer installed.
 
 ## Operating Rules
 
-- Keep `AGENTS.md` short because every agent session loads it.
+- Keep `AGENTS.md` concise because every agent session loads it.
+- Treat `AGENTS.md` as the single source of truth; `CLAUDE.md` only points Claude Code back to it.
 - Put durable project state in `spec/`, not in the conversation.
 - Update `spec/INDEX.md` after changing anything under `spec/needs/<need-name>/`.
 - If `INDEX.md` is uncertain, use the future `ae index-rebuild` command as the fallback.

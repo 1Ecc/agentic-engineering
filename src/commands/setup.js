@@ -1,7 +1,7 @@
 import { mkdir, stat } from 'node:fs/promises';
 import path from 'node:path';
-import { copyFileIdempotent, copyTreeIdempotent } from '../utils/copy.js';
-import { skillsPath, templatesPath } from '../utils/paths.js';
+import { copyTreeIdempotent } from '../utils/copy.js';
+import { skillsPath } from '../utils/paths.js';
 import { formatSetupReport } from '../utils/report.js';
 
 const HELP = `Usage: ae setup [options]
@@ -44,14 +44,6 @@ export async function run(argv = []) {
       created.push(...result.created.map((item) => toDisplayPath(path.join(group.prefix, item))));
       skipped.push(...result.skipped.map((item) => toDisplayPath(path.join(group.prefix, item))));
     }
-
-    const rulesResult = await copyFileIdempotent(
-      templatesPath('ae-rules.md'),
-      path.join(target, 'config', 'ae-rules.md'),
-      { dryRun: options.dryRun },
-    );
-    created.push(...rulesResult.created.map((item) => toDisplayPath(path.join('config', item))));
-    skipped.push(...rulesResult.skipped.map((item) => toDisplayPath(path.join('config', item))));
 
     console.log(formatSetupReport({ created, skipped, target, dryRun: options.dryRun }));
     return 0;

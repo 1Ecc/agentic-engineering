@@ -10,7 +10,6 @@ Agentic Engineering is a lightweight personal software lifecycle method: SDD rec
 ```bash
 cd /your/project
 npx @ecc-hgy/ae setup
-# Optional: edit config/ae-rules.md
 npx @ecc-hgy/ae init "one-line project goal"
 ```
 
@@ -18,23 +17,27 @@ npx @ecc-hgy/ae init "one-line project goal"
 
 - `skills/` -> `.claude/skills/`
 - `skills/` -> `.codex/skills/`
-- `templates/ae-rules.md` -> `config/ae-rules.md`
 
-`ae init` creates the platform-neutral project skeleton, renders entry files, and syncs the contents of `config/ae-rules.md` into the managed `AE:RULES` block in `AGENTS.md` and `CLAUDE.md`.
+`ae init` creates the platform-neutral project skeleton and renders entry files. Project-specific rules live directly in `AGENTS.md`.
 
 ## CLI
 
 ```bash
 ae setup
 ae init "one-line project goal"
-ae init "goal" --rules /path/to/rules.md
 ae --help
 ae --version
 ```
 
-Both commands are idempotent. They create missing files, skip existing files, and never overwrite user edits outside the managed `AE:RULES` block. There is no `--force` mode.
+Both commands are idempotent. They create missing files, skip existing files, and never overwrite existing entry files. There is no `--force` mode.
 
-`ae init` requires `ae setup` to have run first. This keeps the two-step workflow explicit so you can edit `config/ae-rules.md` before it is injected.
+`ae init` requires `ae setup` to have run first. This keeps asset installation explicit before skeleton creation.
+
+## Single Source Of Truth
+
+- `AGENTS.md` is the canonical project instructions file.
+- `CLAUDE.md` is a short pointer to `AGENTS.md`; do not maintain a separate copy there.
+- All project-specific rules live in `AGENTS.md` under `## Project-Specific Rules`.
 
 ## Platform Scope
 
@@ -90,7 +93,7 @@ The two hard gates are:
 bin/        npm executable entry
 src/        zero-dependency CLI implementation
 skills/     Selected Agentic Engineering skills
-templates/  Entry file templates and the ae-rules.md starter
+templates/  Entry file templates
 docs/       User-facing methodology docs
 design/     Design records for this repository
 tests/      node:test coverage for CLI behavior
@@ -100,8 +103,9 @@ tests/      node:test coverage for CLI behavior
 
 1. Stage 2: npm CLI asset distribution with `init` and `ingest-mother`. Superseded by v0.2.
 2. v0.2: split CLI into `setup` + `init`, remove slash command assets, and move rule sync into `ae init`.
-3. Stage 3: design `ae update` for skill/template upgrades and implement `ae index-rebuild`.
-4. Add CI and Windows path validation before broader distribution.
+3. v0.3: remove rules injection; make `AGENTS.md` the single source of truth and `CLAUDE.md` a pointer.
+4. Stage 3: design `ae update` for skill/template upgrades and implement `ae index-rebuild`.
+5. Add CI and Windows path validation before broader distribution.
 
 ## Limits
 

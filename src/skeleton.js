@@ -1,9 +1,6 @@
 import { mkdir, readFile, stat, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
-export const RULES_BEGIN = '<!-- AE:RULES:BEGIN -->';
-export const RULES_END = '<!-- AE:RULES:END -->';
-const RULES_COMMENT = '<!-- 由 ae init 从 config/ae-rules.md 或 --rules 指定文件同步,勿手改 -->';
 const DEFAULT_DRY_RUN = false;
 
 const SKELETON_DIRS = [
@@ -31,13 +28,6 @@ const ENTRY_FILES = [
   path.join('spec', 'README.md'),
   path.join('spec', 'INDEX.md'),
 ];
-
-export class RulesMarkerError extends Error {
-  constructor(message) {
-    super(message);
-    this.name = 'RulesMarkerError';
-  }
-}
 
 export async function createDirectories(target, options = {}) {
   const dryRun = Boolean(options.dryRun ?? DEFAULT_DRY_RUN);
@@ -112,80 +102,10 @@ export async function renderEntryFiles(target, templateRoot, options = {}) {
   return { created, skipped, updated };
 }
 
-export async function syncRulesBlock(targetFile, rulesContent, options = {}) {
-  const dryRun = Boolean(options.dryRun ?? DEFAULT_DRY_RUN);
-  const content = await readFile(targetFile, 'utf8');
-  const ranges = findRulesRanges(content, targetFile);
-  const block = buildRulesBlock(rulesContent);
-  const created = [];
-  const skipped = [];
-  const updated = [];
-  const display = path.basename(targetFile);
-
-  if (ranges.length === 0) {
-    const next = content.endsWith('\n') ? `${content}\n${block}` : `${content}\n\n${block}`;
-    if (next === content) {
-      skipped.push(display);
-      return { created, skipped, updated };
-    }
-    created.push(`${display}#AE:RULES`);
-    if (!dryRun) {
-      await writeFile(targetFile, next);
-    }
-    return { created, skipped, updated };
-  }
-
-  const [{ start, end }] = ranges;
-  const next = `${content.slice(0, start)}${block}${content.slice(end)}`;
-
-  if (next === content) {
-    skipped.push(`${display}#AE:RULES`);
-    return { created, skipped, updated };
-  }
-
-  updated.push(`${display}#AE:RULES`);
-  if (!dryRun) {
-    await writeFile(targetFile, next);
-  }
-
-  return { created, skipped, updated };
-}
-
-export function buildRulesBlock(rulesContent) {
-  const normalized = rulesContent.endsWith('\n') ? rulesContent : `${rulesContent}\n`;
-  return `${RULES_BEGIN}\n${RULES_COMMENT}\n${normalized}${RULES_END}\n`;
-}
-
 function renderTemplate(template, replacements) {
   return template
     .replaceAll('{{PROJECT_NAME}}', replacements.projectName)
     .replaceAll('{{PROJECT_GOAL}}', replacements.projectGoal);
-}
-
-function findRulesRanges(content, targetFile) {
-  const beginMatches = [...content.matchAll(new RegExp(escapeRegExp(RULES_BEGIN), 'g'))];
-  const endMatches = [...content.matchAll(new RegExp(escapeRegExp(RULES_END), 'g'))];
-
-  if (beginMatches.length !== endMatches.length || beginMatches.length > 1) {
-    throw new RulesMarkerError(`malformed AE:RULES markers in ${targetFile}`);
-  }
-
-  if (beginMatches.length === 0) {
-    return [];
-  }
-
-  const start = beginMatches[0].index;
-  const end = endMatches[0].index + RULES_END.length;
-  if (start > endMatches[0].index) {
-    throw new RulesMarkerError(`malformed AE:RULES markers in ${targetFile}`);
-  }
-
-  let rangeEnd = end;
-  if (content.slice(rangeEnd, rangeEnd + 1) === '\n') {
-    rangeEnd += 1;
-  }
-
-  return [{ start, end: rangeEnd }];
 }
 
 async function exists(value) {
@@ -202,8 +122,4 @@ async function exists(value) {
 
 function normalizeRelative(value) {
   return value.split(path.sep).join('/');
-}
-
-function escapeRegExp(value) {
-  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }

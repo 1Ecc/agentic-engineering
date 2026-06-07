@@ -9,6 +9,8 @@
 | [001](001-platform-agnostic-cli-init.md) | 初始化依赖 Claude Code slash command,不符合跨平台预期 | v0.2 已发布并通过 npm/npx 验证 | P0 |
 | [002](002-slash-command-template-pollution.md) | 模板文件被 Claude Code 递归识别为多余 slash command | v0.2 本地解决,待 Claude Code UI 抽检 | P0 |
 | [003](003-rules-ingestion-semantics.md) | `/ae-ingest-mother` 语义与真实期望不一致 | v0.2 已发布并通过 npm/npx 验证 | P0 |
+| [004](004-rules-injection-is-redundant.md) | `config/ae-rules.md` + AE:RULES 注入与模板渲染语义重叠,机制冗余 | v0.3 已实施,待 npm 发布 | P1 |
+| [005](005-claude-md-points-to-agents-md.md) | AGENTS.md / CLAUDE.md 内容重复长期 drift,CLAUDE.md 应改为指针 | v0.3 已实施,待 npm 发布 | P1 |
 
 ## 处理原则
 

@@ -12,6 +12,8 @@ test('help prints top-level usage', async () => {
   assert.match(result.stdout, /setup/);
   assert.match(result.stdout, /init/);
   assert.doesNotMatch(result.stdout, /ingest-mother/);
+  assert.doesNotMatch(result.stdout, /ae-rules/);
+  assert.doesNotMatch(result.stdout, /--rules/);
   assert.match(result.stdout, /Typical workflow/);
 });
 

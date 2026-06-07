@@ -1,6 +1,6 @@
 {
   "name": "@ecc-hgy/ae",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Agentic Engineering is a lightweight personal software lifecycle method: SDD records what to build, TDD drives how to prove it works.",
   "type": "module",
   "bin": {

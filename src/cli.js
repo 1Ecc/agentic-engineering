@@ -5,9 +5,9 @@ import { packageRoot } from './utils/paths.js';
 const HELP = `Usage: ae <command> [options]
 
 Commands:
-  setup                Install skills to .claude/.codex and drop a config/ae-rules.md template.
-  init [goal]          Create spec/ skeleton, render entry files, sync AE:RULES block from
-                       config/ae-rules.md. Requires \`ae setup\` to have run.
+  setup                Install skills to .claude/.codex.
+  init [goal]          Create spec/ skeleton and render entry files.
+                       Requires \`ae setup\` to have run.
 
 Options:
   -h, --help     Show help
@@ -15,7 +15,6 @@ Options:
 
 Typical workflow:
   ae setup
-  [optional] edit config/ae-rules.md
   ae init "<one-line project goal>"`;
 
 export async function run(argv = []) {

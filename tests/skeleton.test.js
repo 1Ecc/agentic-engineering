@@ -2,14 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { access, mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
-import {
-  RULES_BEGIN,
-  RULES_END,
-  RulesMarkerError,
-  createDirectories,
-  renderEntryFiles,
-  syncRulesBlock,
-} from '../src/skeleton.js';
+import { createDirectories, renderEntryFiles } from '../src/skeleton.js';
 import { cleanup, hashFile, makeTmpDir } from './_helpers.js';
 
 test('createDirectories creates the standard skeleton and is idempotent', async () => {
@@ -91,47 +84,6 @@ test('renderEntryFiles renders placeholders, skips existing files, and supports 
   }
 });
 
-test('syncRulesBlock appends, replaces, detects malformed markers, and supports dry-run', async () => {
-  const target = await makeTmpDir();
-  try {
-    const file = path.join(target, 'AGENTS.md');
-    await writeFile(file, '# Agent\n\nKeep this.\n');
-
-    const dry = await syncRulesBlock(file, '- Dry rule\n', { dryRun: true });
-    assert.equal(dry.created.length, 1);
-    assert.doesNotMatch(await readFile(file, 'utf8'), /Dry rule/);
-
-    const append = await syncRulesBlock(file, '- Rule one\n- Rule two');
-    assert.equal(append.created.length, 1);
-    let content = await readFile(file, 'utf8');
-    assert.match(content, new RegExp(`${RULES_BEGIN}[\\s\\S]*- Rule one[\\s\\S]*${RULES_END}`));
-    assert.match(content, /Keep this\./);
-
-    const beforeOutside = stripRulesBlock(content);
-    const replace = await syncRulesBlock(file, '- Rule three\n');
-    assert.equal(replace.updated.length, 1);
-    content = await readFile(file, 'utf8');
-    assert.match(content, /- Rule three/);
-    assert.doesNotMatch(content, /- Rule one/);
-    assert.equal(stripRulesBlock(content), beforeOutside);
-
-    const idempotent = await syncRulesBlock(file, '- Rule three\n');
-    assert.equal(idempotent.updated.length, 0);
-    assert.equal(idempotent.skipped.length, 1);
-
-    const malformed = path.join(target, 'malformed.md');
-    await writeFile(
-      malformed,
-      `${RULES_BEGIN}\nold\n${RULES_END}\n${RULES_BEGIN}\nold\n${RULES_END}\n`,
-    );
-    const before = await hashFile(malformed);
-    await assert.rejects(syncRulesBlock(malformed, '- New\n'), RulesMarkerError);
-    assert.equal(await hashFile(malformed), before);
-  } finally {
-    await cleanup(target);
-  }
-});
-
 async function writeTemplates(templateRoot) {
   await mkdir(path.join(templateRoot, 'spec'), { recursive: true });
   await writeFile(path.join(templateRoot, 'README.md'), '# {{PROJECT_NAME}}\n\n{{PROJECT_GOAL}}\n');
@@ -148,8 +100,4 @@ async function assertFile(file) {
 
 async function assertMissing(file) {
   await assert.rejects(access(file), { code: 'ENOENT' });
-}
-
-function stripRulesBlock(content) {
-  return content.replace(new RegExp(`${RULES_BEGIN}[\\s\\S]*?${RULES_END}\\n?`), '');
 }

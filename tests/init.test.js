@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { access, appendFile, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
+import { access, appendFile, readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { cleanup, hashFile, makeTmpDir, runCli } from './_helpers.js';
 
@@ -19,17 +19,16 @@ test('init fails when setup has not installed AE assets', async () => {
   }
 });
 
-test('init creates skeleton, renders entries, syncs rules, and avoids slash commands', async () => {
+test('init creates skeleton, renders entries, keeps config absent, and avoids slash commands', async () => {
   const target = await makeTmpDir();
   try {
     await setup(target);
-    await appendFile(path.join(target, 'config', 'ae-rules.md'), '\n- Project rule from config\n');
 
-    const result = await runCli(['init', 'Build a v0.2 demo'], { cwd: target });
+    const result = await runCli(['init', 'Build a v0.3 demo'], { cwd: target });
 
     assert.equal(result.code, 0, result.stderr);
     assert.match(result.stdout, /AE init complete/);
-    assert.match(result.stdout, /Rules: synced/);
+    assert.doesNotMatch(result.stdout, /Rules:/);
 
     for (const dir of ['spec', 'spec/needs', 'spec/ADR', 'reference', 'data', 'scripts']) {
       await assertDirectory(path.join(target, dir));
@@ -50,14 +49,15 @@ test('init creates skeleton, renders entries, syncs rules, and avoids slash comm
       await assertFile(path.join(target, file));
     }
 
+    await assertMissing(path.join(target, 'config'));
     await assertMissing(path.join(target, '.claude', 'commands'));
     const agents = await readFile(path.join(target, 'AGENTS.md'), 'utf8');
     const claude = await readFile(path.join(target, 'CLAUDE.md'), 'utf8');
-    assert.equal(count(agents, '<!-- AE:RULES:BEGIN -->'), 1);
-    assert.equal(count(agents, '<!-- AE:RULES:END -->'), 1);
-    assert.equal(count(claude, '<!-- AE:RULES:BEGIN -->'), 1);
-    assert.match(agents, /- Project rule from config/);
-    assert.match(claude, /- Project rule from config/);
+    assert.match(agents, /## Project-Specific Rules/);
+    assert.doesNotMatch(agents, /<!-- AE:RULES:/);
+    assertClaudePointer(claude, path.basename(target));
+    assert.notEqual(claude, agents);
+    assert.ok(claude.length < agents.length);
   } finally {
     await cleanup(target);
   }
@@ -73,9 +73,12 @@ test('init replaces project placeholders with target basename and goal', async (
     assert.equal(result.code, 0, result.stderr);
     const readme = await readFile(path.join(target, 'README.md'), 'utf8');
     const agents = await readFile(path.join(target, 'AGENTS.md'), 'utf8');
+    const claude = await readFile(path.join(target, 'CLAUDE.md'), 'utf8');
     assert.match(readme, /# project-beta/);
     assert.match(readme, /My exact goal/);
+    assert.match(agents, /# project-beta/);
     assert.match(agents, /My exact goal/);
+    assert.match(claude, /# project-beta/);
     assert.doesNotMatch(readme, /{{PROJECT_/);
   } finally {
     await cleanup(root);
@@ -93,6 +96,7 @@ test('init is idempotent and does not overwrite user files', async () => {
     await appendFile(readme, '\nManual edit.\n');
     const beforeReadme = await hashFile(readme);
     const beforeAgents = await hashFile(path.join(target, 'AGENTS.md'));
+    const beforeClaude = await hashFile(path.join(target, 'CLAUDE.md'));
 
     const second = await runCli(['init', 'Changed goal'], { cwd: target });
     assert.equal(second.code, 0, second.stderr);
@@ -100,6 +104,7 @@ test('init is idempotent and does not overwrite user files', async () => {
     assert.match(second.stdout, /Skipped: [1-9][0-9]*/);
     assert.equal(await hashFile(readme), beforeReadme);
     assert.equal(await hashFile(path.join(target, 'AGENTS.md')), beforeAgents);
+    assert.equal(await hashFile(path.join(target, 'CLAUDE.md')), beforeClaude);
   } finally {
     await cleanup(target);
   }
@@ -114,100 +119,72 @@ test('init dry-run reports planned skeleton writes without touching files', asyn
     assert.equal(result.code, 0, result.stderr);
     assert.match(result.stdout, /AE init dry run complete/);
     assert.match(result.stdout, /Would create: [1-9][0-9]*/);
-    assert.match(result.stdout, /Rules: would sync/);
+    assert.doesNotMatch(result.stdout, /Rules:/);
     await assertMissing(path.join(target, 'AGENTS.md'));
     await assertMissing(path.join(target, 'spec'));
+    await assertMissing(path.join(target, 'config'));
     await assertMissing(path.join(target, '.claude', 'commands'));
   } finally {
     await cleanup(target);
   }
 });
 
-test('init --rules uses an explicit rules file instead of config/ae-rules.md', async () => {
-  const root = await makeTmpDir();
-  const target = path.join(root, 'project');
-  const explicit = path.join(root, 'explicit-rules.md');
-  try {
-    await setup(target);
-    await writeFile(path.join(target, 'config', 'ae-rules.md'), '- Config-only rule\n');
-    await writeFile(explicit, '- Explicit rule\n');
-
-    const result = await runCli(['init', '--target', target, '--rules', explicit, 'Explicit rules']);
-    assert.equal(result.code, 0, result.stderr);
-
-    const agents = await readFile(path.join(target, 'AGENTS.md'), 'utf8');
-    const claude = await readFile(path.join(target, 'CLAUDE.md'), 'utf8');
-    assert.match(agents, /- Explicit rule/);
-    assert.match(claude, /- Explicit rule/);
-    assert.doesNotMatch(agents, /Config-only rule/);
-  } finally {
-    await cleanup(root);
-  }
-});
-
-test('init --rules reports missing paths and directories clearly', async () => {
-  const root = await makeTmpDir();
-  const target = path.join(root, 'project');
-  const missing = path.join(root, 'missing-rules.md');
-  const dir = path.join(root, 'rules-dir');
-  try {
-    await setup(target);
-    await mkdir(dir);
-
-    const missingResult = await runCli(['init', '--target', target, '--rules', missing, 'Goal']);
-    assert.equal(missingResult.code, 1);
-    assert.match(missingResult.stderr, /rules file does not exist/);
-    assert.match(missingResult.stderr, new RegExp(escapeRegExp(missing)));
-
-    const dirResult = await runCli(['init', '--target', target, '--rules', dir, 'Goal']);
-    assert.equal(dirResult.code, 1);
-    assert.match(dirResult.stderr, /expected a file, got directory/);
-  } finally {
-    await cleanup(root);
-  }
-});
-
-test('init skips rules when config/ae-rules.md is missing', async () => {
+test('init renders AGENTS.md project rules section without AE:RULES markers', async () => {
   const target = await makeTmpDir();
   try {
     await setup(target);
-    await rm(path.join(target, 'config', 'ae-rules.md'));
 
-    const result = await runCli(['init', 'No rules'], { cwd: target });
-
+    const result = await runCli(['init', 'Rules live in AGENTS'], { cwd: target });
     assert.equal(result.code, 0, result.stderr);
-    assert.match(result.stdout, /Rules: skipped \(no rules file\)/);
+
     const agents = await readFile(path.join(target, 'AGENTS.md'), 'utf8');
-    assert.doesNotMatch(agents, /AE:RULES:BEGIN/);
+    assert.match(agents, /## Project-Specific Rules/);
+    assert.match(agents, /未来新规则直接追加到本段/);
+    assert.doesNotMatch(agents, /<!-- AE:RULES:BEGIN -->/);
+    assert.doesNotMatch(agents, /<!-- AE:RULES:END -->/);
   } finally {
     await cleanup(target);
   }
 });
 
-test('init stops on malformed AE:RULES markers without changing the file', async () => {
+test('init renders CLAUDE.md as a short pointer to AGENTS.md', async () => {
   const target = await makeTmpDir();
   try {
     await setup(target);
-    await mkdir(path.join(target, 'spec'), { recursive: true });
-    await writeFile(
-      path.join(target, 'AGENTS.md'),
-      [
-        '# Agent',
-        '<!-- AE:RULES:BEGIN -->',
-        'old',
-        '<!-- AE:RULES:END -->',
-        '<!-- AE:RULES:BEGIN -->',
-        'old',
-        '<!-- AE:RULES:END -->',
-        '',
-      ].join('\n'),
-    );
-    const before = await hashFile(path.join(target, 'AGENTS.md'));
 
-    const result = await runCli(['init', 'Malformed'], { cwd: target });
+    const result = await runCli(['init', 'Claude pointer'], { cwd: target });
+    assert.equal(result.code, 0, result.stderr);
+
+    const claude = await readFile(path.join(target, 'CLAUDE.md'), 'utf8');
+    assertClaudePointer(claude, path.basename(target));
+  } finally {
+    await cleanup(target);
+  }
+});
+
+test('init leaves config absent', async () => {
+  const target = await makeTmpDir();
+  try {
+    await setup(target);
+
+    const result = await runCli(['init', 'No config'], { cwd: target });
+
+    assert.equal(result.code, 0, result.stderr);
+    await assertMissing(path.join(target, 'config'));
+  } finally {
+    await cleanup(target);
+  }
+});
+
+test('init rejects removed --rules option', async () => {
+  const target = await makeTmpDir();
+  try {
+    await setup(target);
+
+    const result = await runCli(['init', '--rules', 'rules.md', 'Goal'], { cwd: target });
     assert.equal(result.code, 1);
-    assert.match(result.stderr, /malformed AE:RULES markers/);
-    assert.equal(await hashFile(path.join(target, 'AGENTS.md')), before);
+    assert.match(result.stderr, /Unknown option for init: --rules/);
+    await assertMissing(path.join(target, 'AGENTS.md'));
   } finally {
     await cleanup(target);
   }
@@ -231,8 +208,17 @@ async function assertMissing(file) {
   await assert.rejects(access(file), { code: 'ENOENT' });
 }
 
-function count(content, needle) {
-  return content.split(needle).length - 1;
+function assertClaudePointer(content, projectName) {
+  const lines = content.trimEnd().split('\n');
+  assert.ok(lines.length <= 6, `CLAUDE.md should stay short, got ${lines.length} lines`);
+  assert.match(content, new RegExp(`# ${escapeRegExp(projectName)}`));
+  assert.match(content, /\[AGENTS\.md\]\(\.\/AGENTS\.md\)/);
+  assert.match(content, /Always read/);
+  assert.ok(!lines.some((line) => line.startsWith('## ')), 'CLAUDE.md must not have sections');
+  assert.doesNotMatch(content, /## Project-Specific Rules/);
+  assert.doesNotMatch(content, /## Stack/);
+  assert.doesNotMatch(content, /## Structure/);
+  assert.doesNotMatch(content, /## Operating Guidelines/);
 }
 
 function escapeRegExp(value) {

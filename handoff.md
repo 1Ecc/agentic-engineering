@@ -6,197 +6,162 @@
 
 搭建贴合个人习惯、轻量的软件全生命周期方法论:SDD 管"做什么",TDD 管"怎么做对"。
 
-当前仓库已转向 v0.2 多平台 CLI 形态:CLI 是初始化事实源,不再依赖 Claude Code slash command。`ae setup` 安装方法论资产,`ae init` 创建 skeleton 并同步规则。
+当前仓库进入 v0.3 可发布态:CLI 仍是初始化事实源,`ae setup` 只安装平台 skills,`ae init` 只创建 skeleton 与入口文件。项目规则直接沉淀在 `AGENTS.md`;`CLAUDE.md` 是指向 `AGENTS.md` 的极简指针。
 
 ## 当前阶段
 
-v0.2 本地实现、测试、打包、npm 发布、registry/npx 验证、真实项目发布包验证已完成。当前剩余人工平台抽检:Claude Code UI slash command 列表与 Codex skills 自动发现。
+v0.3 已完成 Issue 004 + 005 的合并实施,本地测试、dry-run 打包、真实 tarball 验证均通过。`package.json` 已升级到 `0.3.0`。
 
-关键历史提交 / tag:
+`npm publish --access public` 尚未执行,按 issue 决策留给用户操作。发布后还需做 Claude Code / Codex UI 人工抽检。
 
-- `9380792 chore: checkpoint before stage 1 restructure`
-- `72f79a0 chore: restructure repo for npm CLI distribution (stage 1)`
-- `7382aa5 chore: checkpoint before stage 2 cli work`
-- `5dc03de feat(cli): implement npm CLI for asset distribution (stage 2)`
-- `v0.1.0 Initial npm release`
-- `v0.2.0 split CLI into setup + init, drop slash command assets`
+## v0.3 已落地形态
 
-## v0.2 已完成
+CLI 命令树:
 
-- package version 升到 `0.2.0`
-- 新增 `CHANGELOG.md`
-- 删除旧 slash command 资产:
-  - `commands/`
-  - `src/commands/ingest-mother.js`
-  - `tests/ingest-mother.test.js`
-  - 根目录 `config/`
-- 模板迁移:
-  - `commands/ae-init.templates/` -> `templates/entries/`
-  - 新增 `templates/ae-rules.md`
-- CLI 命令树改为:
-  - `ae setup`
-  - `ae init [goal] [--rules <path>]`
-- 新增核心逻辑:
-  - `src/skeleton.js`
-  - `src/commands/setup.js`
-- 重写:
-  - `src/commands/init.js`
-  - `src/cli.js`
-  - `src/utils/report.js`
-  - `src/utils/paths.js`
-  - `src/utils/copy.js`
-- 测试重构:
-  - 新增 `tests/skeleton.test.js`
-  - 新增 `tests/setup.test.js`
-  - 重写 `tests/init.test.js`
-  - 更新 `tests/cli.test.js`
-- 文档同步:
-  - `README.md`
-  - `docs/framework.md`
-  - `docs/scenarios/s0-bootstrap.md`
-  - `docs/scenarios/s1-main-loop.md`
-  - `方案/issues/`
-  - `方案/wrap-up-and-restructure.md`
-
-## v0.2 CLI 行为边界
+```text
+ae setup
+ae init [goal]
+```
 
 `ae setup`:
 
 - 安装 `skills/` 到 `.claude/skills/`
 - 安装 `skills/` 到 `.codex/skills/`
-- 安装 `templates/ae-rules.md` 到 `config/ae-rules.md`
-- 幂等,不覆盖已编辑的 `config/ae-rules.md`
+- 不创建 `config/`
+- 不安装 `config/ae-rules.md`
 - 不创建 skeleton 或入口文件
 
 `ae init`:
 
 - 要求 `.claude/skills/` 或 `.codex/skills/` 至少一个存在,否则报错要求先跑 `ae setup`
-- 可选位置参数 `[goal]` 用于替换入口模板的 `{{PROJECT_GOAL}}`,写入 `README.md`、`AGENTS.md`、`CLAUDE.md`;不传则写入 `TODO: 用一句话说明这个项目要解决什么问题。`
-- 创建:
-  - `spec/`
-  - `spec/needs/`
-  - `spec/ADR/`
-  - `reference/`
-  - `data/`
-  - `scripts/`
-- 渲染:
-  - `README.md`
-  - `AGENTS.md`
-  - `CLAUDE.md`
-  - `handoff.md`
-  - `spec/README.md`
-  - `spec/INDEX.md`
-- 默认读取 `config/ae-rules.md`,同步到 `AGENTS.md` / `CLAUDE.md` 的 `AE:RULES` block
-- 支持 `--rules <path>` 显式覆盖规则源
-- 幂等,不覆盖入口文件;只替换 managed `AE:RULES` block
+- `[goal]` 替换入口模板 `{{PROJECT_GOAL}}`,写入 `README.md` / `AGENTS.md` / `CLAUDE.md`;不传则用 TODO 占位
+- 创建 `spec/`、`spec/needs/`、`spec/ADR/`、`reference/`、`data/`、`scripts/`
+- 渲染 `README.md`、`AGENTS.md`、`CLAUDE.md`、`handoff.md`、`spec/README.md`、`spec/INDEX.md`
+- 幂等,已有入口文件不覆盖
+- 不读取 rules 文件,不支持 `--rules`,不输出 `Rules:` 报告字段
 
-已移除:
+模板规则:
 
-- `ae ingest-mother`
-- `/ae-init`
-- `/ae-ingest-mother`
-- 用户项目 `.claude/commands/`
+- `AGENTS.md` 是单一信息源,含 `## Project-Specific Rules` 占位段
+- `CLAUDE.md` 是 5 行极简指针:
+  - 标题 `# {{PROJECT_NAME}}`
+  - 强指令 `Always read [AGENTS.md](./AGENTS.md) ...`
+  - 一句说明所有规则都在 `AGENTS.md`
+- `CLAUDE.md` 不含 `## ` 二级标题,避免扩展段回归
 
-## 验证
+## v0.3 删除内容
 
-已验证:
+- `templates/ae-rules.md`
+- 用户项目中的 `config/ae-rules.md` starter
+- `src/skeleton.js` 中的 `syncRulesBlock`
+- `RulesMarkerError`
+- `ae init --rules <path>`
+- `ae init` 报告中的 `Rules:` 行
+- AGENTS/CLAUDE 中由工具管理的 `<!-- AE:RULES:BEGIN/END -->` 同步机制
 
-- `npm test` 通过:22 tests all pass
-- `node bin/ae.js --help` 输出 `setup` / `init` 两个命令
-- `node bin/ae.js --version` 输出 `0.2.0`
-- `node bin/ae.js ingest-mother /tmp/whatever` 返回 unknown command
-- `git diff --check` 通过
+## 验证记录
+
+自动测试:
+
+- `npm test`:21 tests all pass
+- 覆盖点:
+  - setup 不创建 `config/`
+  - init 不创建 `config/`
+  - init 不输出 `Rules:`
+  - `--rules` 返回 unknown option
+  - AGENTS.md 含 `## Project-Specific Rules` 且不含 `AE:RULES`
+  - CLAUDE.md 是短指针,≤ 6 行,不含 AGENTS 专属段标题
+  - AGENTS.md 与 CLAUDE.md 字节不同
+  - 二次 init 不覆盖用户文件
+
+CLI 验证:
+
+- `node bin/ae.js --help`:不含 `ae-rules` / `--rules`
+- `node bin/ae.js init --help`:不含 `ae-rules` / `--rules`
+- `node bin/ae.js --version`:输出 `0.3.0`
+- `rg "ae-rules|--rules|syncRulesBlock|RulesMarkerError" src templates package.json`:无命中
+
+打包验证:
+
 - `npm pack --dry-run` 通过
-- `npm pack` 生成 `ecc-hgy-ae-0.2.0.tgz`
-  - package size:43.7 kB
-  - unpacked size:119.9 kB
-  - total files:42
-- tarball 抽检通过:
-  - 包含 `bin/`、`src/`、`skills/`、`templates/`、`README.md`、`LICENSE`、`package.json`
-  - 不包含 `commands/`、`config/`、`tests/`、`docs/`、`design/`、`方案/`、`handoff.md`
-- `/Users/huguiyuan/workspace/newtest` 真实 tarball 验证通过:
-  - 清空旧产物后跑 `npx --package <0.2.0.tgz> ae setup`
-  - `.claude/skills/diagnose/SKILL.md` 存在
-  - `.codex/skills/diagnose/SKILL.md` 存在
-  - `config/ae-rules.md` 存在且可编辑
-  - `.claude/commands/` 不存在
-  - `find .claude -name "ae-init.templates*"` 为空
-  - 编辑 rules 后跑 `ae init "v0.2 验证"` 成功
-  - 6 个入口文件与 skeleton 到位
-  - `AGENTS.md` / `CLAUDE.md` 含编辑后的 `AE:RULES` block
-  - 二次 `ae init` 幂等
-  - `--rules /tmp/ae-explicit-rules.md` 覆盖默认 rules 成功
-  - `--rules /tmp/ae-rules-dir` 报 `expected a file, got directory`
-- npm 发布链路:
-  - 用户执行 `npm publish --access public`
-  - npm 返回 `+ @ecc-hgy/ae@0.2.0`
-  - `npm whoami` 输出 `ecc-hgy`
-  - `npm access list packages ecc-hgy --json` 显示 `@ecc-hgy/ae: read-write`
-  - `npm access get status @ecc-hgy/ae` 显示 `public`
-  - `npm dist-tag ls @ecc-hgy/ae` 显示 `latest: 0.2.0`
-  - `npm view @ecc-hgy/ae@0.2.0 name version bin dist.tarball` 通过
-  - `npx --yes @ecc-hgy/ae@0.2.0 --version` 输出 `0.2.0`
-  - `npm exec --yes --package @ecc-hgy/ae@0.2.0 -- ae --version` 输出 `0.2.0`
-  - `/Users/huguiyuan/workspace/newtest` 中 `npm i @ecc-hgy/ae` 安装到 `node_modules/@ecc-hgy/ae@0.2.0`
-  - `node_modules/.bin/ae setup` + `node_modules/.bin/ae init "npm install 验证"` 通过
+- `npm pack` 生成 `ecc-hgy-ae-0.3.0.tgz`
+- package size 42.4 kB,unpacked size 113.5 kB,total files 41
+- tarball 含 `templates/entries/` 6 个入口模板
+- tarball 不含 `templates/ae-rules.md`
 
-未自动验证:
+真实 tarball 验证目录:
 
-- Claude Code UI 中 slash command 列表无 ae-* 残留。文件系统已确认 `.claude/commands/` 不存在,但 UI 抽检需用户打开 Claude Code。
-- Codex UI/运行时是否自动发现 `.codex/skills/`。文件系统已安装,最终体验需用户人工抽检。
+- `/tmp/ae-v03-verify-2zWwvs`
 
-## 当前工作区状态
+验证结果:
 
-v0.2 收口变更包括:
+- `npx --package <0.3.0.tgz> ae setup` 成功
+- setup 输出 Installed 48,不含 `ae-rules`
+- `.claude/skills/diagnose/SKILL.md` 存在
+- `.codex/skills/diagnose/SKILL.md` 存在
+- `config/` 不存在
+- `.claude/commands/` 不存在
+- `npx --package <0.3.0.tgz> ae init "v0.3 验证"` 成功
+- init 输出 Created 17,不含 `Rules:`
+- 6 个入口文件齐
+- `AGENTS.md` 含 `## Project-Specific Rules`,不含 `AE:RULES`
+- `CLAUDE.md` 含 `Always read [AGENTS.md](./AGENTS.md)`,共 5 行
+- `CLAUDE.md` 不含 `## Project-Specific Rules` / `## Stack` / `## Structure`
+- `AGENTS.md` 与 `CLAUDE.md` 不同
+- 编辑 `AGENTS.md` 后二次 init,AGENTS/CLAUDE hash 不变
 
-- 删除旧 `commands/`、根 `config/`、`ingest-mother` 代码与测试
-- 新增 `templates/`、`src/skeleton.js`、`src/commands/setup.js`
-- 重写 CLI / tests / README / docs / issues / handoff
-- 新增 `ecc-hgy-ae-0.2.0.tgz` pack 产物,已由 `.gitignore` 忽略
+## 文档状态
 
-忽略文件仍存在:
+已同步:
 
-- `.DS_Store`
-- `方案/.DS_Store`
-- `reference/`
-- `CES-AI-topic-9-smart-workflow/`
-- `huguiyuan-ae-0.1.0.tgz`
-- `huguiyuan-ae-0.2.0.tgz`
-- `ecc-hgy-ae-0.2.0.tgz`
+- `README.md`:Quick Start 两步化,新增 Single Source Of Truth,删除 rules sync / `--rules`
+- `docs/framework.md`:S0 改为 setup → init → 编辑 AGENTS.md,CLAUDE.md 作为指针
+- `docs/scenarios/s0-bootstrap.md`:完整改为 v0.3 行为
+- `docs/spec-framework.md`:AGENTS.md 规则段与 CLAUDE.md 指针说明
+- `CHANGELOG.md`:新增 `0.3.0 (breaking)` 与升级说明
+- `方案/issues/README.md`:004/005 状态改为 v0.3 已实施,待 npm 发布
+- `方案/issues/004*.md` / `005*.md`:状态改为 v0.3 已实施,待 npm 发布
 
 ## 关键文件入口
 
 | 文件 | 内容 |
 |------|------|
-| `package.json` | npm 包元数据,version `0.2.0`,files 清单 |
+| `package.json` | npm 包元数据,version `0.3.0`,files 清单 |
 | `bin/ae.js` | CLI 可执行入口 |
 | `src/cli.js` | 顶层参数路由 |
-| `src/commands/setup.js` | `ae setup` 资产安装 |
-| `src/commands/init.js` | `ae init` skeleton + rules sync |
-| `src/skeleton.js` | 目录创建、入口模板渲染、规则块同步 |
+| `src/commands/setup.js` | `ae setup` skills 安装 |
+| `src/commands/init.js` | `ae init` skeleton + entry rendering |
+| `src/skeleton.js` | createDirectories / renderEntryFiles |
 | `src/utils/copy.js` | 幂等复制 |
 | `templates/entries/` | 6 个入口文件模板 |
-| `templates/ae-rules.md` | `config/ae-rules.md` starter |
 | `skills/` | 12 个已采纳 skill 的发布资产 |
-| `tests/` | node:test 覆盖 |
+| `tests/` | node:test 覆盖,21 cases |
 | `README.md` | 对外说明与安装方式 |
-| `CHANGELOG.md` | v0.2 breaking change 记录 |
-| `方案/issues/` | 001/002/003 问题与 v0.2 收口记录 |
+| `CHANGELOG.md` | v0.3 breaking change 记录 |
+| `方案/issues/004-rules-injection-is-redundant.md` | v0.3 主线:删除规则注入机制 |
+| `方案/issues/005-claude-md-points-to-agents-md.md` | v0.3 配套:CLAUDE.md 极简指针 |
 
-## 开放问题 / 待处理
+## 待处理
 
-- 人工平台抽检:
-  - 在真实项目跑 `npx @ecc-hgy/ae@0.2.0 setup`
-  - 打开 Claude Code,确认项目 slash command 列表无 ae-* 残留
-  - 打开 Codex,确认 `.codex/skills/` 可被发现
-- 阶段 3:
-  - `ae update`
-  - `ae index-rebuild`
-  - 12 个 skill 最后一轮 cross-check
-  - GitHub Actions / Windows 路径验证
+按优先级:
+
+1. **发布 v0.3.0**:
+   - `npm publish --access public`(用户操作)
+   - 发布后 `npx --yes @ecc-hgy/ae@0.3.0 --version`
+   - 发布后干净目录再跑 `ae setup` + `ae init`
+2. **人工 UI 抽检**:
+   - Claude Code 项目级 slash command 列表无 ae-* 残留
+   - Claude Code 新 session 是否遵循 `CLAUDE.md` 指针读取 `AGENTS.md`
+   - Codex UI / 运行时是否自动发现 `.codex/skills/`
+3. **阶段 3 长尾**:
+   - `ae update`:升级路径
+   - `ae index-rebuild`:`spec/INDEX.md` 重建
+   - 12 个 skill 最后一轮 cross-check
+   - GitHub Actions(CI 跑 npm test)
+   - Windows 路径与权限验证
 
 ## 下次起手建议
 
-1. 打开 Claude Code / Codex 做人工平台抽检。
-2. 在一个全新目录用 `npx @ecc-hgy/ae@0.2.0 setup` + `init` 再跑一轮用户视角验收。
-3. 进入阶段 3:先设计 `ae update`,再做 `ae index-rebuild`。
+1. 如果要发布:先确认 git commit/tag,再执行 `npm publish --access public`
+2. 发布后立即做 npm 远端验证与一个干净目录真实链路验证
+3. 发布验证完成后,启动阶段 3,优先设计 `ae update`
