@@ -2,10 +2,18 @@
 
 ## 状态
 
-- 状态:v0.3 已实施,待 npm 发布
+- 状态:v0.3 已发布并通过 npmtest 人工验证
 - 优先级:P1
 - 发现时间:2026-06-07
 - 发现方式:用户在真实跑通 v0.2 链路后预判长期维护问题
+
+## v0.3 收口结果
+
+- 已发布:`@ecc-hgy/ae@0.3.0`
+- 已验证:本地测试、打包、真实 tarball 链路、发布后 npmtest 人工 check 均通过
+- 最终行为:`AGENTS.md` 是唯一维护的项目说明源
+- 最终模板:`CLAUDE.md` 是短指针,要求 Claude Code 每次 session 开始读取 `[AGENTS.md](./AGENTS.md)`
+- 后续抽检:仍可观察 Claude Code 新 session 是否稳定遵循指针读取 `AGENTS.md`
 
 ## 背景
 

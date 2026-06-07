@@ -2,10 +2,18 @@
 
 ## 状态
 
-- 状态:v0.3 已实施,待 npm 发布
+- 状态:v0.3 已发布并通过 npmtest 人工验证
 - 优先级:P1
 - 发现时间:2026-06-07
 - 发现方式:用户在 `/Users/huguiyuan/workspace/npmtest` 真实跑通 v0.2 完整链路后回看设计
+
+## v0.3 收口结果
+
+- 已发布:`@ecc-hgy/ae@0.3.0`
+- 已验证:本地测试、打包、真实 tarball 链路、发布后 npmtest 人工 check 均通过
+- 最终行为:`ae setup` 不创建 `config/`;`ae init` 不读 rules 文件,不支持 `--rules`,不输出 `Rules:`
+- 最终模板:`AGENTS.md` 直接含 `## Project-Specific Rules`;工具不再管理 `AE:RULES` block
+- 升级策略:v0.2 项目中的既有 `config/ae-rules.md` 不自动删除,用户可手动迁移到 `AGENTS.md`
 
 ## 背景
 

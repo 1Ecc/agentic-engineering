@@ -1,5 +1,7 @@
 # 方法论框架 v0.1：场景路线（plan 框架 + 索引）
 
+> 历史归档:本文件已被当前 `docs/framework.md`、`docs/spec-framework.md` 与 `方案/issues/` 取代。文中 `/ae-init` slash command、旧 v0.1/v0.2 路线等内容不再作为当前依据。
+
 > 本文件**只承载框架**：路线总览、入口层规则、三场景一句话索引、横切取舍、验证清单、开放问题。
 > 场景细节、目录骨架、skill 槽位、TODO 等已**下沉到 `scenarios/` 子目录**——见末尾索引。
 

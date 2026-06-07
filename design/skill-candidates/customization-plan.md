@@ -388,7 +388,7 @@ grill-me 是通用对齐工具,任何场景都能用,**无需项目个性化**�
 
 ## 五、跨 skill 协同决策(不属于任一 skill)
 
-模板不再统一落到 `spec/_templates/*`;能内聚到具体 skill 的模板留在对应 skill 目录,避免 `/ae-init` 生成一套后续容易漂移的静态模板。`ae-index-rebuild` 仍作为后续独立命令 pending。
+模板不再统一落到 `spec/_templates/*`;能内聚到具体 skill 的模板留在对应 skill 目录,避免初始化生成一套后续容易漂移的静态模板。`ae index-rebuild` 仍作为后续独立 CLI 命令 pending。
 
 | 产物 / 决策 | 落点 | 用途 | 进展 |
 |------|------|------|------|
@@ -396,7 +396,7 @@ grill-me 是通用对齐工具,任何场景都能用,**无需项目个性化**�
 | todo 模板 | `mattpocock/engineering/to-issues/todo-template.md` | A4 落盘 `todo.md` | ✅ 已完成 |
 | PRD / design 模板 | 内嵌在 `to-prd` / `writing-plans` skill | A2 / A3 落盘结构由对应 skill 直接约束 | ✅ 不做独立模板 |
 | ADR 模板 | 不提供独立模板;仅保留 `spec-framework.md` frontmatter + 状态规范 | B7 / improve-codebase-architecture 创建 ADR 时按规范写 | ✅ 不做独立模板 |
-| `ae-index-rebuild` slash command | `output/.claude/commands/ae-index-rebuild.md`(待建) | INDEX 兜底(spec-framework §INDEX 兜底已锁) | 🟡 pending |
+| `ae index-rebuild` CLI | `src/commands/index-rebuild.js`(待建) | INDEX 兜底(spec-framework §INDEX 兜底已锁) | 🟡 pending |
 
 ---
 
@@ -429,6 +429,6 @@ grill-me 是通用对齐工具,任何场景都能用,**无需项目个性化**�
 | improve-codebase-architecture | ✅ | ✅ | ✅ |
 | zoom-out | ✅ | ✅ | ✅(保持原样) |
 | spec/_templates/* | — | ✅(删除待做) | ✅(不需要) |
-| ae-index-rebuild | — | 🟡 | 🟡 pending |
+| ae index-rebuild | — | 🟡 | 🟡 pending |
 
 进展信号:🟡 待 check / ✅ 已完成(`—` = 不适用,跨 skill 协同产物无单独批注阶段)

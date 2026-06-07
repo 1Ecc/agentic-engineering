@@ -1,5 +1,7 @@
 # 项目收尾 + 本地仓库整理计划
 
+> 历史归档:本文件描述的是早期仓库整理和 slash command 分发方案,已被 v0.2/v0.3 npm CLI 形态取代。文中 `commands/`、`config/ae-rules.md`、`ae ingest-mother` 等内容不再作为当前依据。
+
 > 范围:把当前阶段做完的资产盘清楚,本地仓库按"未来发成 npm CLI"的目标形态归位。
 > 不在范围:CLI 代码实现、发版、`ae-index-rebuild` 命令本体。
 

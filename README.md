@@ -101,11 +101,16 @@ tests/      node:test coverage for CLI behavior
 
 ## Roadmap
 
-1. Stage 2: npm CLI asset distribution with `init` and `ingest-mother`. Superseded by v0.2.
-2. v0.2: split CLI into `setup` + `init`, remove slash command assets, and move rule sync into `ae init`.
-3. v0.3: remove rules injection; make `AGENTS.md` the single source of truth and `CLAUDE.md` a pointer.
-4. Stage 3: design `ae update` for skill/template upgrades and implement `ae index-rebuild`.
-5. Add CI and Windows path validation before broader distribution.
+Completed:
+
+- v0.2: split CLI into `setup` + `init` and remove slash command assets.
+- v0.3: remove rules injection; make `AGENTS.md` the single source of truth and `CLAUDE.md` a pointer.
+
+Next:
+
+1. Design `ae update` for skill/template upgrades.
+2. Implement `ae index-rebuild`.
+3. Add CI and Windows path validation before broader distribution.
 
 ## Limits
 
