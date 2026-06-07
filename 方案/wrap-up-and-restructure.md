@@ -244,10 +244,12 @@ agentic-engineering/                       # git 仓库根 = 未来 npm 包根
 > 4. **第一个版本号**:`0.1.0`。npm scope `@huguiyuan`(待 npm 上确认可用)。
 
 > 原则:跟阶段 1 一样,每一步落地后勾选;全部完成后 git 收口并打 tag。
+>
+> **当前进展**:阶段 2 本地实现与本地验证已完成;外部 npm 登录 / 发布、真实 Claude Code 交互验收仍需用户执行。
 
 ### 6.1 包结构脚手架
 
-- [ ] 仓库根新建 `package.json`,字段:
+- [x] 仓库根新建 `package.json`,字段:
   - `name`: `@huguiyuan/ae`
   - `version`: `0.1.0`
   - `description`: 与 README 顶部一句话对齐
@@ -261,24 +263,24 @@ agentic-engineering/                       # git 仓库根 = 未来 npm 包根
   - `license`: `MIT`
   - `author`: `huguiyuan`
   - `publishConfig`: `{ "access": "public" }`
-- [ ] 仓库根新建 `bin/ae.js`,加 shebang `#!/usr/bin/env node`,内容只做一件事:`import('../src/cli.js').then(m => m.run(process.argv.slice(2)))`
-- [ ] `chmod +x bin/ae.js`
-- [ ] 仓库根新建 `src/` 目录及内部骨架:
+- [x] 仓库根新建 `bin/ae.js`,加 shebang `#!/usr/bin/env node`,内容只做一件事:`import('../src/cli.js').then(m => m.run(process.argv.slice(2)))`
+- [x] `chmod +x bin/ae.js`
+- [x] 仓库根新建 `src/` 目录及内部骨架:
   - `src/cli.js` —— 入口路由
   - `src/commands/init.js`
   - `src/commands/ingest-mother.js`
   - `src/utils/paths.js`
   - `src/utils/copy.js`
   - `src/utils/report.js`
-- [ ] 仓库根新建 `tests/` 目录(端到端测试放这里)
-- [ ] 更新 `.gitignore`:补充 `node_modules/`、`*.tgz`(npm pack 产物)
+- [x] 仓库根新建 `tests/` 目录(端到端测试放这里)
+- [x] 更新 `.gitignore`:补充 `node_modules/`、`*.tgz`(npm pack 产物)
 
 ### 6.2 工具层:路径解析 + 文件拷贝
 
-- [ ] `src/utils/paths.js`:
+- [x] `src/utils/paths.js`:
   - `packageRoot()`:基于 `import.meta.url` 向上找到 `package.json` 所在目录,返回绝对路径
   - `assetPath(name)`:返回 `packageRoot()/<name>`,name ∈ `commands` / `skills` / `config`
-- [ ] `src/utils/copy.js`:
+- [x] `src/utils/copy.js`:
   - `copyTreeIdempotent(srcDir, destDir, { dryRun })` 函数:
     - 递归遍历 srcDir
     - 对每个文件:目标已存在 → skipped;不存在 → created(dry-run 时只记录不写)
@@ -286,13 +288,13 @@ agentic-engineering/                       # git 仓库根 = 未来 npm 包根
     - 返回 `{ created: string[], skipped: string[] }`,路径相对 destDir
   - **不实现 `--force`**:与 `ae-init.md` 的幂等契约对齐,绝不覆盖已有文件
   - 跨平台:全程用 `node:path` 的 `join` / `relative`,不出现裸字符串 `/`
-- [ ] `src/utils/report.js`:
+- [x] `src/utils/report.js`:
   - `formatInitReport({ created, skipped, target })` —— 输出格式对齐 `ae-init.md` 的报告 schema,便于用户感觉一致
   - `formatIngestReport(...)` 同理
 
 ### 6.3 `init` 子命令实现
 
-- [ ] `src/commands/init.js` 主流程:
+- [x] `src/commands/init.js` 主流程:
   1. 解析参数:`--target <path>`(默认 `process.cwd()`)、`--dry-run`、`--help`
   2. 校验 target 是已存在目录;不存在则 mkdir(允许用户 `mkdir new-project && cd new-project && ae init`)
   3. 三次拷贝调用:
@@ -305,14 +307,14 @@ agentic-engineering/                       # git 仓库根 = 未来 npm 包根
      Next: open Claude Code in this project and run `/ae-init "<one-line goal>"`
      to create the spec/ skeleton and entry files.
      ```
-- [ ] 错误处理:任何一次拷贝失败 → 打印失败路径与原因,exit code 1
-- [ ] **不创建** `spec/`、`AGENTS.md`、`CLAUDE.md`、`handoff.md`、`spec/INDEX.md` —— 这些是 `/ae-init` 的职责,CLI 路线 a 严格不越界
+- [x] 错误处理:任何一次拷贝失败 → 打印失败路径与原因,exit code 1
+- [x] **不创建** `spec/`、`AGENTS.md`、`CLAUDE.md`、`handoff.md`、`spec/INDEX.md` —— 这些是 `/ae-init` 的职责,CLI 路线 a 严格不越界
 
 ### 6.4 `ingest-mother` 子命令实现
 
 > CLI 这边只做"预检 + 指引",真正的母本规则抽取由 Claude 在用户项目内执行 `/ae-ingest-mother` 时完成。
 
-- [ ] `src/commands/ingest-mother.js` 主流程:
+- [x] `src/commands/ingest-mother.js` 主流程:
   1. 解析参数:`<mother-path>`(必填位置参数)、`--target <path>`(默认 `cwd`)、`--help`
   2. 参数缺失 → 打印 usage,exit 1
   3. 预检 mother-path:存在?是目录?至少有 `AGENTS.md` / `CLAUDE.md` / `handoff.md` 其一?三者皆无给警告但不阻断
@@ -324,11 +326,11 @@ agentic-engineering/                       # git 仓库根 = 未来 npm 包根
      The slash command will read mother entry files, propose AGENTS.md diffs,
      and ask for your confirmation before writing.
      ```
-- [ ] **不读取母本内容、不修改 target 任何文件**——纯指引性
+- [x] **不读取母本内容、不修改 target 任何文件**——纯指引性
 
 ### 6.5 CLI 入口与参数路由
 
-- [ ] `src/cli.js` `run(argv)` 函数:
+- [x] `src/cli.js` `run(argv)` 函数:
   1. 提取 subcommand = argv[0],rest = argv.slice(1)
   2. 全局 flag:`--help` / `-h`、`--version` / `-v`
   3. 路由:
@@ -336,7 +338,7 @@ agentic-engineering/                       # git 仓库根 = 未来 npm 包根
      - `ingest-mother` → `import('./commands/ingest-mother.js').run(rest)`
      - 缺失或 `--help` → 打印总帮助
      - 未知子命令 → 错误 + 总帮助,exit 1
-- [ ] 总帮助文本(参照 OpenSpec 的简洁风格):
+- [x] 总帮助文本(参照 OpenSpec 的简洁风格):
   ```
   Usage: ae <command> [options]
 
@@ -351,14 +353,14 @@ agentic-engineering/                       # git 仓库根 = 未来 npm 包根
   After `ae init`, open Claude Code in the project and run `/ae-init` to
   create the spec/ skeleton.
   ```
-- [ ] `--version` 从 `package.json` 读取 `version` 字段,不硬编码
+- [x] `--version` 从 `package.json` 读取 `version` 字段,不硬编码
 
 ### 6.6 端到端测试
 
 > 用 `node:test` 自带 runner,不引第三方框架。每个测试用例自建临时目录,跑完清理。
 
-- [ ] `tests/_helpers.js`:`makeTmpDir()` / `cleanup(dir)` / `runCli(argv, opts)` 辅助
-- [ ] `tests/init.test.js`:
+- [x] `tests/_helpers.js`:`makeTmpDir()` / `cleanup(dir)` / `runCli(argv, opts)` 辅助
+- [x] `tests/init.test.js`:
   - case A 「冷启动」:空目录跑 `ae init`,断言:
     - `.claude/commands/ae-init.md` 存在
     - `.claude/commands/ae-init.templates/README.md` 存在(目录拷贝递归正确)
@@ -375,36 +377,38 @@ agentic-engineering/                       # git 仓库根 = 未来 npm 包根
     - 报告显示 "would create" 清单
     - 文件系统无实际写入
   - case D 「target 参数」:`ae init --target /tmp/xxx` 写入指定目录
-- [ ] `tests/ingest-mother.test.js`:
+- [x] `tests/ingest-mother.test.js`:
   - case A 「缺参数」:`ae ingest-mother`,断言:exit 1 + usage
   - case B 「mother 路径不存在」:exit 1 + 错误信息含路径
   - case C 「target 未 init」:在空目录跑 `ae ingest-mother <valid path>`,断言:提示先 `ae init`,exit 1
   - case D 「正常路径」:先 `ae init`,再 `ae ingest-mother`,断言:输出指引,exit 0,文件系统不变
-- [ ] `tests/cli.test.js`:`--help` / `--version` / 未知子命令 / 无参数
-- [ ] 所有测试本地 `npm test` 通过
+- [x] `tests/cli.test.js`:`--help` / `--version` / 未知子命令 / 无参数
+- [x] 所有测试本地 `npm test` 通过
 
 ### 6.7 本地 `npm link` 自测(端到端冒烟)
 
-- [ ] 在仓库根 `npm link`
-- [ ] `mktemp -d` 建临时项目目录,`cd` 进入
-- [ ] `ae init` —— 检查输出与 `.claude/` 结构
+- [x] 在仓库根 `npm link`
+- [x] `mktemp -d` 建临时项目目录,`cd` 进入
+- [x] `ae init` —— 检查输出与 `.claude/` 结构
 - [ ] 进 Claude Code,在该临时项目跑 `/ae-init "测试目标"`,验证:
   - `spec/` 骨架建好
   - `AGENTS.md` / `CLAUDE.md` / `README.md` / `handoff.md` 渲染合理
   - 跑 `bash .claude/commands/ae-init.test.sh`(已装到用户项目)通过
-- [ ] 再跑 `ae ingest-mother <abs path to CES-AI-topic-9-smart-workflow>`,检查指引输出
+- [x] 再跑 `ae ingest-mother <abs path to CES-AI-topic-9-smart-workflow>`,检查指引输出
 - [ ] 进 Claude Code 跑 `/ae-ingest-mother` 走一遍真实抽取流程,验证 contract 仍然成立
-- [ ] `npm unlink -g @huguiyuan/ae`,确认临时目录的 `.claude/` 内容未被破坏
+- [x] `npm unlink -g @huguiyuan/ae`,确认临时目录的 `.claude/` 内容未被破坏
+
+说明:Claude Code 内 `/ae-init` 与 `/ae-ingest-mother` 真实交互验收需要用户在本机手动执行;本次已完成 CLI 层 `npm link` 冒烟。
 
 ### 6.8 README 与 handoff 同步
 
-- [ ] README 顶部"现状声明"段:
+- [x] README 顶部"现状声明"段:
   - 从"手动 cp"切到 `npx @huguiyuan/ae init` + `/ae-init` 两步说明
   - 删除 `cp -r` 那段,或挪到"高级:不通过 npm"
   - 增加一段"它在 npm CLI 里只做安装;真正的初始化逻辑在 Claude Code 跑 `/ae-init` 时执行",让用户预期一致
-- [ ] README 加 badges:`npm version`、`license`、(暂不加 CI,阶段 3 再说)
-- [ ] README 路线图:阶段 2 划掉,阶段 3 描述更新
-- [ ] `handoff.md`:
+- [x] README 加 badges:`npm version`、`license`、(暂不加 CI,阶段 3 再说)
+- [x] README 路线图:阶段 2 划掉,阶段 3 描述更新
+- [x] `handoff.md`:
   - "已完成"段加阶段 2 完成项
   - "下次起手建议"指向阶段 3 `ae-index-rebuild` markdown contract
   - "关键文件入口"表加 `package.json`、`bin/ae.js`、`src/cli.js`、`tests/`
@@ -414,11 +418,17 @@ agentic-engineering/                       # git 仓库根 = 未来 npm 包根
 - [ ] `npm login`(用户操作,首次)
 - [ ] `npm whoami` 确认账号
 - [ ] `npm access ls-packages @huguiyuan` 或 web 端确认 scope `@huguiyuan` 已注册可用;若未注册,先在 npmjs.com 创建
-- [ ] `npm pack --dry-run` 查看 tarball 文件清单:
+- [x] `npm pack --dry-run` 查看 tarball 文件清单:
   - 必含:`bin/`、`src/`、`commands/`、`skills/`、`config/`、`README.md`、`LICENSE`、`package.json`
   - 不应含:`tests/`、`docs/`、`design/`、`方案/`、`reference/`、`.git/`、`handoff.md`
-- [ ] `npm pack` 真打包,记录 tarball 体积。预期 < 500 KB(skills 是主体),> 2 MB 需调查
-- [ ] 解包 tarball,人工抽检:`.claude/commands/ae-init.md` 等内容正确
+- [x] `npm pack` 真打包,记录 tarball 体积。预期 < 500 KB(skills 是主体),> 2 MB 需调查
+- [x] 解包 tarball,人工抽检:`.claude/commands/ae-init.md` 等内容正确
+
+打包结果:
+- `npm pack --dry-run` 通过
+- `npm pack` 生成 `huguiyuan-ae-0.1.0.tgz`
+- package size:45.7 kB;unpacked size:123.6 kB;total files:44
+- tarball 不包含 `tests/`、`docs/`、`design/`、`方案/`、`handoff.md`
 
 ### 6.10 npm publish
 
@@ -427,11 +437,13 @@ agentic-engineering/                       # git 仓库根 = 未来 npm 包根
 - [ ] 干净目录:`npx @huguiyuan/ae init` 跑一次完整链路,逐项核对 6.7 的产物
 - [ ] npmjs.com 页面信息核对:description、README 渲染、files 清单
 
+说明:npm 发布需要用户账号登录、scope 可用性确认与外部发布操作,本次未自动执行。
+
 ### 6.11 git 收口
 
-- [ ] `git status` 核对:`package.json`、`bin/`、`src/`、`tests/`、README/handoff 改动
-- [ ] `git add` 上述
-- [ ] 提交,信息:
+- [x] `git status` 核对:`package.json`、`bin/`、`src/`、`tests/`、README/handoff 改动
+- [x] `git add` 上述
+- [x] 提交,信息:
   ```
   feat(cli): implement npm CLI for asset distribution (stage 2)
 
@@ -440,8 +452,10 @@ agentic-engineering/                       # git 仓库根 = 未来 npm 包根
     remains the job of `/ae-init` inside Claude Code.
   - Adds tests/ with node:test end-to-end coverage.
   ```
-- [ ] `git tag -a v0.1.0 -m "Initial npm release"`
+- [x] `git tag -a v0.1.0 -m "Initial npm release"`
 - [ ] `git push && git push --tags`(若已配 remote)
+
+说明:本地提交与 tag 由本次阶段 2 收口执行;push 留给用户确认后再做。
 
 ### 6.12 阶段 2 人工 check(由你完成)
 

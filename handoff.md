@@ -6,100 +6,148 @@
 
 搭建贴合个人习惯、轻量的软件全生命周期方法论:SDD 管"做什么",TDD 管"怎么做对"。
 
-当前仓库已整理为未来 npm CLI 发布形态:根目录平铺 `commands/`、`skills/`、`config/` 作为可分发资产,`docs/` 面向使用者,`design/` 保留设计档案。
+当前仓库已整理为未来 npm CLI 发布形态:根目录平铺 `commands/`、`skills/`、`config/` 作为可分发资产,`docs/` 面向使用者,`design/` 保留设计档案,`src/` + `bin/` 提供 npm CLI 分发壳。
 
 ## 当前阶段
 
-阶段 1 仓库结构整理已经完成并提交。现在处在阶段 1 后的人工 check / 归档清理收口阶段。
+阶段 2 npm CLI 本地实现已完成,正在做最终收口提交。
 
 关键提交:
 
 - `9380792 chore: checkpoint before stage 1 restructure`
 - `72f79a0 chore: restructure repo for npm CLI distribution (stage 1)`
+- `7382aa5 chore: checkpoint before stage 2 cli work`
 
 ## 已完成
 
+### 阶段 1
+
 - `commands/` 已从旧的 `agentic-engineering/.claude/commands/` 提升到仓库根
-  - `commands/ae-init.md`
-  - `commands/ae-init.templates/`
-  - `commands/ae-init.test.sh`
-  - `commands/ae-ingest-mother.md`
 - `config/ae-rules.md.example` 已提升到仓库根
-- 旧的 `agentic-engineering/` 空壳已删除
 - 12 个已采纳 skill 已复制到根目录 `skills/`
-- `docs/` 已建立
+- `docs/` 已建立:
   - `docs/framework.md`
   - `docs/spec-framework.md`
   - `docs/scenarios/s0-bootstrap.md`
   - `docs/scenarios/s1-main-loop.md`
-- `design/skill-candidates/` 已建立
+- `design/skill-candidates/` 已建立:
   - `design/skill-candidates/README.md`
   - `design/skill-candidates/customization-plan.md`
-- 顶层 `README.md` 已补充对外说明
-- 顶层 `LICENSE` 已按 MIT 补充,署名 `huguiyuan`
-- `.gitignore` 已排除 `reference/`、`CES-AI-topic-9-smart-workflow/`、`历史思路/`
+- 顶层 `README.md`、`LICENSE` 已补齐
 - `reference/` 与 `CES-AI-topic-9-smart-workflow/` 已从 git 索引移除,本地目录保留
-- `方案/wrap-up-and-restructure.md` 已更新阶段 1 进展:
-  - 阶段 1 todo 已勾选
-  - 已补充阶段 1 提交号与验证结果
-  - 已补充 §5 待拍板问题的实际处理结果
-  - 人工通读 `docs/framework.md` / `README.md` 与删除 `方案/` 仍保留为待完成
+
+### 阶段 2
+
+- 新增 npm 包元数据:
+  - `package.json`
+  - package name:`@huguiyuan/ae`
+  - version:`0.1.0`
+  - bin:`ae -> ./bin/ae.js`
+  - type:`module`
+  - zero dependency
+- 新增 CLI 入口:
+  - `bin/ae.js`
+  - `src/cli.js`
+- 新增 CLI 子命令:
+  - `src/commands/init.js`
+  - `src/commands/ingest-mother.js`
+- 新增工具层:
+  - `src/utils/paths.js`
+  - `src/utils/copy.js`
+  - `src/utils/report.js`
+- 新增 node:test 覆盖:
+  - `tests/_helpers.js`
+  - `tests/cli.test.js`
+  - `tests/init.test.js`
+  - `tests/ingest-mother.test.js`
+- `README.md` 已切换到 `npx @huguiyuan/ae init` 安装说明,并明确 CLI 只做资产安装,真正骨架初始化由 Claude Code 内 `/ae-init` 执行
+- `方案/wrap-up-and-restructure.md` 已更新阶段 2 本地完成项
+
+## CLI 行为边界
+
+阶段 2 已锁定并实现"路线 a":
+
+- `ae init` 只安装资产:
+  - `commands/` -> `.claude/commands/`
+  - `skills/` -> `.claude/skills/`
+  - `config/` -> `config/`
+- `ae init` 不创建 `spec/`、`AGENTS.md`、`CLAUDE.md`、`handoff.md`、`spec/INDEX.md`
+- `ae init` 幂等:目标文件已存在则跳过,不覆盖,无 `--force`
+- `ae ingest-mother` 只做路径预检与指引,不读取母本内容,不修改目标项目
+- 真正的初始化 / 母本抽取仍交给用户项目内的 slash command:
+  - `/ae-init`
+  - `/ae-ingest-mother`
 
 ## 验证
 
 已验证:
 
-- `bash commands/ae-init.test.sh` 通过
-- `git diff --cached --check` 通过(阶段 1 提交前)
-- `commands/ae-init.md` 与 `commands/ae-init.test.sh` 仍使用同层 `ae-init.templates/` 相对路径
-- `skills/` 下无 `AE-CHANGE` 残留
-- 12 个 `skills/*/SKILL.md` 均包含 `name:` 与 `description:`
-- `skills/` 与 `方案/skill-candidates/` 下 12 个源 skill 目录一致(阶段 1 提交前)
-- `reference/` / `CES-AI-topic-9-smart-workflow/` tracked 数量为 0,本地目录保留
+- `npm test` 通过:12 tests all pass
+- `node bin/ae.js --help` 输出顶层帮助
+- `node bin/ae.js --version` 输出 `0.1.0`
+- `npm pack --dry-run` 通过
+- `npm pack` 生成 `huguiyuan-ae-0.1.0.tgz`
+  - package size:45.7 kB
+  - unpacked size:123.6 kB
+  - total files:44
+- tarball 解包抽检通过:
+  - 包含 `bin/`、`src/`、`commands/`、`skills/`、`config/`、`README.md`、`LICENSE`、`package.json`
+  - 不包含 `tests/`、`docs/`、`design/`、`方案/`、`handoff.md`
+- `npm link` 本地冒烟通过:
+  - 临时项目 `ae init` 安装 `.claude/commands`、`.claude/skills`、`config`
+  - 临时项目 `ae ingest-mother <mother>` 输出 `/ae-ingest-mother` 指引
+  - 已执行 `npm unlink -g @huguiyuan/ae`
 
 ## 当前工作区状态
 
-当前存在未提交变更:
+预计未提交变更包括:
 
-- `方案/wrap-up-and-restructure.md` 已修改,用于记录阶段 1 进展
-- `方案/` 下大量旧设计/候选文件处于删除态,当前仅剩:
-  - `方案/immutable-booping-sutherland.md`
-  - `方案/wrap-up-and-restructure.md`
-  - `方案/.DS_Store`
+- `.gitignore`
+- `README.md`
+- `handoff.md`
+- `package.json`
+- `bin/`
+- `src/`
+- `tests/`
+- `方案/wrap-up-and-restructure.md`
 
-这些删除看起来对应 `wrap-up-and-restructure.md` 中的人工 check 后清理步骤。不要自动恢复;下一步应由用户确认是否按计划提交删除 `方案/`。
+`huguiyuan-ae-0.1.0.tgz` 是 npm pack 产物,已由 `.gitignore` 忽略。
 
 ## 关键文件入口
 
 | 文件 | 内容 |
 |------|------|
-| `README.md` | 对外说明:它是什么、怎么手动安装、路线图 |
+| `package.json` | npm 包元数据与 bin 配置 |
+| `bin/ae.js` | CLI 可执行入口 |
+| `src/cli.js` | 顶层参数路由 |
+| `src/commands/init.js` | `ae init` 资产安装 |
+| `src/commands/ingest-mother.js` | `ae ingest-mother` 预检与指引 |
+| `src/utils/copy.js` | 幂等递归复制 |
+| `tests/` | node:test 端到端覆盖 |
+| `README.md` | 对外说明与安装方式 |
 | `commands/ae-init.md` | `/ae-init` 命令契约 |
-| `commands/ae-init.templates/` | `/ae-init` 入口模板 |
-| `commands/ae-init.test.sh` | S0 验收脚本 |
 | `commands/ae-ingest-mother.md` | `/ae-ingest-mother` 命令契约 |
-| `config/ae-rules.md.example` | 全局规则库样例 |
 | `skills/` | 12 个已采纳 skill 的发布资产 |
-| `docs/framework.md` | 对外方法论框架说明 |
-| `docs/spec-framework.md` | `spec/` 目录规范 |
-| `docs/scenarios/s0-bootstrap.md` | S0 bootstrap 规格 |
-| `docs/scenarios/s1-main-loop.md` | S1 主循环规格 |
-| `design/skill-candidates/README.md` | skill 候选池归档 |
-| `design/skill-candidates/customization-plan.md` | skill 改造进展归档 |
-| `方案/wrap-up-and-restructure.md` | 阶段 1 整理计划与进展 |
+| `方案/wrap-up-and-restructure.md` | 阶段 1/2 整理计划与进展 |
 
 ## 开放问题 / 待处理
 
-- 是否提交当前 `方案/` 删除态:
-  - 若确认人工 check 已通过,按原计划提交:`chore: drop 方案/ after manual review`
-  - 若还要保留部分中文方案档,需先决定哪些文件恢复或迁移
+- npm 发布仍未执行,需要用户操作:
+  - `npm login`
+  - `npm whoami`
+  - 确认 `@huguiyuan` scope 可用
+  - `npm publish --access public`
+  - 发布后用 `npx @huguiyuan/ae@0.1.0 --version` 验证
+- Claude Code 内真实交互验收仍需用户执行:
+  - 在真实新项目运行 `npx @huguiyuan/ae init`
+  - 打开 Claude Code 跑 `/ae-init "测试目标"`
+  - 跑 `/ae-ingest-mother <mother-path>`
 - `commands/ae-index-rebuild.md` 仍未实现,按计划留到阶段 3
-- npm CLI 代码仍未实现,按计划留到阶段 2
+- 可选:阶段 3 增加 GitHub Actions、CHANGELOG、Windows 路径验证
 
 ## 下次起手建议
 
-优先收口当前未提交变更:
-
-1. 确认是否删除剩余 `方案/` 或仅提交当前删除态
-2. 如确认删除,移除 `方案/immutable-booping-sutherland.md` 与 `方案/wrap-up-and-restructure.md` 后提交
-3. 进入阶段 2:实现 npm CLI 包结构 `package.json`、`bin/ae.js`、`src/`
+1. 先提交阶段 2 实现:`feat(cli): implement npm CLI for asset distribution (stage 2)`
+2. 打 tag:`v0.1.0`
+3. 用户完成 npm 登录与发布
+4. 进入阶段 3:`ae-index-rebuild` markdown contract 与 CLI 暴露策略

@@ -1,0 +1,44 @@
+{
+  "name": "@huguiyuan/ae",
+  "version": "0.1.0",
+  "description": "Agentic Engineering is a lightweight personal software lifecycle method: SDD records what to build, TDD drives how to prove it works.",
+  "type": "module",
+  "bin": {
+    "ae": "./bin/ae.js"
+  },
+  "files": [
+    "bin",
+    "src",
+    "commands",
+    "skills",
+    "config",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "test": "node --test tests/*.test.js"
+  },
+  "keywords": [
+    "claude-code",
+    "agentic",
+    "skills",
+    "tdd",
+    "sdd"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/huguiyuan/agentic-engineering.git"
+  },
+  "homepage": "https://github.com/huguiyuan/agentic-engineering#readme",
+  "bugs": {
+    "url": "https://github.com/huguiyuan/agentic-engineering/issues"
+  },
+  "license": "MIT",
+  "author": "huguiyuan",
+  "publishConfig": {
+    "access": "public"
+  }
+}

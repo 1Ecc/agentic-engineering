@@ -1,18 +1,53 @@
 # Agentic Engineering
 
-Agentic Engineering is a lightweight personal software lifecycle method: SDD records what to build, TDD drives how to prove it works. It is delivered as Claude Code slash commands plus agent skills, with a future npm CLI planned as the distribution layer.
+[![npm version](https://img.shields.io/npm/v/@huguiyuan/ae.svg)](https://www.npmjs.com/package/@huguiyuan/ae)
+[![license](https://img.shields.io/npm/l/@huguiyuan/ae.svg)](LICENSE)
 
-## Current Status
+Agentic Engineering is a lightweight personal software lifecycle method: SDD records what to build, TDD drives how to prove it works. It is delivered as an npm-installed bundle of Claude Code slash commands plus agent skills.
 
-The npm CLI is not implemented yet. For now, install the assets manually into a project:
+## Install
+
+```bash
+cd /your/project
+npx @huguiyuan/ae init
+```
+
+Then open Claude Code in the same project and run:
+
+```text
+/ae-init "one-line project goal"
+```
+
+The npm CLI only installs the method assets into your project:
+
+- `commands/` -> `.claude/commands/`
+- `skills/` -> `.claude/skills/`
+- `config/` -> `config/`
+
+The real project skeleton creation is intentionally handled by the installed `/ae-init` slash command inside Claude Code. That keeps the markdown command contract as the source of truth and avoids duplicating bootstrap logic in JavaScript.
+
+## CLI
+
+```bash
+ae init
+ae ingest-mother /path/to/mother-project
+ae --help
+ae --version
+```
+
+`ae init` is idempotent. It creates missing asset files and skips existing files; it never overwrites project edits and has no `--force` mode.
+
+`ae ingest-mother` is a pre-check and instruction helper. It does not read or modify the mother project. After it validates paths, open Claude Code and run `/ae-ingest-mother <path>` to let the slash command propose changes.
+
+## Manual Install
+
+If you are working from a local checkout instead of npm:
 
 ```bash
 cp -r commands/ /your/project/.claude/commands/
 cp -r skills/   /your/project/.claude/skills/
 cp -r config/   /your/project/config/
 ```
-
-After copying, run `/ae-init` inside the target project to create the standard skeleton.
 
 ## Method Overview
 
@@ -61,15 +96,17 @@ skills/    Selected Agentic Engineering skills
 config/    Rule examples
 docs/      User-facing methodology docs
 design/    Design records for this repository
-方案/       Chinese working design drafts, kept for manual review
+bin/       npm executable entry
+src/       zero-dependency CLI implementation
+tests/     node:test coverage for CLI behavior
 ```
 
 ## Roadmap
 
-1. Stage 2: implement the npm CLI with `init`, `ingest-mother`, and `index-rebuild`.
+1. Stage 2: npm CLI asset distribution with `init` and `ingest-mother`. Done.
 2. Stage 3: implement `commands/ae-index-rebuild.md` and the underlying `spec/INDEX.md` rebuild behavior.
-3. Replace manual copy instructions with `npx @huguiyuan/ae init` after publishing.
+3. Add CI, changelog, and Windows path validation before broader distribution.
 
 ## Limits
 
-This repository currently ships method assets, not a working npm package. `ae-index-rebuild` is referenced by the method but not implemented yet.
+`ae-index-rebuild` is referenced by the method but not implemented yet. Publishing to npm still requires `npm login`, scope validation, and `npm publish --access public`.
