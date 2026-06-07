@@ -1,0 +1,52 @@
+# Local secrets
+secrets/
+auth-state.json
+*.env
+.env.*
+!.env.example
+reference/*账号密码*.md
+AGENTS.md
+CLAUDE.md
+
+# Runtime artifacts
+runs/
+logs/
+screenshots/
+playwright-report/
+test-results/
+
+# Stage 2 data keeps registered definitions in git and excludes runtime output.
+data/workflows/*.yaml
+data/workflows/*.yml
+data/workflows/*.json
+!data/
+!data/workflows/
+!data/workflows/.gitkeep
+!data/nodes/
+!data/nodes/.gitkeep
+data/nodes/*.json
+!data/nodes/builtin/
+!data/nodes/builtin/**
+!data/nodes/connectors/
+!data/nodes/connectors/**
+!data/recordings/
+data/recordings/*.json
+!data/recordings/.gitkeep
+!data/runs/
+data/runs/*
+!data/runs/.gitkeep
+
+# Dependencies and build output
+node_modules/
+.npm-cache/
+*.tsbuildinfo
+dist/
+build/
+release/
+.next/
+__pycache__/
+*.pyc
+
+# Editor/system files
+.DS_Store
+Thumbs.db

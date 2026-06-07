@@ -1,0 +1,64 @@
+{
+  "name": "ces-ai-topic-9-smart-workflow",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "dist/apps/desktop/main.js",
+  "scripts": {
+    "dev": "node scripts/dev.mjs",
+    "web:build": "cd apps/web && npm run build",
+    "build:ts": "tsc",
+    "desktop:build": "npm run web:build && npm run build:ts",
+    "desktop:dev": "npm run desktop:build && electron .",
+    "desktop:pack": "npm run desktop:build && electron-builder --win --dir",
+    "auth:login": "tsx apps/api/src/cli/auth-login.ts",
+    "auth:spos": "tsx apps/api/src/cli/auth-spos.ts",
+    "auth:status": "tsx apps/api/src/cli/auth-status.ts",
+    "debug:recording-node": "tsx apps/api/src/cli/invoke-recording-node.ts",
+    "sop1": "tsx apps/api/src/cli/run-sop1.ts",
+    "api:dev": "tsx apps/api/src/server.ts",
+    "typecheck": "tsc --noEmit",
+    "test:runner": "tsx tests/unit/workflow-runner.test.ts",
+    "test:mail-draft": "tsx tests/unit/mail-draft-view.test.ts",
+    "test:llm-recorder": "tsx tests/unit/llm-recorder.test.ts",
+    "test:api": "tsx tests/integration/stage2-api.test.ts"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "@types/nodemailer": "^8.0.0",
+    "dotenv": "^17.4.2",
+    "nodemailer": "^8.0.7",
+    "playwright": "^1.56.1"
+  },
+  "devDependencies": {
+    "@types/node": "^25.0.0",
+    "electron": "^42.0.1",
+    "electron-builder": "^26.8.1",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  },
+  "build": {
+    "appId": "com.cesai.smartworkflow",
+    "productName": "CES-AI-Smart-Workflow",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "package.json",
+      "node_modules/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "apps/web/dist",
+        "to": "web"
+      }
+    ],
+    "win": {
+      "signAndEditExecutable": false,
+      "target": [
+        "dir"
+      ]
+    }
+  }
+}

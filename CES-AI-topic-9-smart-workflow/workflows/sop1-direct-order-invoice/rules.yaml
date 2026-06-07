@@ -1,0 +1,122 @@
+id: sop1-direct-order-invoice
+name: SOP1 额外处理路由规则
+version: 0.2.0
+description: >
+  SOP1 最终输出 result_form 和 extra_processing。extra_processing 固定 6 大业务场景，
+  其中 4 个场景生成邮件草稿。九丘 orderStatus=3 / orderStatusName=已成交 与 SOP “已完成”等价。
+
+routes:
+  - route: NO_EXTRA_NO_JIUQIU_ORDER
+    name: 无九丘订单号
+    need_email_draft: false
+    priority: 10
+    when:
+      all:
+        - exists: work_order_no
+        - empty: jiuqiu_order_no
+    action:
+      type: none
+
+  - route: NO_EXTRA_JIUQIU_NOT_COMPLETED
+    name: 九丘订单未完成
+    need_email_draft: false
+    priority: 20
+    when:
+      all:
+        - exists: work_order_no
+        - exists: jiuqiu_order_no
+        - equals:
+            field: jiuqiu_completed
+            value: false
+    action:
+      type: none
+
+  - route: EMAIL_BTCP_MISSING
+    name: BTCP 无信息
+    need_email_draft: true
+    priority: 30
+    when:
+      all:
+        - equals:
+            field: jiuqiu_completed
+            value: true
+        - any:
+            - empty: pgi_values
+            - empty: btcp_order_values
+    action:
+      type: email_draft
+      to:
+        - yangyn12@lenovo.com
+      cc:
+        - wuty1@lenovo.com
+      body: 工单号“{work_order_no}”，九丘订单号“{jiuqiu_order_no}”，九丘订单已完成，BTCP 没有信息，辛苦看下订单是否成功推送给 BTCP 系统。
+
+  - route: EMAIL_PGI_SSCM_MISSING
+    name: PGI 未推送到 sscm
+    need_email_draft: true
+    priority: 40
+    when:
+      all:
+        - equals:
+            field: jiuqiu_completed
+            value: true
+        - empty: pgi_sscm_success_time_values
+    action:
+      type: email_draft
+      to:
+        - yangyn12@lenovo.com
+      cc:
+        - wuty1@lenovo.com
+      body: 工单号“{work_order_no}”，九丘订单号“{jiuqiu_order_no}”，九丘订单已完成，PGI 没有推送到 sscm，辛苦看下 PGI 推送失败原因。
+
+  - route: EMAIL_DIGITAL_NORMAL_NOT_INVOICED
+    name: 数电发票未开出
+    need_email_draft: true
+    priority: 50
+    when:
+      all:
+        - equals:
+            field: jiuqiu_completed
+            value: true
+        - not_empty: btcp_order_values
+        - not_empty: pgi_values
+        - not_empty: pgi_sscm_success_time_values
+        - not_equals:
+            field: invoice_normalized_status
+            value: INVOICED
+        - equals:
+            field: invoice_normalized_type
+            value: DIGITAL_NORMAL
+        - empty: invoice_link_values
+    action:
+      type: email_draft
+      to:
+        - zhengyf4@lenovo.com
+      cc:
+        - yuls1@lenovo.com
+      body: 工单号“{work_order_no}”，九丘订单号“{jiuqiu_order_no}”，BTCP 单号“{btcp_order_no}”，九丘已推送至 SPOS 系统，但是普票未开出，辛苦 IT 同学确认订单推送是否正常。
+
+  - route: EMAIL_DIGITAL_SPECIAL_NOT_INVOICED
+    name: 数电专票未开出
+    need_email_draft: true
+    priority: 60
+    when:
+      all:
+        - equals:
+            field: jiuqiu_completed
+            value: true
+        - not_empty: btcp_order_values
+        - not_empty: pgi_values
+        - not_empty: pgi_sscm_success_time_values
+        - not_equals:
+            field: invoice_normalized_status
+            value: INVOICED
+        - equals:
+            field: invoice_normalized_type
+            value: DIGITAL_SPECIAL
+        - empty: invoice_link_values
+    action:
+      type: email_draft
+      to:
+        - chenxf13@lenovo.com
+      body: 工单号“{work_order_no}”，九丘订单号“{jiuqiu_order_no}”，BTCP 单号“{btcp_order_no}”，九丘已推送至 SPOS 系统，但是普票未开出，辛苦会计同学确认发票是否已经到开票界面。

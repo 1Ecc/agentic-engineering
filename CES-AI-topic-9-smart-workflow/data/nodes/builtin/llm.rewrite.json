@@ -1,0 +1,15 @@
+{
+  "type": "llm.rewrite",
+  "category": "builtin",
+  "name": "LLM 改写",
+  "description": "演示模式下返回固定改写文案",
+  "inputs": [
+    { "name": "text", "type": "text", "required": true, "label": "原文" }
+  ],
+  "outputs": [
+    { "name": "text", "type": "text", "label": "改写结果" }
+  ],
+  "handler": { "kind": "builtin" },
+  "metadata": { "reference_count": 0 }
+}
+

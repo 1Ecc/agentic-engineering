@@ -9,5 +9,7 @@ Thumbs.db
 !.env.example
 
 *.log
+node_modules/
+.tmp/
 tmp/
 temp/

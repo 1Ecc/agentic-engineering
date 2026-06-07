@@ -1,0 +1,14 @@
+{
+  "type": "data.compose",
+  "category": "builtin",
+  "name": "结构化组装",
+  "description": "将多源节点输出和输入参数整理为一个结构化对象",
+  "inputs": [
+    { "name": "value", "type": "object", "required": true, "label": "结构化对象" }
+  ],
+  "outputs": [
+    { "name": "value", "type": "object", "label": "完整对象" }
+  ],
+  "handler": { "kind": "builtin" },
+  "metadata": { "reference_count": 0 }
+}

@@ -1,0 +1,4 @@
+下载：npm install -g @fission-ai/openspec@latest  可在当前cd下
+初始化：npx openspec init   选择ide等
+会配套好skills + openspec文件
+

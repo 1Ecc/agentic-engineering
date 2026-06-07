@@ -1,0 +1,20 @@
+{
+  "type": "rules.first_match",
+  "category": "builtin",
+  "name": "优先级规则路由",
+  "description": "按顺序判断规则，命中第一条后停止并输出动作配置，支持 ==、!=、&&、||、empty()、notEmpty()",
+  "inputs": [
+    { "name": "facts", "type": "object", "required": true, "label": "判断事实" },
+    { "name": "rules", "type": "array", "required": true, "label": "有序规则" }
+  ],
+  "outputs": [
+    { "name": "matched", "type": "boolean", "label": "是否命中" },
+    { "name": "rule_id", "type": "string", "label": "命中规则" },
+    { "name": "name", "type": "string", "label": "规则名称" },
+    { "name": "reason", "type": "string", "label": "命中说明" },
+    { "name": "action", "type": "object", "label": "动作配置" },
+    { "name": "evaluated", "type": "array", "label": "判断明细" }
+  ],
+  "handler": { "kind": "builtin" },
+  "metadata": { "reference_count": 0 }
+}

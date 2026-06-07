@@ -1,0 +1,59 @@
+id: sop1-direct-order-invoice
+name: 直客订单查询及发票处理工作流
+version: 0.1.0
+input:
+  type: object
+  required:
+    - work_order_no
+  properties:
+    work_order_no:
+      type: string
+      description: 工单号
+steps:
+  - id: query_serviceforce_order
+    name: 服务云查询九丘订单号
+    connector: serviceforce
+    action: query_paid_jiuqiu_order_by_work_order
+    input:
+      work_order_no: ${input.work_order_no}
+    output:
+      jiuqiu_order_no: ${steps.query_serviceforce_order.jiuqiu_order_no}
+      serviceforce_order_status: ${steps.query_serviceforce_order.status}
+
+  - id: query_jiuqiu_order
+    name: 九丘查询订单详情
+    connector: jiuqiu
+    action: query_order_detail
+    when: ${steps.query_serviceforce_order.jiuqiu_order_no != null}
+    input:
+      jiuqiu_order_no: ${steps.query_serviceforce_order.jiuqiu_order_no}
+    output:
+      order_status: ${steps.query_jiuqiu_order.order_status}
+      pgi: ${steps.query_jiuqiu_order.pgi}
+      s4_order_no: ${steps.query_jiuqiu_order.s4_order_no}
+      pgi_sscm_success_time: ${steps.query_jiuqiu_order.pgi_sscm_success_time}
+
+  - id: query_spos_invoice
+    name: SPOS 查询发票信息
+    connector: spos
+    action: query_invoice_by_platform_order
+    when: ${steps.query_serviceforce_order.jiuqiu_order_no != null}
+    input:
+      platform_order_no: ${steps.query_serviceforce_order.jiuqiu_order_no}
+      date_range: last_1_year
+    output:
+      btcp_orders: ${steps.query_spos_invoice.btcp_orders}
+
+  - id: evaluate_rules
+    name: 异常规则判断
+    connector: rules
+    action: evaluate
+    input:
+      ruleset: sop1-direct-order-invoice
+      context: ${workflow.context}
+    output:
+      extra_processing: ${steps.evaluate_rules.extra_processing}
+
+output:
+  result_form: ${workflow.result_form}
+  extra_processing: ${steps.evaluate_rules.extra_processing}

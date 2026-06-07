@@ -1,1 +1,36 @@
-读 D:\coding\Project\Workspace\agentic engineering\CLAUDE.md
+## 目标
+设计搭建软件开发全生命周期方法论，我们以SDD进行规格管理，以TDD实现开发管理
+
+## 参考
+素材来源：reference 中的4个仓库内容合集
+### openspec
+主要参考SDD规格管理，但是我觉得过于冗余，且较消耗token；后续会再进行轻量化，且融入我们自己的想法
+
+### superpowers
+已经有比较全的全生命周期方法论了，后续会吸取核心经验，取长补短
+
+### mattpocock
+基于全生命周期的核心节点，分别有核心的skills能力，让你跟工程师一样干活，取长补短
+
+### comet
+实现openspec和superpower的结合。该作者的目标跟我们是一致的，只能说目标一致，但是路径和方法不一致。我们需要自己实现。
+
+
+## 参考项目
+### 理念
+边做边学、边用边改
+
+### 项目
+会简单参考，因为这是我个人在使用中总结的一些潜在方法论
+/Users/huguiyuan/workspace/agentic-engineering/CES-AI-topic-9-smart-workflow#### 要求
+非必要 请勿读取该项目的所有细节内容
+
+### 进展
+请读取 handoff.md
+
+### 要求
+1. 探索可稳定、具备我个人习惯的方法论
+2. 抛弃历史思路，请勿参考
+3. 方案 中会沉淀我们的思考、成果，做好其中的目录管理
+4. `handoff.md` 每次都做**覆盖**操作（不是追加）——它始终是当前态的最新快照，不承载历史
+
