@@ -166,6 +166,7 @@ v0.2 完全移除 slash command 形态。仓库根的 `commands/` 整个目录�
 - `ae setup` 只安装 `.claude/skills/`、`.codex/skills/` 与 `config/ae-rules.md`。
 - `tests/setup.test.js` 与 `tests/init.test.js` 均断言 `.claude/commands/` 不存在。
 - `/Users/huguiyuan/workspace/newtest` 真实 tarball 验证中 `.claude/` 下仅有 `skills/`,且 `find .claude -name "ae-init.templates*"` 为空。
+- npm 发布包验证中,`npm i @ecc-hgy/ae` 后执行 `node_modules/.bin/ae setup` + `init` 仍不创建 `.claude/commands/`。
 - 仍需人工打开 Claude Code UI 抽检项目级 slash command 列表无 ae-* 残留。
 
 ### A. 跟随 Issue 001 阶段 B 完成的动作(此处仅列对照项)

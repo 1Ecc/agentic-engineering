@@ -2,7 +2,7 @@
 
 ## 状态
 
-- 状态:v0.2 本地实现完成,待 npm 发布
+- 状态:v0.2 已发布并通过 npm/npx 验证
 - 优先级:P0
 - 发现时间:2026-06-07
 - 发现方式:在空项目 `/Users/huguiyuan/workspace/newtest` 中用本地 tarball 验证 `ae init`
@@ -318,7 +318,13 @@ my-project/
 - 已完成阶段 A-H:核心 skeleton、模板搬迁、`ae setup`、`ae init` 重写、CLI 帮助、测试、文档、打包、`newtest` 真实 tarball 验证。
 - 代码事实源已切到 CLI:`src/skeleton.js` + `src/commands/setup.js` + `src/commands/init.js`。
 - 发布包版本已升到 `0.2.0`;`npm pack` 生成 `ecc-hgy-ae-0.2.0.tgz`。
-- Stage I 本地 git 收口完成后即可交给用户执行 npm 发布。
+- npm 已发布:`@ecc-hgy/ae@0.2.0`。
+- npm/npx 已验证:
+  - `npm view @ecc-hgy/ae@0.2.0 name version bin dist.tarball`
+  - `npx --yes @ecc-hgy/ae@0.2.0 --version`
+  - `npm i @ecc-hgy/ae`
+  - 发布包 `ae setup` + `ae init`
+- `ae init [goal]` 中的 `goal` 会替换入口模板的 `{{PROJECT_GOAL}}`,写入 `README.md`、`AGENTS.md`、`CLAUDE.md`;不传时使用 `TODO: 用一句话说明这个项目要解决什么问题。` 占位。
 - 仍需人工抽检:Claude Code UI slash command 列表无 ae-*;Codex 对 `.codex/skills/` 的自动发现。
 
 ### 阶段 A:skeleton 核心(纯函数 + 单测)

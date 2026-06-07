@@ -71,6 +71,7 @@ v0.2 本地实现、测试、打包、npm 发布、registry/npx 验证、真实�
 `ae init`:
 
 - 要求 `.claude/skills/` 或 `.codex/skills/` 至少一个存在,否则报错要求先跑 `ae setup`
+- 可选位置参数 `[goal]` 用于替换入口模板的 `{{PROJECT_GOAL}}`,写入 `README.md`、`AGENTS.md`、`CLAUDE.md`;不传则写入 `TODO: 用一句话说明这个项目要解决什么问题。`
 - 创建:
   - `spec/`
   - `spec/needs/`

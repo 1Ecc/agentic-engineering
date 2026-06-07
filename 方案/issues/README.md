@@ -6,9 +6,9 @@
 
 | 编号 | 问题 | 状态 | 优先级 |
 |------|------|------|--------|
-| [001](001-platform-agnostic-cli-init.md) | 初始化依赖 Claude Code slash command,不符合跨平台预期 | v0.2 本地实现完成,待 npm 发布 | P0 |
+| [001](001-platform-agnostic-cli-init.md) | 初始化依赖 Claude Code slash command,不符合跨平台预期 | v0.2 已发布并通过 npm/npx 验证 | P0 |
 | [002](002-slash-command-template-pollution.md) | 模板文件被 Claude Code 递归识别为多余 slash command | v0.2 本地解决,待 Claude Code UI 抽检 | P0 |
-| [003](003-rules-ingestion-semantics.md) | `/ae-ingest-mother` 语义与真实期望不一致 | v0.2 本地解决,待 npm 发布 | P0 |
+| [003](003-rules-ingestion-semantics.md) | `/ae-ingest-mother` 语义与真实期望不一致 | v0.2 已发布并通过 npm/npx 验证 | P0 |
 
 ## 处理原则
 
@@ -19,5 +19,6 @@
 ## v0.2 收口结果
 
 - 已完成:`ae setup` + `ae init` 两步 CLI 形态,移除 slash command 资产与 `ae ingest-mother`。
-- 已验证:`npm test` 通过;`npm pack` 清单不含 `commands/` / `config/` / `tests/` / `docs/` / `design/`;`/Users/huguiyuan/workspace/newtest` 真实 tarball 验证通过。
-- 仍需人工/外部动作:npm 发布;打开 Claude Code UI 抽检 slash command 列表无 ae-*;Codex UI/运行时抽检 `.codex/skills/` 自动发现。
+- 已发布:`@ecc-hgy/ae@0.2.0`。
+- 已验证:`npm test` 通过;`npm pack` 清单不含 `commands/` / `config/` / `tests/` / `docs/` / `design/`;`/Users/huguiyuan/workspace/newtest` tarball 验证通过;`npm i @ecc-hgy/ae`、`npx @ecc-hgy/ae@0.2.0 --version`、发布包 `setup/init` 验证通过。
+- 仍需人工动作:打开 Claude Code UI 抽检 slash command 列表无 ae-*;Codex UI/运行时抽检 `.codex/skills/` 自动发现。

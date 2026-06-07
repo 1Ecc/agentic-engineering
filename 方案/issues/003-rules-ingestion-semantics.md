@@ -2,7 +2,7 @@
 
 ## 状态
 
-- 状态:v0.2 本地解决,待 npm 发布
+- 状态:v0.2 已发布并通过 npm/npx 验证
 - 优先级:P0
 - 发现时间:2026-06-07
 - 发现方式:用户在新项目中尝试执行 `/ae-ingest-mother <config/ae-rules.md.example>.`
@@ -264,6 +264,7 @@ ae init [goal] [--rules <path>]  # 建 skeleton + 入口 + AE:RULES block 同步
 - `syncRulesBlock` 已实现 marker 校验、追加、替换、dry-run 和异常保护。
 - 自动测试覆盖默认 rules、显式 `--rules`、缺失文件、目录误传、marker 异常、幂等。
 - `/Users/huguiyuan/workspace/newtest` 真实 tarball 验证已覆盖默认规则注入、二次 init 幂等、显式 `--rules` 覆盖和目录参数报错。
+- npm 发布包验证已覆盖 `npm i @ecc-hgy/ae` 后的 `node_modules/.bin/ae setup` + `node_modules/.bin/ae init "npm install 验证"`。
 
 ### A. v0.2 行为变更(由 Issue 001 主流程完成,此处仅对照)
 
