@@ -10,7 +10,7 @@
 
 ## 当前阶段
 
-v0.2 本地实现、测试、打包、真实空项目验证已完成。当前等待用户执行 npm 发布与人工平台抽检。
+v0.2 本地实现、测试、打包、真实空项目验证已完成。npm publish 已返回成功,但公开 registry packument 仍暂时 404,需要稍后重试 `npm view` / `npx`。
 
 关键历史提交 / tag:
 
@@ -126,9 +126,17 @@ v0.2 本地实现、测试、打包、真实空项目验证已完成。当前等
   - 二次 `ae init` 幂等
   - `--rules /tmp/ae-explicit-rules.md` 覆盖默认 rules 成功
   - `--rules /tmp/ae-rules-dir` 报 `expected a file, got directory`
+- npm 发布链路:
+  - 用户执行 `npm publish --access public`
+  - npm 返回 `+ @ecc-hgy/ae@0.2.0`
+  - `npm whoami` 输出 `ecc-hgy`
+  - `npm access list packages ecc-hgy --json` 显示 `@ecc-hgy/ae: read-write`
+  - `npm access get status @ecc-hgy/ae` 显示 `public`
+  - `npm dist-tag ls @ecc-hgy/ae` 显示 `latest: 0.2.0`
 
 未自动验证:
 
+- `npm view @ecc-hgy/ae@0.2.0` 目前仍返回 404,`npm install` / `npm exec` 也暂时不可用。包在 access / dist-tag 层已经存在,更像 npm 公开 packument 索引延迟或新包可见性延迟。稍后重试。
 - Claude Code UI 中 slash command 列表无 ae-* 残留。文件系统已确认 `.claude/commands/` 不存在,但 UI 抽检需用户打开 Claude Code。
 - Codex UI/运行时是否自动发现 `.codex/skills/`。文件系统已安装,最终体验需用户人工抽检。
 
@@ -172,11 +180,10 @@ v0.2 收口变更包括:
 
 ## 开放问题 / 待处理
 
-- npm 发布仍需用户操作:
-  - `npm login`
-  - `npm whoami`
-  - `npm publish --access public`
-  - 发布后用 `npx @ecc-hgy/ae@0.2.0 --version` 验证
+- npm registry 可安装性仍需稍后重试:
+  - `npm view @ecc-hgy/ae@0.2.0 name version bin dist.tarball`
+  - `npm exec --yes --package @ecc-hgy/ae@0.2.0 -- ae --version`
+  - `npx @ecc-hgy/ae@0.2.0 --version`
 - 人工平台抽检:
   - 在真实项目跑 `npx @ecc-hgy/ae@0.2.0 setup`
   - 打开 Claude Code,确认项目 slash command 列表无 ae-* 残留
@@ -189,7 +196,7 @@ v0.2 收口变更包括:
 
 ## 下次起手建议
 
-1. 用户完成 npm 发布。
-2. 用新包在真实项目重复 `ae setup` + `ae init` 验证。
+1. 等 5-30 分钟后重试 `npm view @ecc-hgy/ae@0.2.0` 与 `npx @ecc-hgy/ae@0.2.0 --version`。
+2. registry 可安装后,用新包在真实项目重复 `ae setup` + `ae init` 验证。
 3. 打开 Claude Code / Codex 做人工平台抽检。
 4. 进入阶段 3:先设计 `ae update`,再做 `ae index-rebuild`。
