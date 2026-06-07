@@ -114,9 +114,9 @@
 2. 写 `CLAUDE.md`：`AGENTS.md` 镜像
 3. 方法论本体目录（agentic-engineering 自己专属）：`output/.claude/skills/{foundation/guidelines, s0-bootstrap, s1-need, s1-debug, s2-evolve}/`
 4. ~~落地 S0：`/ae-init` slash command + 入口模板（含 spec/ 内部骨架 + `.codex/` + `.claude/`）~~ → 已落地到 `output/.claude/commands/`
-5. 落地 S1 各节点 skill：A1–A6 / B1–B7（含 `diagnose` skill 携带 7 段格式模板）
-6. 落地 foundation `handoff` skill：定 Q9 行为契约
-7. 落地 `index-rebuild` 命令（spec/ 兜底）
+5. ~~完成 S1 各节点 skill 个性化：A1–A6 / B1–B7（含 `diagnose` skill 携带 7 段格式模板）~~ → 已在 `方案/skill-candidates/` 完成
+6. ~~完成横切 skill 个性化：`handoff` / `improve-codebase-architecture` / `zoom-out`~~ → 已完成;`zoom-out` 保持原样
+7. 落地 `index-rebuild` 命令（spec/ 兜底,后续单独命令）
 
 ---
 
@@ -139,15 +139,13 @@
 ### 已锁
 - ~~Q1：联调闭环并列还是子相位？~~ → **场景拆分自然消解**（S1 改为两场景模型，debug 是 B 的子路径）
 - ~~Q2：foundation/guidelines/SKILL.md 体量？~~ → **精简版起步**；只装 R1 横切规则。R2/R3 已下放；R1 在 debug 下的具体分流策略落地到 `AGENTS.md` / `CLAUDE.md`（待 skills 阶段决具体文案）
-- ~~Q3：debug 7 段格式承载形式？~~ → **不挂 skill,作为 spec/ 约定**：模板内容在 [spec-framework.md](spec-framework.md) 落定；B4 是轻量"按 7 段格式一次性落盘"动作，无需 skill 承载
+- ~~Q3：debug 7 段格式承载形式？~~ → **不挂独立 skill,作为 spec 约定**：格式规范在 [spec-framework.md](spec-framework.md),具体模板由 `diagnose` skill 的 `assets/issue-7-sections.md` 承载；B4 是轻量"按 7 段格式一次性落盘"动作
 - ~~Q4：方案/ 和 spec/ 是否合并？~~ → **保持独立**（职责天然不同：方案/ = 元方法论；spec/ = 项目产物）
 - ~~Q5：是否做 sync-mother skill？~~ → **不做独立 skill**；初始化时手动 ingest 母本；后续沉淀哪些规则待按需定
 - ~~Q6：/ae-init 形态？~~ → **slash command**
 - ~~Q7：/ae-init 是否严格幂等？~~ → **严格幂等，不提供 force**
 - ~~Q8：/ae-init 是否检测 .codex/ vs .claude/？~~ → **都建**（默认两个空目录）
-
-### 待答（待 skills 阶段一并定）
-- **Q9**：`handoff` skill 行为契约（输入 / 输出 / 与 `spec/INDEX.md` 的关系 / 与未关闭 issue 的关系）——本框架仅占位，等开始写 skills 时同步定
+- ~~Q9：`handoff` skill 行为契约~~ → **已锁**：原 skill 内容保留;默认同时覆盖项目根 `handoff.md`,不追加,不承载历史
 
 ### 场景级开放问题（不影响框架）
 - **Q-INDEX-rebuild**（spec-framework）：INDEX 兜底机制 → **已锁：B + C**（`index-rebuild` 命令 + AGENTS.md 规则约定）

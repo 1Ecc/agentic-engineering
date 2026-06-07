@@ -186,197 +186,217 @@ grill-me 是通用对齐工具,任何场景都能用,**无需项目个性化**�
 
 ---
 
-### A5 / B5 · tdd(mp,共用一份)
+### A5 / B5 · tdd(mp,共用一份) ✅
 
 > 文件:[mattpocock/engineering/tdd/SKILL.md](mattpocock/engineering/tdd/SKILL.md)
-> 进展:🟢 批注就位,待人工 check
+> 进展:✅ 已完成(2026-06-07)
 
 #### 🗑️ 删除
-- [ ] 几乎无;只需确认 sub-doc 引用(`interface-design.md` / `tests.md` / `mocking.md` / `refactoring.md` / `deep-modules.md`)在本地保留
+- [x] 无需删除;已确认 sub-doc 引用(`interface-design.md` / `tests.md` / `mocking.md` / `refactoring.md` / `deep-modules.md`)均可本地保留
 
 #### ✏️ 修改
-- [ ] L47 `project's domain glossary` → `spec/INDEX.md + design.md vocabulary`
-- [ ] L47 `respect ADRs in the area` → `respect ADRs under spec/ADR/`
+- [x] description 保持原始内容不动(人工 check 反馈)
+- [x] L47 `project's domain glossary` → `spec/INDEX.md + design.md vocabulary`
+- [x] L47 `respect ADRs in the area` → `spec/ADR/`
 
 #### ➕ 新增
-- [ ] 输入契约:读 `spec/needs/<need-name>/design.md` + `todo.md`
-- [ ] 输出契约:每完成一项打勾 todo.md
-- [ ] 硬约束:**禁止做 design.md 没提的事**(对接 spec-framework §边界)
-- [ ] 端到端验证由 A6 verification-before-completion 承接
-- [ ] B5 场景下额外说明:不动 todo(已勾完),改 issue 文件 bug 段
+- [x] 输入契约:读 `spec/needs/<need-name>/design.md` + `todo.md`
+- [x] 输出契约:每完成一项打勾 todo.md
+- [x] 硬约束:**禁止做 design.md 没提的事**(对接 spec-framework §边界)
+- [x] 端到端验证由 A6 verification-before-completion 承接
+- [x] B5 场景下额外说明:不动 todo(已勾完),改 issue 文件 bug 段
+- [x] 文末补 `After Each Slice` / `After All Slices` / `After Fix Lands` / `Boundaries`
 
 #### 🚧 状态
 - [x] 批注已写入
-- [ ] 人工 check 通过
-- [ ] 实际改造完成
+- [x] 人工 check 通过
+- [x] 实际改造完成
 
 ---
 
-### A6 · verification-before-completion(sp)
+### A6 · verification-before-completion(sp) ✅
 
 > 文件:[superpowers/verification-before-completion/SKILL.md](superpowers/verification-before-completion/SKILL.md)
-> 进展:🟢 批注就位,待人工 check
+> 进展:✅ 已完成(2026-06-07)
 
 #### 🗑️ 删除
-- [ ] L110–115 `From 24 failure memories` 段 — 原作者个人化痕迹
+- [x] L110–115 `From 24 failure memories` 段 — 原作者个人化痕迹
 
 #### ✏️ 修改
-- [ ] L42–50 Common Failures 表加一行:**端到端通过(用户真实路径跑通) / 不足:单元测试 + lint 通过**
+- [x] description 按批注改为 S1 A6 真实用户路径验证
+- [x] L42–50 Common Failures 表加一行:**端到端通过(用户真实路径跑通) / 不足:单元测试 + lint 通过**
 
 #### ➕ 新增
-- [ ] 本项目硬约束:`端到端真实路径验证,禁止 mock 绕过根因`(S1 已锁)
-- [ ] 验证通过后 INDEX 同步:节点切到"已完成"或"待 B1 用户验收"
-- [ ] 与 B5 复验的差异:A6 是开发自验,**不能替代**用户验收(B1)
+- [x] 本项目硬约束:`端到端真实路径验证,禁止 mock 绕过根因`(S1 已锁)
+- [x] 验证通过后 INDEX 同步:节点切到"待 B1 用户验收"
+- [x] 与 B5 复验的差异:A6 是开发自验,**不能替代**用户验收(B1)
+- [x] 文末补 `After Verification` / `Distinction from B-side verification`
 
 #### 🚧 状态
 - [x] 批注已写入
-- [ ] 人工 check 通过
-- [ ] 实际改造完成
+- [x] 人工 check 通过
+- [x] 实际改造完成
 
 ---
 
 ## 三、场景 B · 验收场景
 
-### B3 · diagnose(mp)
+### B3 · diagnose(mp) ✅
 
 > 文件:[mattpocock/engineering/diagnose/SKILL.md](mattpocock/engineering/diagnose/SKILL.md)
-> 进展:🟢 批注就位,待人工 check
+> 进展:✅ 已完成(2026-06-07)
 
 #### 🗑️ 删除
-- [ ] 几乎无
+- [x] 几乎无;保留 `scripts/hitl-loop.template.sh`
 
 #### ✏️ 修改
-- [ ] L10 `project's domain glossary` → `spec/INDEX.md + spec/needs/*/prd.md`
-- [ ] L10 `ADRs in the area` → `spec/ADR/`
-- [ ] L117 末尾 `hand off to /improve-codebase-architecture` 改成"提案到 B7 沉淀分流",不直接调主动触发 skill
+- [x] description 保持原始内容不动(人工 check 反馈)
+- [x] L10 `project's domain glossary` → `spec/INDEX.md + spec/needs/*/prd.md`
+- [x] L10 `ADRs in the area` → `spec/ADR/`
+- [x] Phase 6 原始 `Then ask: what would have prevented this bug?` 逻辑保留;额外追加 B7 沉淀分流说明
 
 #### ➕ 新增
-- [ ] 输出契约:Phase 1–5 产物在 B4 一次性按 7 段格式落盘
-- [ ] 触发:由 B2 期望态对齐通过后进入
-- [ ] 7 段格式模板放 `assets/issue-7-sections.md`(skill-candidates README §五-5 已预告)
-- [ ] Phase 6 cleanup checklist 末尾加:"提示进 B4 issue 落盘"
+- [x] 输出契约:Phase 1–5 产物在 B4 一次性按 7 段格式落盘
+- [x] 触发:由 B2 期望态对齐通过后进入
+- [x] 7 段格式模板放 `assets/issue-7-sections.md`(skill-candidates README §五-5 已预告)
+- [x] Phase 6 cleanup checklist 末尾加:"提示进 B4 issue 落盘"
+- [x] Phase 6 追加:先交给 B7 `review` 做沉淀分流,再判断是否形成 architectural change / 主动触发 `improve-codebase-architecture`
 
 #### 🚧 状态
 - [x] 批注已写入
-- [ ] 人工 check 通过
-- [ ] 实际改造完成
+- [x] 人工 check 通过
+- [x] 实际改造完成
 
 ---
 
-### B7 · review(mp) —— **改造最重**
+### B7 · review(mp) —— **改造最重** ✅
 
 > 文件:[mattpocock/in-progress/review/SKILL.md](mattpocock/in-progress/review/SKILL.md)(已从 reference/ 复制)
-> 进展:🟢 批注就位,待人工 check
+> 进展:✅ 已完成(2026-06-07)
 
 #### 🗑️ 删除
-- [ ] L15 `docs/agents/issue-tracker.md` 引用 + `/setup-matt-pocock-skills`
-- [ ] L29 整段 `Issue references in commit messages (#123, Closes #45, GitLab !67)` 段 — solo dev 不一定走这套
-- [ ] 标准来源列表(L37–44)里 mattpocock 特有路径 `docs/adr/` / `CONTEXT.md` / `CONTEXT-MAP.md`
+- [x] L15 `docs/agents/issue-tracker.md` 引用 + `/setup-matt-pocock-skills`
+- [x] L29 整段 `Issue references in commit messages (#123, Closes #45, GitLab !67)` 段 — solo dev 不一定走这套
+- [x] 标准来源列表(L37–44)里 mattpocock 特有路径 `docs/adr/` / `CONTEXT.md` / `CONTEXT-MAP.md`
 
 #### ✏️ 修改
-- [ ] 标准来源列表 → `AGENTS.md` / `CLAUDE.md` / `spec/README.md` / `spec/INDEX.md` / `spec/ADR/`
-- [ ] spec 源 → `spec/needs/<need-name>/{prd,design,todo}.md`
-- [ ] `fixed point` 概念保留(= 该需求开始时的 git commit)
-- [ ] 双轴 sub-agent 保留(Standards / Spec 并行)
+- [x] description 改为 B7 review + sedimentation routing
+- [x] 标准来源列表 → `AGENTS.md` / `CLAUDE.md` / `spec/README.md` / `spec/INDEX.md` / `spec/ADR/`
+- [x] spec 源 → `spec/needs/<need-name>/{prd,design,todo}.md`
+- [x] `fixed point` 概念保留(= 该需求开始时的 git commit)
+- [x] 双轴 sub-agent 保留(Standards / Spec 并行)
 
 #### ➕ 新增 —— 本 skill 核心改造
-- [ ] **新增 Step 6:分流落盘**
+- [x] **新增 Step 6:分流落盘**
   - 业务规则 → 反哺 `prd.md`(更新 `last-aligned`)
   - 技术决策(局部) → 反哺 `design.md`
   - 技术决策(影响多需求) → 新建 `spec/ADR/NNNN-<title>.md`
   - 复用规则 → 提案为 S2 候选(写到 handoff,**不直接升**)
-- [ ] 输入契约:本次 close 的需求 + 该需求所有 `issues/*.md`
-- [ ] INDEX 同步:issues 切"已验收";反哺的 prd/design 维持 active
+- [x] 输入契约:本次 close 的需求 + 该需求所有 `issues/*.md`
+- [x] INDEX 同步:issues 切"已验收";反哺的 prd/design 维持 active
+- [x] Boundaries 明确:不 archive、不直接升 skill、不直接调用 `improve-codebase-architecture`
 
 #### 🚧 状态
 - [x] 批注已写入
-- [ ] 人工 check 通过
-- [ ] 实际改造完成
+- [x] 人工 check 通过
+- [x] 实际改造完成
 
 ---
 
 ## 四、横切 / 主动触发
 
-### handoff(mp) —— **关键反转**
+### handoff(mp) —— **关键反转** ✅
 
 > 文件:[mattpocock/productivity/handoff/SKILL.md](mattpocock/productivity/handoff/SKILL.md)
-> 进展:🟢 批注就位,待人工 check
+> 进展:✅ 已完成(2026-06-07,**保留原文 + 两条新增约束**)
+
+#### 决策(人工 check 反馈)
+
+`handoff` skill 内容直接保留原文,不删除 OS temp 落盘逻辑,不修改 description,不强行替换为项目专属模板。仅新增两个本项目关键约束:
 
 #### 🗑️ 删除
-- [ ] L7 `Save to the temporary directory of the user's OS - not the current workspace` —— **与本项目设计冲突,必须删**
+- [x] 无需删除;原始 OS temp 落盘逻辑保留
 
 #### ✏️ 修改
-- [ ] L3 description 把 "for another agent to pick up" 扩展为 "跨会话 / 跨 agent / 跨项目交接"
+- [x] description 保持原始内容不动
 
 #### ➕ 新增
-- [ ] **输出契约反过来**:覆盖**项目根 `handoff.md`**(不是 OS temp)
-- [ ] 严格按本项目 handoff.md 模板(项目目标 / 当前阶段 / 已固化决策 / 开放问题 / 关键文件入口 / 下次起手建议)
-- [ ] 硬约束:**INDEX.md 是结构态,handoff 不复述需求节点**(职责分离已锁)
-- [ ] "suggested skills" 段保留,但映射到 S1 节点术语
+- [x] 假设无特殊要求,同时落盘到项目根目录 `handoff.md`
+- [x] 项目根 `handoff.md` 落盘时必须覆盖,不追加;它只承载当前态最新快照,不承载历史
 
 #### 🚧 状态
 - [x] 批注已写入
-- [ ] 人工 check 通过
-- [ ] 实际改造完成
+- [x] 人工 check 通过
+- [x] 实际改造完成
 
 ---
 
-### improve-codebase-architecture(mp)
+### improve-codebase-architecture(mp) ✅
 
 > 文件:[mattpocock/engineering/improve-codebase-architecture/SKILL.md](mattpocock/engineering/improve-codebase-architecture/SKILL.md)
-> 进展:🟢 批注就位,待人工 check
+> 进展:✅ 已完成(2026-06-07)
 
 #### 🗑️ 删除
-- [ ] L78 `grill-with-docs` 引用 — 我们不引入该 skill
-- [ ] `LANGUAGE.md` / `CONTEXT.md` / `CONTEXT-FORMAT.md` / `ADR-FORMAT.md` / `HTML-REPORT.md` / `INTERFACE-DESIGN.md` 等 sub-doc 引用 — 确认是否搬过来,否则删引用
+- [x] L78 `grill-with-docs` 引用 — 我们不引入该 skill
+- [x] `CONTEXT.md` / `CONTEXT-FORMAT.md` / `ADR-FORMAT.md` / `docs/adr/` 等外部路径引用
+- [x] **更正批注误判**:`LANGUAGE.md` / `HTML-REPORT.md` / `INTERFACE-DESIGN.md` / `DEEPENING.md` 均已存在且有用,保留引用
 
 #### ✏️ 修改
-- [ ] `CONTEXT.md vocabulary` → `spec/INDEX.md + spec/needs/*/design.md`
-- [ ] `docs/adr/` → `spec/ADR/`
+- [x] `CONTEXT.md vocabulary` → `spec/INDEX.md + spec/needs/*/{prd,design}.md`
+- [x] `docs/adr/` → `spec/ADR/`
+- [x] description 改为 `spec/INDEX.md` / `spec/ADR/` 语境,并声明 user-triggered only
+- [x] `INTERFACE-DESIGN.md` 中的 `CONTEXT.md vocabulary` 同步改为 `spec/INDEX.md` + 需求级 `prd/design`
 
 #### ➕ 新增
-- [ ] 触发方式:用户主动调用,**不挂任何 S1 节点**
-- [ ] 与 spec-framework 接口:发现影响多需求的架构问题 → 提案进 `spec/ADR/NNNN-architecture-<topic>.md`(frontmatter `status: proposed`)
-- [ ] HTML 报告 + Mermaid + Tailwind CDN 整套保留(临时报告)
+- [x] 触发方式:用户主动调用,**不挂任何 S1 节点**
+- [x] 与 spec-framework 接口:发现影响多需求的架构问题 → 提案进 `spec/ADR/NNNN-architecture-<topic>.md`(frontmatter `status: proposed`)
+- [x] HTML 报告 + Mermaid + Tailwind CDN 整套保留(临时报告)
+- [x] REVIEW-only 边界:本 skill 不直接修改应用代码;用户接受候选后回 S1(A1/A3)
+- [x] Boundaries 明确辅助文档职责:`LANGUAGE` 术语 / `HTML-REPORT` 报告 / `DEEPENING` 依赖分类 / `INTERFACE-DESIGN` 候选接口探索
 
 #### 🚧 状态
 - [x] 批注已写入
-- [ ] 人工 check 通过
-- [ ] 实际改造完成
+- [x] 人工 check 通过
+- [x] 实际改造完成
 
 ---
 
-### zoom-out(mp)
+### zoom-out(mp) ✅
 
 > 文件:[mattpocock/engineering/zoom-out/SKILL.md](mattpocock/engineering/zoom-out/SKILL.md)
-> 进展:🟢 批注就位,待人工 check
+> 进展:✅ 已完成(2026-06-07,**保持原样**)
+
+#### 决策(人工 check 反馈)
+
+`zoom-out` 依旧沿用历史内容,无需项目个性化。该 skill 足够短,本质是用户主动发出的认知视角切换指令;强行加 `spec/INDEX.md` / `spec/README.md` / 触发边界会让它变重。
 
 #### 🗑️ 删除
-- [ ] 无(7 行)
+- [x] 无;仅移除未采纳批注
 
 #### ✏️ 修改
-- [ ] L7 `project's domain glossary vocabulary` → `spec/INDEX.md + spec/README.md(ASCII 地图)`
+- [x] 无;保留原始 description 与正文
 
 #### ➕ 新增
-- [ ] 触发方式:用户主动;典型场景 = A3 设计前 / B4 卡住时
+- [x] 无
 
 #### 🚧 状态
 - [x] 批注已写入
-- [ ] 人工 check 通过
-- [ ] 实际改造完成
+- [x] 人工 check 通过(决定保持原样)
+- [x] 实际改造完成(移除批注,保留原文)
 
 ---
 
-## 五、跨 skill 协同新增(不属于任一 skill)
+## 五、跨 skill 协同决策(不属于任一 skill)
 
-由 `/ae-init` 或独立命令一次性产出:
+模板不再统一落到 `spec/_templates/*`;能内聚到具体 skill 的模板留在对应 skill 目录,避免 `/ae-init` 生成一套后续容易漂移的静态模板。`ae-index-rebuild` 仍作为后续独立命令 pending。
 
-| 产物 | 落点 | 用途 | 由谁触发 | 进展 |
-|------|------|------|---------|------|
-| 7 段格式模板 | `spec/_templates/issue.md` | B4 一次性写 issues/<主题>.md | `/ae-init` | 🟡 待做 |
-| prd / design / todo 模板 | `spec/_templates/{prd,design,todo}.md` | A2 / A3 / A4 落盘引用 | `/ae-init` | 🟡 待做 |
-| ADR 模板 | `spec/_templates/adr.md` | B7 升 ADR / improve-codebase-architecture 提案 | `/ae-init` | 🟡 待做 |
-| `ae-index-rebuild` slash command | `~/.claude/commands/ae-index-rebuild.md` | INDEX 兜底(spec-framework §INDEX 兜底已锁) | 单独命令 | 🟡 待做 |
+| 产物 / 决策 | 落点 | 用途 | 进展 |
+|------|------|------|------|
+| 7 段格式模板 | `mattpocock/engineering/diagnose/assets/issue-7-sections.md` | B4 一次性写 `issues/<主题>.md` | ✅ 已完成 |
+| todo 模板 | `mattpocock/engineering/to-issues/todo-template.md` | A4 落盘 `todo.md` | ✅ 已完成 |
+| PRD / design 模板 | 内嵌在 `to-prd` / `writing-plans` skill | A2 / A3 落盘结构由对应 skill 直接约束 | ✅ 不做独立模板 |
+| ADR 模板 | 不提供独立模板;仅保留 `spec-framework.md` frontmatter + 状态规范 | B7 / improve-codebase-architecture 创建 ADR 时按规范写 | ✅ 不做独立模板 |
+| `ae-index-rebuild` slash command | `output/.claude/commands/ae-index-rebuild.md`(待建) | INDEX 兜底(spec-framework §INDEX 兜底已锁) | 🟡 pending |
 
 ---
 
@@ -401,14 +421,14 @@ grill-me 是通用对齐工具,任何场景都能用,**无需项目个性化**�
 | **A2 to-prd(样板)** | ✅ | ✅ | ✅ |
 | A3 writing-plans | ✅ | ✅ | ✅ |
 | A4 to-issues | ✅ | ✅ | ✅ |
-| A5/B5 tdd | ✅ | 🟡 | 🟡 |
-| A6 verification-before-completion | ✅ | 🟡 | 🟡 |
-| B3 diagnose | ✅ | 🟡 | 🟡 |
-| B7 review | ✅ | 🟡 | 🟡 |
-| handoff | ✅ | 🟡 | 🟡 |
-| improve-codebase-architecture | ✅ | 🟡 | 🟡 |
-| zoom-out | ✅ | 🟡 | 🟡 |
-| spec/_templates/* | — | — | 🟡 |
-| ae-index-rebuild | — | — | 🟡 |
+| A5/B5 tdd | ✅ | ✅ | ✅ |
+| A6 verification-before-completion | ✅ | ✅ | ✅ |
+| B3 diagnose | ✅ | ✅ | ✅ |
+| B7 review | ✅ | ✅ | ✅ |
+| handoff | ✅ | ✅ | ✅ |
+| improve-codebase-architecture | ✅ | ✅ | ✅ |
+| zoom-out | ✅ | ✅ | ✅(保持原样) |
+| spec/_templates/* | — | ✅(删除待做) | ✅(不需要) |
+| ae-index-rebuild | — | 🟡 | 🟡 pending |
 
 进展信号:🟡 待 check / ✅ 已完成(`—` = 不适用,跨 skill 协同产物无单独批注阶段)

@@ -86,6 +86,8 @@ related-needs: [<其他需求名>]  # 涉及哪些其他需求;空则省略此�
 
 ### ADR 文件
 
+不提供独立 ADR 模板文件;只约束 frontmatter 和状态机。正文按具体决策自然组织,避免模板过重。
+
 ```yaml
 ---
 status: accepted               # proposed | accepted | superseded
@@ -96,7 +98,7 @@ supersedes: 0000-xxx.md        # 若取代旧 ADR 才填
 
 ### issues/ 下的debug 主题文件
 
-不用 frontmatter,直接按 7 段格式写。状态用文末"用户验收状态"段表达。
+不用 frontmatter,直接按 7 段格式写。具体模板由 `diagnose` skill 的 `assets/issue-7-sections.md` 承载;状态用文末"验收"段表达。
 
 ---
 

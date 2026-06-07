@@ -1,13 +1,6 @@
-<!-- AE-CHANGE[REPLACE]:
-description: Use at S1 node A6 — end-to-end verification on the real user path before claiming the need is complete, and before A → B (user acceptance). Requires running real-path verification (NOT mocked) and confirming output before any success claim. Evidence before assertions always. Failing this is the most common A-loop self-deception.
-| 理由(中文):
-  1. 标 S1 节点 A6
-  2. 显式要求"real user path,非 mock"(S1 文档已锁)
-  3. 强调"A → B 前的最后一道关卡"
--->
 ---
 name: verification-before-completion
-description: Use when about to claim work is complete, fixed, or passing, before committing or creating PRs - requires running verification commands and confirming output before making any success claims; evidence before assertions always
+description: Use at S1 node A6 - end-to-end verification on the real user path before claiming the need is complete, and before A -> B user acceptance. Requires running real-path verification (NOT mocked) and confirming output before any success claim. Evidence before assertions always. Failing this is the most common A-loop self-deception.
 ---
 
 # Verification Before Completion
@@ -55,13 +48,7 @@ Skip any step = lying, not verifying
 | Regression test works | Red-green cycle verified | Test passes once |
 | Agent completed | VCS diff shows changes | Agent reports "success" |
 | Requirements met | Line-by-line checklist | Tests passing |
-<!-- AE-CHANGE[ADD-AFTER]:在上面这个表里追加一行(英文,作为本项目的硬约束 row):
-| **Need complete (A6)** | **End-to-end run of the real user path described in `prd.md` Solution / User Stories — observe expected outputs at every step** | Unit + integration tests green; lint clean; mocked end-to-end pass |
-| 理由(中文):
-  1. 加入本项目 A6 的硬约束:必须跑真实用户路径(prd.md 描述的用户故事),不是单元/集成测试绿+lint绿就算完
-  2. 显式列 "mocked end-to-end" 为不充分项 — S1 文档已锁"禁止 mock 绕过根因"
--->
-
+| **Need complete (A6)** | **End-to-end run of the real user path described in `prd.md` Solution / User Stories - observe expected outputs at every step** | Unit + integration tests green; lint clean; mocked end-to-end pass |
 
 ## Red Flags - STOP
 
@@ -119,21 +106,6 @@ Skip any step = lying, not verifying
 ❌ Trust agent report
 ```
 
-<!-- AE-CHANGE[DELETE]:删除整段 ## Why This Matters(连同 5 个 bullet)
-| 理由(中文):
-  1. "From 24 failure memories" 是原作者个人化痕迹 — 我们项目没这个语境
-  2. "your human partner said I don't believe you" 这种表述在通用 skill 里读着突兀
-  3. 同章节传递的"为什么要严格"已经在 §The Iron Law 和 §Rationalization Prevention 体现,此段冗余
--->
-## Why This Matters
-
-From 24 failure memories:
-- your human partner said "I don't believe you" - trust broken
-- Undefined functions shipped - would crash
-- Missing requirements shipped - incomplete features
-- Time wasted on false completion → redirect → rework
-- Violates: "Honesty is a core value. If you lie, you'll be replaced."
-
 ## When To Apply
 
 **ALWAYS before:**
@@ -158,16 +130,14 @@ Run the command. Read the output. THEN claim the result.
 
 This is non-negotiable.
 
-<!-- AE-CHANGE[ADD-AFTER]:在文件末尾追加(英文):
-
 ## After Verification (S1 node A6)
 
 If verification passes:
 
 1. Update `spec/INDEX.md`:
-   - Recompute `当前节点` per `spec-framework.md` §INDEX 推导规则 — for a fresh need this becomes "B1 user acceptance" (the next node is user-driven, not skill-driven)
+   - Recompute `当前节点` per `spec-framework.md` INDEX rules - for a fresh need this becomes "B1 user acceptance" (the next node is user-driven, not skill-driven)
    - If unsure, run `/ae-index-rebuild`
-2. Hand off to B1: tell the user the need is ready for their hands-on acceptance test. Do NOT mark anything `archived` — `archived` is reserved for needs that get superseded, not completed.
+2. Hand off to B1: tell the user the need is ready for their hands-on acceptance test. Do NOT mark anything `archived` - `archived` is reserved for needs that get superseded, not completed.
 
 If verification fails:
 
@@ -181,10 +151,3 @@ If verification fails:
 - **B6** = user re-verification after a B5 fix; same nature as B1, just post-fix
 
 A6 passing does NOT mean the need is done. Only B1 (or B6 in a B-loop) closes the need.
-
-| 理由(中文):
-  1. After Verification 段:对接 S1 节点路径(A6 → B1)
-  2. INDEX 同步,与其他 skill 同款收尾
-  3. Distinction 段:S1 文档明确"A6 是开发自验,B1 是用户验收,二者不能混" — 这是 v0.1 实战中容易踩的坑,必须明文
--->
-

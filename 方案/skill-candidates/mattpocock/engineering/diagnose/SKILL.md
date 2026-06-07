@@ -1,10 +1,3 @@
-<!-- AE-CHANGE[REPLACE]:
-description: Disciplined diagnosis loop for hard bugs and performance regressions. Reproduce → minimise → hypothesise → instrument → fix → regression-test. Enters at S1 node B3 after B2 expectation alignment has passed. Output is consumed at B4 to write the 7-section issue file.
-| 理由(中文):
-  1. 标 S1 节点编号 B3
-  2. 显式输入门禁(B2 通过后才进 B3,S1 文档已锁的两道硬门禁之一)
-  3. 显式下游契约(B4 一次性按 7 段格式落盘)
--->
 ---
 name: diagnose
 description: Disciplined diagnosis loop for hard bugs and performance regressions. Reproduce → minimise → hypothesise → instrument → fix → regression-test. Use when user says "diagnose this" / "debug this", reports a bug, says something is broken/throwing/failing, or describes a performance regression.
@@ -14,8 +7,6 @@ description: Disciplined diagnosis loop for hard bugs and performance regression
 
 A discipline for hard bugs. Skip phases only when explicitly justified.
 
-<!-- AE-CHANGE[ADD-BEFORE]:在 "When exploring the codebase..." 之前插入新段(英文):
-
 ## Entry Gate (S1 node B3)
 
 This skill activates AFTER B2 expectation alignment has passed. Inputs:
@@ -23,35 +14,26 @@ This skill activates AFTER B2 expectation alignment has passed. Inputs:
 - A reproduction lead from B2 (what the user did, what they saw, what they expected)
 - The owning need: `spec/needs/<need-name>/{prd.md, design.md, todo.md}` (locate `<need-name>` by reading `spec/INDEX.md` or asking the user)
 
-If B2 has NOT been completed (the expected behavior is still ambiguous), STOP and run `grill-me` to re-align. Do NOT proceed to Phase 1 — diagnosing the wrong symptom is the most common B-loop failure (S1 has a hard gate here).
+If B2 has NOT been completed (the expected behavior is still ambiguous), STOP and run `grill-me` to re-align. Do NOT proceed to Phase 1 - diagnosing the wrong symptom is the most common B-loop failure.
 
 ## Exit Contract (hand-off to B4)
 
-After Phase 6, do NOT write the issue file inline — that is B4's job. Instead, hand off a structured summary so B4 can write `spec/needs/<need-name>/issues/<topic>.md` in one pass, per the 7-section format defined in `spec-framework.md` (and templated at `spec/_templates/issue.md`).
+After Phase 6, do NOT write the issue file inline - that is B4's job. Instead, hand off a structured summary so B4 can write `spec/needs/<need-name>/issues/<topic>.md` in one pass, using the 7-section format in [assets/issue-7-sections.md](assets/issue-7-sections.md).
 
 Sections this skill is expected to populate:
 
-1. **问题描述** — from B2 + the loop's repro one-liner
-2. **当前态** — observed symptom (Phase 2)
-3. **期望态** — from B2
-4. **分析与解决** — ranked hypotheses (Phase 3), instrumentation findings (Phase 4), root cause confirmed (Phase 5)
+1. **问题描述** - from B2 + the loop's repro one-liner
+2. **当前态** - observed symptom (Phase 2)
+3. **期望态** - from B2
+4. **分析与解决** - ranked hypotheses (Phase 3), instrumentation findings (Phase 4), root cause confirmed (Phase 5)
 
 Sections B5/B6 will roll forward later:
-5. **to-issues** — follow-up tasks discovered during fix (added by B5 if any)
-6. **bug** — fix progress notes (B5)
-7. **验收** — user re-verification result (B6)
 
-| 理由(中文):
-  1. 显式入口门禁(B2 → B3,S1 已锁的两道硬门禁之一)
-  2. 输出契约挂上 B4 的 7 段格式(skill-candidates README §五-5 已预告:7 段模板放 assets/issue-7-sections.md;此处指向 spec/_templates/issue.md 与 §跨 skill 协同新增 一致)
-  3. 明示哪些段由本 skill 填、哪些段 B5/B6 后续追加 — 避免下游误判 diagnose 越界
--->
+5. **to-issues** - follow-up tasks discovered during fix (added by B5 if any)
+6. **bug** - fix progress notes (B5)
+7. **验收** - user re-verification result (B6)
 
-<!-- AE-CHANGE[REPLACE]:把下一段 "When exploring the codebase, use the project's domain glossary ... ADRs in the area you're touching." 改成(英文):
-   When exploring the codebase, use vocabulary from `spec/INDEX.md` and the owning need's `prd.md` + `design.md` to get a clear mental model of the relevant modules. Check ADRs under `spec/ADR/` before forming hypotheses.
-| 理由(中文):统一本地化(与 A2/A3/A4/A5 同款替换)
--->
-When exploring the codebase, use the project's domain glossary to get a clear mental model of the relevant modules, and check ADRs in the area you're touching.
+When exploring the codebase, use vocabulary from `spec/INDEX.md` and the owning need's `prd.md` + `design.md` to get a clear mental model of the relevant modules. Check ADRs under `spec/ADR/` before forming hypotheses.
 
 ## Phase 1 — Build a feedback loop
 
@@ -157,23 +139,8 @@ Required before declaring done:
 - [ ] All `[DEBUG-...]` instrumentation removed (`grep` the prefix)
 - [ ] Throwaway prototypes deleted (or moved to a clearly-marked debug location)
 - [ ] The hypothesis that turned out correct is stated in the commit / PR message — so the next debugger learns
-<!-- AE-CHANGE[ADD-AFTER]:在上面这个 checklist 末尾追加一项(英文):
 - [ ] Hand off to B4: emit the structured summary (sections 1-4 from the Exit Contract above) so B4 can write the issue file at `spec/needs/<need-name>/issues/<topic>.md`
-| 理由(中文):
-  1. 把出口契约落到 Phase 6 的 checklist 里,而不仅是文档头部的声明
-  2. 显式提示进 B4(无 skill,但是流程上的关键产物)
--->
-
-<!-- AE-CHANGE[REPLACE]:把最后一段 "Then ask: what would have prevented this bug?..." 改成(英文):
-
-**Then ask: what would have prevented this bug?** If the answer involves an architectural change (no good test seam, tangled callers, hidden coupling), record the observation for B7 沉淀分流 to triage — it may become an ADR (`spec/ADR/`), a `design.md` amendment for the affected need(s), or a candidate for the user-triggered `improve-codebase-architecture` skill. Make this recommendation **after** the fix is in, not before — you have more information now than when you started.
-
-Do NOT invoke `improve-codebase-architecture` directly from B3; that skill is user-triggered and unscheduled. B7 is the legitimate funnel for sedimentation.
-
-| 理由(中文):
-  1. 原文末让 B3 直接 hand off 到 improve-codebase-architecture — 与我们的"主动触发 skill,不挂节点"约定冲突(已锁)
-  2. 改成把发现交给 B7 review 做沉淀分流(对接 S1 文档的 B7 节点)
-  3. 显式禁止从 B3 直接调主动触发 skill,避免下游误用
--->
 
 **Then ask: what would have prevented this bug?** If the answer involves architectural change (no good test seam, tangled callers, hidden coupling) hand off to the `/improve-codebase-architecture` skill with the specifics. Make the recommendation **after** the fix is in, not before — you have more information now than when you started.
+
+Also hand this observation to B7 `review` for sedimentation routing first. B7 decides whether the lesson should become a `prd.md` rule, a `design.md` amendment, an ADR under `spec/ADR/`, a reusable S2 candidate, or a user-triggered `improve-codebase-architecture` follow-up. Do not invoke `improve-codebase-architecture` directly from B3; make the architectural-change recommendation and let B7/user decide whether to schedule it.

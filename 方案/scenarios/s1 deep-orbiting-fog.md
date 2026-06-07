@@ -131,7 +131,7 @@ A 场景结束
 **关键设计**:
 - 验收场景**默认就该跑**,不是可选——A 结束 ≠ 需求完成
 - debug 是 B 的**子路径**,不是独立场景;入口由"验收失败"统一触发
-- 7 段格式(问题描述 / 当前态 / 期望态 / 分析 / to-issues / bug / 验收)是硬约束,模板内容约定见 [../spec-framework.md](../spec-framework.md);未来可由 `/init` 产出 `spec/_templates/issue.md` 统一模板
+- 7 段格式(问题描述 / 当前态 / 期望态 / 分析 / to-issues / bug / 验收)是硬约束;模板由 `diagnose` skill 的 `assets/issue-7-sections.md` 承载,B4 落盘时使用
 - debug 中**偏离主题或子需求**不就地塞,作为新需求登记到 INDEX(下一轮 A 的输入)
 - **B 子路径节奏 = 先做后落**:对齐(B2)+ 根因(B3) 都先在对话里推进,B4 才把成果按 7 段格式一次性落盘。与 A 场景"A1 对齐 → A2 prd 落盘"对称
 - B6 复验失败 ⇒ 默认回 B3(根因可能不准);但**循环 ≥ 2 次**时,认为根因方向错误,grill-me 介入回 B2 重新对齐期望态——避免在错误方向上打转
@@ -187,7 +187,7 @@ A 场景结束
 
 - **spec 规范**:目录骨架、命名、frontmatter、状态枚举、INDEX/README 形态 → 见 [../spec-framework.md](../spec-framework.md)
 - **skills 预选与个性化**:A1–A6 / B2–B7 各节点的 skill 候选已选定 → 见 [../skill-candidates/README.md](../skill-candidates/README.md)
-- **debug 7 段格式模板**:内容约定见 [../spec-framework.md](../spec-framework.md);后续可由 S0 `/init` 产出 `spec/_templates/issue.md`
+- **debug 7 段格式模板**:由 `diagnose` skill 的 `assets/issue-7-sections.md` 承载;不再由 S0 `/ae-init` 产出 `spec/_templates/issue.md`
 - **INDEX 当前节点推导规则**:已在 [../spec-framework.md](../spec-framework.md) 落定
 - **横切 / 主动触发 skill**:`improve-codebase-architecture` / `zoom-out` 由用户主动触发,不挂节点
 
