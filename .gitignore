@@ -13,3 +13,8 @@ node_modules/
 .tmp/
 tmp/
 temp/
+
+# Local source material and mother project snapshots
+reference/
+CES-AI-topic-9-smart-workflow/
+历史思路/
