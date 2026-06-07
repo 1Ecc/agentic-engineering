@@ -9,8 +9,10 @@ test('help prints top-level usage', async () => {
 
   assert.equal(result.code, 0, result.stderr);
   assert.match(result.stdout, /Usage: ae <command>/);
+  assert.match(result.stdout, /setup/);
   assert.match(result.stdout, /init/);
-  assert.match(result.stdout, /ingest-mother/);
+  assert.doesNotMatch(result.stdout, /ingest-mother/);
+  assert.match(result.stdout, /Typical workflow/);
 });
 
 test('no args prints top-level usage', async () => {

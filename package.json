@@ -1,17 +1,16 @@
 {
-  "name": "@huguiyuan/ae",
-  "version": "0.1.0",
+  "name": "@ecc-hgy/ae",
+  "version": "0.2.0",
   "description": "Agentic Engineering is a lightweight personal software lifecycle method: SDD records what to build, TDD drives how to prove it works.",
   "type": "module",
   "bin": {
-    "ae": "./bin/ae.js"
+    "ae": "bin/ae.js"
   },
   "files": [
     "bin",
     "src",
-    "commands",
     "skills",
-    "config",
+    "templates",
     "README.md",
     "LICENSE"
   ],

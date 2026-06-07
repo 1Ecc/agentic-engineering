@@ -2,7 +2,7 @@
 
 Agentic Engineering is a lightweight software development lifecycle for solo or small-team work with coding agents. It uses SDD to make "what to build" explicit, then uses TDD to make "how to prove it works" executable.
 
-The method is intentionally markdown-first. It avoids a heavy state machine, YAML workflow engine, or mandatory CLI runtime. The durable state lives in `spec/`; session state lives in `handoff.md`.
+The method is markdown-first. Durable state lives in `spec/`; session state lives in `handoff.md`; reusable working habits live in skills and rules.
 
 ## Core Ideas
 
@@ -33,14 +33,27 @@ S2 Evolution
 
 ### S0 Bootstrap
 
-S0 creates the standard project skeleton:
+S0 is now a two-step CLI flow:
+
+```bash
+ae setup
+# optional: edit config/ae-rules.md
+ae init "one-line project goal"
+```
+
+`ae setup` installs method assets for the current project:
+
+- `.claude/skills/`
+- `.codex/skills/`
+- `config/ae-rules.md`
+
+`ae init` creates the standard project skeleton:
 
 - `README.md`, `AGENTS.md`, `CLAUDE.md`, `handoff.md`
 - `reference/`, `data/`, `scripts/`
 - `spec/README.md`, `spec/INDEX.md`, `spec/needs/`, `spec/ADR/`
-- `.codex/`, `.claude/`
 
-The current asset is the `/ae-init` slash-command contract at [`commands/ae-init.md`](../commands/ae-init.md). It is designed to be strict and idempotent: create missing files, never overwrite user files, and only rewrite the managed `AE:RULES` block.
+It also syncs `config/ae-rules.md` into the managed `AE:RULES` block in `AGENTS.md` and `CLAUDE.md`. The CLI is strict and idempotent: create missing files, skip existing files, and only rewrite the managed rules block.
 
 Details: [`docs/scenarios/s0-bootstrap.md`](scenarios/s0-bootstrap.md)
 
@@ -111,15 +124,14 @@ Detailed rules for frontmatter, status values, `INDEX.md`, `README.md`, ADRs, an
 
 ## Asset Model
 
-This repository is arranged as a future npm CLI package, but the core method is plain files:
+The npm package contains:
 
-- `commands/` - slash-command contracts that should be copied to `.claude/commands/`
-- `skills/` - the selected and customized skills
-- `config/` - global rule examples
-- `docs/` - user-facing method documentation
-- `design/` - design records for this repository itself
+- `skills/` - selected and customized skills
+- `templates/entries/` - entry file templates rendered by `ae init`
+- `templates/ae-rules.md` - the starter rules file installed by `ae setup`
+- `src/` and `bin/` - the zero-dependency CLI
 
-The future CLI should be a distribution shell: copy these assets into a target project and keep the behavior idempotent.
+User projects receive skills under both `.claude/skills/` and `.codex/skills/`. Slash command assets are no longer installed.
 
 ## Operating Rules
 

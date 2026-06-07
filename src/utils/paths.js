@@ -3,7 +3,6 @@ import { access } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const ASSET_NAMES = new Set(['commands', 'skills', 'config']);
 let cachedPackageRoot;
 
 export async function packageRootAsync() {
@@ -49,8 +48,13 @@ export function packageRoot() {
 }
 
 export function assetPath(name) {
-  if (!ASSET_NAMES.has(name)) {
-    throw new Error(`Unknown asset: ${name}`);
-  }
   return path.join(packageRoot(), name);
+}
+
+export function skillsPath() {
+  return path.join(packageRoot(), 'skills');
+}
+
+export function templatesPath(subdir = '') {
+  return path.join(packageRoot(), 'templates', subdir);
 }

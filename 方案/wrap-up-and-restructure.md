@@ -228,8 +228,8 @@ agentic-engineering/                       # git 仓库根 = 未来 npm 包根
 
 1. **作者署名**:LICENSE 用谁?(GitHub handle / 真名 / 邮箱)
    - 已处理:`huguiyuan`
-2. **README 里的 npm scope**:阶段 2 才用,但 README 路线图段会提到。先占位 `@<your-scope>/ae`?还是先确定下来(`@huguiyuan/ae` / 别的)?
-   - 已处理:README 路线图先写 `@huguiyuan/ae`
+2. **README 里的 npm scope**:阶段 2 才用,但 README 路线图段会提到。先占位 `@<your-scope>/ae`?还是先确定下来(`@ecc-hgy/ae` / 别的)?
+   - 已处理:README 路线图先写 `@ecc-hgy/ae`
 3. **`reference/` 是否进 `.gitignore`**:体量大、是只读素材,建议进。但要先核当前 git 是否已经 add 了——若已 tracked,需要 `git rm -r --cached reference/` 才能让 .gitignore 生效。
    - 已处理:`reference/` 已进 `.gitignore`,且已 `git rm -r --cached reference`
 4. **handoff.md 与 commands/ae-init.templates/handoff.md 的关系**:后者是 `/ae-init` 拷给用户的初始 handoff 模板,前者是本仓库自己的会话交接。两份独立,确认 OK。
@@ -246,11 +246,14 @@ agentic-engineering/                       # git 仓库根 = 未来 npm 包根
 > 原则:跟阶段 1 一样,每一步落地后勾选;全部完成后 git 收口并打 tag。
 >
 > **当前进展**:阶段 2 本地实现与本地验证已完成;外部 npm 登录 / 发布、真实 Claude Code 交互验收仍需用户执行。
+> - 阶段 2 前快照提交:`7382aa5 chore: checkpoint before stage 2 cli work`
+> - 阶段 2 完成提交:`5dc03de feat(cli): implement npm CLI for asset distribution (stage 2)`
+> - 本地 tag:`v0.1.0 Initial npm release`
 
 ### 6.1 包结构脚手架
 
 - [x] 仓库根新建 `package.json`,字段:
-  - `name`: `@huguiyuan/ae`
+  - `name`: `@ecc-hgy/ae`
   - `version`: `0.1.0`
   - `description`: 与 README 顶部一句话对齐
   - `type`: `"module"`
@@ -396,14 +399,14 @@ agentic-engineering/                       # git 仓库根 = 未来 npm 包根
   - 跑 `bash .claude/commands/ae-init.test.sh`(已装到用户项目)通过
 - [x] 再跑 `ae ingest-mother <abs path to CES-AI-topic-9-smart-workflow>`,检查指引输出
 - [ ] 进 Claude Code 跑 `/ae-ingest-mother` 走一遍真实抽取流程,验证 contract 仍然成立
-- [x] `npm unlink -g @huguiyuan/ae`,确认临时目录的 `.claude/` 内容未被破坏
+- [x] `npm unlink -g @ecc-hgy/ae`,确认临时目录的 `.claude/` 内容未被破坏
 
 说明:Claude Code 内 `/ae-init` 与 `/ae-ingest-mother` 真实交互验收需要用户在本机手动执行;本次已完成 CLI 层 `npm link` 冒烟。
 
 ### 6.8 README 与 handoff 同步
 
 - [x] README 顶部"现状声明"段:
-  - 从"手动 cp"切到 `npx @huguiyuan/ae init` + `/ae-init` 两步说明
+  - 从"手动 cp"切到 `npx @ecc-hgy/ae init` + `/ae-init` 两步说明
   - 删除 `cp -r` 那段,或挪到"高级:不通过 npm"
   - 增加一段"它在 npm CLI 里只做安装;真正的初始化逻辑在 Claude Code 跑 `/ae-init` 时执行",让用户预期一致
 - [x] README 加 badges:`npm version`、`license`、(暂不加 CI,阶段 3 再说)
@@ -433,8 +436,8 @@ agentic-engineering/                       # git 仓库根 = 未来 npm 包根
 ### 6.10 npm publish
 
 - [ ] `npm publish --access public`
-- [ ] 在干净机器 / 干净目录:`npx @huguiyuan/ae@0.1.0 --version` 验证拉得到
-- [ ] 干净目录:`npx @huguiyuan/ae init` 跑一次完整链路,逐项核对 6.7 的产物
+- [ ] 在干净机器 / 干净目录:`npx @ecc-hgy/ae@0.1.0 --version` 验证拉得到
+- [ ] 干净目录:`npx @ecc-hgy/ae init` 跑一次完整链路,逐项核对 6.7 的产物
 - [ ] npmjs.com 页面信息核对:description、README 渲染、files 清单
 
 说明:npm 发布需要用户账号登录、scope 可用性确认与外部发布操作,本次未自动执行。
@@ -460,17 +463,17 @@ agentic-engineering/                       # git 仓库根 = 未来 npm 包根
 ### 6.12 阶段 2 人工 check(由你完成)
 
 - [ ] 通读 `src/cli.js` + `src/commands/*.js`,确认逻辑边界与路线 a 一致(无任何创建 spec/ 或渲染入口文件的行为)
-- [ ] `npx @huguiyuan/ae init` 在你自己一个真实新项目里跑一遍,从 npm 装到 Claude Code `/ae-init` 完成,体验顺畅
+- [ ] `npx @ecc-hgy/ae init` 在你自己一个真实新项目里跑一遍,从 npm 装到 Claude Code `/ae-init` 完成,体验顺畅
 - [ ] 检查 npmjs.com 页面没有泄露 `design/` `方案/` `handoff.md` 等仓库内文件
 - [ ] 若包体积异常或安装速度不佳,记录到 §7 阶段 3 优化清单
 
 ## 7. 阶段 3:长尾
 
-- `commands/ae-index-rebuild.md` 命令本体(`spec/INDEX.md` 重建规则)
-- CLI 同步暴露 `ae index-rebuild` 子命令(路线 a 下也只是装好后让用户走 slash command;若有真正的 CLI 行为再补)
+- `ae update` 子命令:用于已 `setup` 项目升级 skills / templates / rules starter,避免把升级语义塞回 `setup` 或 `init`
+- `ae index-rebuild` 子命令:`spec/INDEX.md` 重建规则与 CLI 实现
 - 12 个 skill 的最后一轮 cross-check
-- 如有意推广:`CONTRIBUTING.md`、GitHub Actions(CI 跑 `npm test`)、CHANGELOG
-- 跨平台:Windows 路径与权限验证(阶段 2 仅 macOS 验证)
+- 如有意推广:`CONTRIBUTING.md`、GitHub Actions(CI 跑 `npm test`)
+- 跨平台:Windows 路径与权限验证(v0.2 目前仅 macOS 验证)
 
 ---
 

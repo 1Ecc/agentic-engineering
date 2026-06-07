@@ -17,5 +17,5 @@ Keep this file short because every agent session loads it. Do trivial work direc
 ## Project Specific Rules
 
 <!-- AE:PROJECT:BEGIN -->
-<!-- Add project-specific rules here. /ae-ingest-mother may propose updates to this block. -->
+<!-- Add project-specific rules here. `ae init` manages AE:RULES separately. -->
 <!-- AE:PROJECT:END -->

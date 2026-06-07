@@ -6,148 +6,190 @@
 
 搭建贴合个人习惯、轻量的软件全生命周期方法论:SDD 管"做什么",TDD 管"怎么做对"。
 
-当前仓库已整理为未来 npm CLI 发布形态:根目录平铺 `commands/`、`skills/`、`config/` 作为可分发资产,`docs/` 面向使用者,`design/` 保留设计档案,`src/` + `bin/` 提供 npm CLI 分发壳。
+当前仓库已转向 v0.2 多平台 CLI 形态:CLI 是初始化事实源,不再依赖 Claude Code slash command。`ae setup` 安装方法论资产,`ae init` 创建 skeleton 并同步规则。
 
 ## 当前阶段
 
-阶段 2 npm CLI 本地实现已完成,正在做最终收口提交。
+v0.2 本地实现、测试、打包、真实空项目验证已完成。当前等待用户执行 npm 发布与人工平台抽检。
 
-关键提交:
+关键历史提交 / tag:
 
 - `9380792 chore: checkpoint before stage 1 restructure`
 - `72f79a0 chore: restructure repo for npm CLI distribution (stage 1)`
 - `7382aa5 chore: checkpoint before stage 2 cli work`
+- `5dc03de feat(cli): implement npm CLI for asset distribution (stage 2)`
+- `v0.1.0 Initial npm release`
+- `v0.2.0 split CLI into setup + init, drop slash command assets`
 
-## 已完成
+## v0.2 已完成
 
-### 阶段 1
-
-- `commands/` 已从旧的 `agentic-engineering/.claude/commands/` 提升到仓库根
-- `config/ae-rules.md.example` 已提升到仓库根
-- 12 个已采纳 skill 已复制到根目录 `skills/`
-- `docs/` 已建立:
-  - `docs/framework.md`
-  - `docs/spec-framework.md`
-  - `docs/scenarios/s0-bootstrap.md`
-  - `docs/scenarios/s1-main-loop.md`
-- `design/skill-candidates/` 已建立:
-  - `design/skill-candidates/README.md`
-  - `design/skill-candidates/customization-plan.md`
-- 顶层 `README.md`、`LICENSE` 已补齐
-- `reference/` 与 `CES-AI-topic-9-smart-workflow/` 已从 git 索引移除,本地目录保留
-
-### 阶段 2
-
-- 新增 npm 包元数据:
-  - `package.json`
-  - package name:`@huguiyuan/ae`
-  - version:`0.1.0`
-  - bin:`ae -> ./bin/ae.js`
-  - type:`module`
-  - zero dependency
-- 新增 CLI 入口:
-  - `bin/ae.js`
-  - `src/cli.js`
-- 新增 CLI 子命令:
-  - `src/commands/init.js`
+- package version 升到 `0.2.0`
+- 新增 `CHANGELOG.md`
+- 删除旧 slash command 资产:
+  - `commands/`
   - `src/commands/ingest-mother.js`
-- 新增工具层:
+  - `tests/ingest-mother.test.js`
+  - 根目录 `config/`
+- 模板迁移:
+  - `commands/ae-init.templates/` -> `templates/entries/`
+  - 新增 `templates/ae-rules.md`
+- CLI 命令树改为:
+  - `ae setup`
+  - `ae init [goal] [--rules <path>]`
+- 新增核心逻辑:
+  - `src/skeleton.js`
+  - `src/commands/setup.js`
+- 重写:
+  - `src/commands/init.js`
+  - `src/cli.js`
+  - `src/utils/report.js`
   - `src/utils/paths.js`
   - `src/utils/copy.js`
-  - `src/utils/report.js`
-- 新增 node:test 覆盖:
-  - `tests/_helpers.js`
-  - `tests/cli.test.js`
-  - `tests/init.test.js`
-  - `tests/ingest-mother.test.js`
-- `README.md` 已切换到 `npx @huguiyuan/ae init` 安装说明,并明确 CLI 只做资产安装,真正骨架初始化由 Claude Code 内 `/ae-init` 执行
-- `方案/wrap-up-and-restructure.md` 已更新阶段 2 本地完成项
+- 测试重构:
+  - 新增 `tests/skeleton.test.js`
+  - 新增 `tests/setup.test.js`
+  - 重写 `tests/init.test.js`
+  - 更新 `tests/cli.test.js`
+- 文档同步:
+  - `README.md`
+  - `docs/framework.md`
+  - `docs/scenarios/s0-bootstrap.md`
+  - `docs/scenarios/s1-main-loop.md`
+  - `方案/issues/`
+  - `方案/wrap-up-and-restructure.md`
 
-## CLI 行为边界
+## v0.2 CLI 行为边界
 
-阶段 2 已锁定并实现"路线 a":
+`ae setup`:
 
-- `ae init` 只安装资产:
-  - `commands/` -> `.claude/commands/`
-  - `skills/` -> `.claude/skills/`
-  - `config/` -> `config/`
-- `ae init` 不创建 `spec/`、`AGENTS.md`、`CLAUDE.md`、`handoff.md`、`spec/INDEX.md`
-- `ae init` 幂等:目标文件已存在则跳过,不覆盖,无 `--force`
-- `ae ingest-mother` 只做路径预检与指引,不读取母本内容,不修改目标项目
-- 真正的初始化 / 母本抽取仍交给用户项目内的 slash command:
-  - `/ae-init`
-  - `/ae-ingest-mother`
+- 安装 `skills/` 到 `.claude/skills/`
+- 安装 `skills/` 到 `.codex/skills/`
+- 安装 `templates/ae-rules.md` 到 `config/ae-rules.md`
+- 幂等,不覆盖已编辑的 `config/ae-rules.md`
+- 不创建 skeleton 或入口文件
+
+`ae init`:
+
+- 要求 `.claude/skills/` 或 `.codex/skills/` 至少一个存在,否则报错要求先跑 `ae setup`
+- 创建:
+  - `spec/`
+  - `spec/needs/`
+  - `spec/ADR/`
+  - `reference/`
+  - `data/`
+  - `scripts/`
+- 渲染:
+  - `README.md`
+  - `AGENTS.md`
+  - `CLAUDE.md`
+  - `handoff.md`
+  - `spec/README.md`
+  - `spec/INDEX.md`
+- 默认读取 `config/ae-rules.md`,同步到 `AGENTS.md` / `CLAUDE.md` 的 `AE:RULES` block
+- 支持 `--rules <path>` 显式覆盖规则源
+- 幂等,不覆盖入口文件;只替换 managed `AE:RULES` block
+
+已移除:
+
+- `ae ingest-mother`
+- `/ae-init`
+- `/ae-ingest-mother`
+- 用户项目 `.claude/commands/`
 
 ## 验证
 
 已验证:
 
-- `npm test` 通过:12 tests all pass
-- `node bin/ae.js --help` 输出顶层帮助
-- `node bin/ae.js --version` 输出 `0.1.0`
+- `npm test` 通过:22 tests all pass
+- `node bin/ae.js --help` 输出 `setup` / `init` 两个命令
+- `node bin/ae.js --version` 输出 `0.2.0`
+- `node bin/ae.js ingest-mother /tmp/whatever` 返回 unknown command
+- `git diff --check` 通过
 - `npm pack --dry-run` 通过
-- `npm pack` 生成 `huguiyuan-ae-0.1.0.tgz`
-  - package size:45.7 kB
-  - unpacked size:123.6 kB
-  - total files:44
-- tarball 解包抽检通过:
-  - 包含 `bin/`、`src/`、`commands/`、`skills/`、`config/`、`README.md`、`LICENSE`、`package.json`
-  - 不包含 `tests/`、`docs/`、`design/`、`方案/`、`handoff.md`
-- `npm link` 本地冒烟通过:
-  - 临时项目 `ae init` 安装 `.claude/commands`、`.claude/skills`、`config`
-  - 临时项目 `ae ingest-mother <mother>` 输出 `/ae-ingest-mother` 指引
-  - 已执行 `npm unlink -g @huguiyuan/ae`
+- `npm pack` 生成 `ecc-hgy-ae-0.2.0.tgz`
+  - package size:43.7 kB
+  - unpacked size:119.9 kB
+  - total files:42
+- tarball 抽检通过:
+  - 包含 `bin/`、`src/`、`skills/`、`templates/`、`README.md`、`LICENSE`、`package.json`
+  - 不包含 `commands/`、`config/`、`tests/`、`docs/`、`design/`、`方案/`、`handoff.md`
+- `/Users/huguiyuan/workspace/newtest` 真实 tarball 验证通过:
+  - 清空旧产物后跑 `npx --package <0.2.0.tgz> ae setup`
+  - `.claude/skills/diagnose/SKILL.md` 存在
+  - `.codex/skills/diagnose/SKILL.md` 存在
+  - `config/ae-rules.md` 存在且可编辑
+  - `.claude/commands/` 不存在
+  - `find .claude -name "ae-init.templates*"` 为空
+  - 编辑 rules 后跑 `ae init "v0.2 验证"` 成功
+  - 6 个入口文件与 skeleton 到位
+  - `AGENTS.md` / `CLAUDE.md` 含编辑后的 `AE:RULES` block
+  - 二次 `ae init` 幂等
+  - `--rules /tmp/ae-explicit-rules.md` 覆盖默认 rules 成功
+  - `--rules /tmp/ae-rules-dir` 报 `expected a file, got directory`
+
+未自动验证:
+
+- Claude Code UI 中 slash command 列表无 ae-* 残留。文件系统已确认 `.claude/commands/` 不存在,但 UI 抽检需用户打开 Claude Code。
+- Codex UI/运行时是否自动发现 `.codex/skills/`。文件系统已安装,最终体验需用户人工抽检。
 
 ## 当前工作区状态
 
-预计未提交变更包括:
+v0.2 收口变更包括:
 
-- `.gitignore`
-- `README.md`
-- `handoff.md`
-- `package.json`
-- `bin/`
-- `src/`
-- `tests/`
-- `方案/wrap-up-and-restructure.md`
+- 删除旧 `commands/`、根 `config/`、`ingest-mother` 代码与测试
+- 新增 `templates/`、`src/skeleton.js`、`src/commands/setup.js`
+- 重写 CLI / tests / README / docs / issues / handoff
+- 新增 `ecc-hgy-ae-0.2.0.tgz` pack 产物,已由 `.gitignore` 忽略
 
-`huguiyuan-ae-0.1.0.tgz` 是 npm pack 产物,已由 `.gitignore` 忽略。
+忽略文件仍存在:
+
+- `.DS_Store`
+- `方案/.DS_Store`
+- `reference/`
+- `CES-AI-topic-9-smart-workflow/`
+- `huguiyuan-ae-0.1.0.tgz`
+- `huguiyuan-ae-0.2.0.tgz`
+- `ecc-hgy-ae-0.2.0.tgz`
 
 ## 关键文件入口
 
 | 文件 | 内容 |
 |------|------|
-| `package.json` | npm 包元数据与 bin 配置 |
+| `package.json` | npm 包元数据,version `0.2.0`,files 清单 |
 | `bin/ae.js` | CLI 可执行入口 |
 | `src/cli.js` | 顶层参数路由 |
-| `src/commands/init.js` | `ae init` 资产安装 |
-| `src/commands/ingest-mother.js` | `ae ingest-mother` 预检与指引 |
-| `src/utils/copy.js` | 幂等递归复制 |
-| `tests/` | node:test 端到端覆盖 |
-| `README.md` | 对外说明与安装方式 |
-| `commands/ae-init.md` | `/ae-init` 命令契约 |
-| `commands/ae-ingest-mother.md` | `/ae-ingest-mother` 命令契约 |
+| `src/commands/setup.js` | `ae setup` 资产安装 |
+| `src/commands/init.js` | `ae init` skeleton + rules sync |
+| `src/skeleton.js` | 目录创建、入口模板渲染、规则块同步 |
+| `src/utils/copy.js` | 幂等复制 |
+| `templates/entries/` | 6 个入口文件模板 |
+| `templates/ae-rules.md` | `config/ae-rules.md` starter |
 | `skills/` | 12 个已采纳 skill 的发布资产 |
-| `方案/wrap-up-and-restructure.md` | 阶段 1/2 整理计划与进展 |
+| `tests/` | node:test 覆盖 |
+| `README.md` | 对外说明与安装方式 |
+| `CHANGELOG.md` | v0.2 breaking change 记录 |
+| `方案/issues/` | 001/002/003 问题与 v0.2 收口记录 |
 
 ## 开放问题 / 待处理
 
-- npm 发布仍未执行,需要用户操作:
+- npm 发布仍需用户操作:
   - `npm login`
   - `npm whoami`
-  - 确认 `@huguiyuan` scope 可用
   - `npm publish --access public`
-  - 发布后用 `npx @huguiyuan/ae@0.1.0 --version` 验证
-- Claude Code 内真实交互验收仍需用户执行:
-  - 在真实新项目运行 `npx @huguiyuan/ae init`
-  - 打开 Claude Code 跑 `/ae-init "测试目标"`
-  - 跑 `/ae-ingest-mother <mother-path>`
-- `commands/ae-index-rebuild.md` 仍未实现,按计划留到阶段 3
-- 可选:阶段 3 增加 GitHub Actions、CHANGELOG、Windows 路径验证
+  - 发布后用 `npx @ecc-hgy/ae@0.2.0 --version` 验证
+- 人工平台抽检:
+  - 在真实项目跑 `npx @ecc-hgy/ae@0.2.0 setup`
+  - 打开 Claude Code,确认项目 slash command 列表无 ae-* 残留
+  - 打开 Codex,确认 `.codex/skills/` 可被发现
+- 阶段 3:
+  - `ae update`
+  - `ae index-rebuild`
+  - 12 个 skill 最后一轮 cross-check
+  - GitHub Actions / Windows 路径验证
 
 ## 下次起手建议
 
-1. 先提交阶段 2 实现:`feat(cli): implement npm CLI for asset distribution (stage 2)`
-2. 打 tag:`v0.1.0`
-3. 用户完成 npm 登录与发布
-4. 进入阶段 3:`ae-index-rebuild` markdown contract 与 CLI 暴露策略
+1. 用户完成 npm 发布。
+2. 用新包在真实项目重复 `ae setup` + `ae init` 验证。
+3. 打开 Claude Code / Codex 做人工平台抽检。
+4. 进入阶段 3:先设计 `ae update`,再做 `ae index-rebuild`。

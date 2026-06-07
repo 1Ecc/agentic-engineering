@@ -5,15 +5,18 @@ import { packageRoot } from './utils/paths.js';
 const HELP = `Usage: ae <command> [options]
 
 Commands:
-  init                 Install commands/, skills/, config/ into the current project's .claude/.
-  ingest-mother <path> Pre-check a mother project before running \`/ae-ingest-mother\`.
+  setup                Install skills to .claude/.codex and drop a config/ae-rules.md template.
+  init [goal]          Create spec/ skeleton, render entry files, sync AE:RULES block from
+                       config/ae-rules.md. Requires \`ae setup\` to have run.
 
 Options:
   -h, --help     Show help
   -v, --version  Show version
 
-After \`ae init\`, open Claude Code in the project and run \`/ae-init\` to
-create the spec/ skeleton.`;
+Typical workflow:
+  ae setup
+  [optional] edit config/ae-rules.md
+  ae init "<one-line project goal>"`;
 
 export async function run(argv = []) {
   try {
@@ -29,13 +32,13 @@ export async function run(argv = []) {
       return 0;
     }
 
-    if (command === 'init') {
-      const mod = await import('./commands/init.js');
+    if (command === 'setup') {
+      const mod = await import('./commands/setup.js');
       return await mod.run(rest);
     }
 
-    if (command === 'ingest-mother') {
-      const mod = await import('./commands/ingest-mother.js');
+    if (command === 'init') {
+      const mod = await import('./commands/init.js');
       return await mod.run(rest);
     }
 

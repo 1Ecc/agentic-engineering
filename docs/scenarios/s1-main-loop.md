@@ -187,7 +187,7 @@ A 场景结束
 
 - **spec 规范**:目录骨架、命名、frontmatter、状态枚举、INDEX/README 形态 → 见 [../spec-framework.md](../spec-framework.md)
 - **skills 预选与个性化**:A1–A6 / B2–B7 各节点的 skill 候选已选定 → 见 [../../design/skill-candidates/README.md](../../design/skill-candidates/README.md)
-- **debug 7 段格式模板**:由 `diagnose` skill 的 `assets/issue-7-sections.md` 承载;不再由 S0 `/ae-init` 产出 `spec/_templates/issue.md`
+- **debug 7 段格式模板**:由 `diagnose` skill 的 `assets/issue-7-sections.md` 承载;不再由 S0 `ae init` 产出 `spec/_templates/issue.md`
 - **INDEX 当前节点推导规则**:已在 [../spec-framework.md](../spec-framework.md) 落定
 - **横切 / 主动触发 skill**:`improve-codebase-architecture` / `zoom-out` 由用户主动触发,不挂节点
 

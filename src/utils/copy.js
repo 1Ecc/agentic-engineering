@@ -62,6 +62,27 @@ export async function copyTreeIdempotent(srcDir, destDir, options = {}) {
   }
 }
 
+export async function copyFileIdempotent(srcFile, destFile, options = {}) {
+  const dryRun = Boolean(options.dryRun);
+  const source = await stat(srcFile);
+  if (!source.isFile()) {
+    throw new Error(`source is not a file: ${srcFile}`);
+  }
+
+  const relative = path.basename(destFile);
+  if (await exists(destFile)) {
+    return { created: [], skipped: [relative] };
+  }
+
+  if (!dryRun) {
+    await mkdir(path.dirname(destFile), { recursive: true });
+    await copyFile(srcFile, destFile);
+    await chmod(destFile, source.mode & 0o777);
+  }
+
+  return { created: [relative], skipped: [] };
+}
+
 async function exists(value) {
   try {
     await stat(value);

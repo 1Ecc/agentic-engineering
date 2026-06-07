@@ -1,53 +1,49 @@
 # Agentic Engineering
 
-[![npm version](https://img.shields.io/npm/v/@huguiyuan/ae.svg)](https://www.npmjs.com/package/@huguiyuan/ae)
-[![license](https://img.shields.io/npm/l/@huguiyuan/ae.svg)](LICENSE)
+[![npm version](https://img.shields.io/npm/v/@ecc-hgy/ae.svg)](https://www.npmjs.com/package/@ecc-hgy/ae)
+[![license](https://img.shields.io/npm/l/@ecc-hgy/ae.svg)](LICENSE)
 
-Agentic Engineering is a lightweight personal software lifecycle method: SDD records what to build, TDD drives how to prove it works. It is delivered as an npm-installed bundle of Claude Code slash commands plus agent skills.
+Agentic Engineering is a lightweight personal software lifecycle method: SDD records what to build, TDD drives how to prove it works. It is delivered as a zero-dependency npm CLI plus agent skills for Claude Code and Codex.
 
-## Install
+## Quick Start
 
 ```bash
 cd /your/project
-npx @huguiyuan/ae init
+npx @ecc-hgy/ae setup
+# Optional: edit config/ae-rules.md
+npx @ecc-hgy/ae init "one-line project goal"
 ```
 
-Then open Claude Code in the same project and run:
+`ae setup` installs reusable method assets:
 
-```text
-/ae-init "one-line project goal"
-```
-
-The npm CLI only installs the method assets into your project:
-
-- `commands/` -> `.claude/commands/`
 - `skills/` -> `.claude/skills/`
-- `config/` -> `config/`
+- `skills/` -> `.codex/skills/`
+- `templates/ae-rules.md` -> `config/ae-rules.md`
 
-The real project skeleton creation is intentionally handled by the installed `/ae-init` slash command inside Claude Code. That keeps the markdown command contract as the source of truth and avoids duplicating bootstrap logic in JavaScript.
+`ae init` creates the platform-neutral project skeleton, renders entry files, and syncs the contents of `config/ae-rules.md` into the managed `AE:RULES` block in `AGENTS.md` and `CLAUDE.md`.
 
 ## CLI
 
 ```bash
-ae init
-ae ingest-mother /path/to/mother-project
+ae setup
+ae init "one-line project goal"
+ae init "goal" --rules /path/to/rules.md
 ae --help
 ae --version
 ```
 
-`ae init` is idempotent. It creates missing asset files and skips existing files; it never overwrites project edits and has no `--force` mode.
+Both commands are idempotent. They create missing files, skip existing files, and never overwrite user edits outside the managed `AE:RULES` block. There is no `--force` mode.
 
-`ae ingest-mother` is a pre-check and instruction helper. It does not read or modify the mother project. After it validates paths, open Claude Code and run `/ae-ingest-mother <path>` to let the slash command propose changes.
+`ae init` requires `ae setup` to have run first. This keeps the two-step workflow explicit so you can edit `config/ae-rules.md` before it is injected.
 
-## Manual Install
+## Platform Scope
 
-If you are working from a local checkout instead of npm:
+Current target platforms:
 
-```bash
-cp -r commands/ /your/project/.claude/commands/
-cp -r skills/   /your/project/.claude/skills/
-cp -r config/   /your/project/config/
-```
+- Claude Code: skills installed to `.claude/skills/`
+- Codex: skills installed to `.codex/skills/`
+
+Cursor and Trae support is intentionally deferred until their stable local skill/rule loading conventions are confirmed.
 
 ## Method Overview
 
@@ -91,22 +87,22 @@ The two hard gates are:
 ## Repository Layout
 
 ```text
-commands/  Claude Code slash-command contracts
-skills/    Selected Agentic Engineering skills
-config/    Rule examples
-docs/      User-facing methodology docs
-design/    Design records for this repository
-bin/       npm executable entry
-src/       zero-dependency CLI implementation
-tests/     node:test coverage for CLI behavior
+bin/        npm executable entry
+src/        zero-dependency CLI implementation
+skills/     Selected Agentic Engineering skills
+templates/  Entry file templates and the ae-rules.md starter
+docs/       User-facing methodology docs
+design/     Design records for this repository
+tests/      node:test coverage for CLI behavior
 ```
 
 ## Roadmap
 
-1. Stage 2: npm CLI asset distribution with `init` and `ingest-mother`. Done.
-2. Stage 3: implement `commands/ae-index-rebuild.md` and the underlying `spec/INDEX.md` rebuild behavior.
-3. Add CI, changelog, and Windows path validation before broader distribution.
+1. Stage 2: npm CLI asset distribution with `init` and `ingest-mother`. Superseded by v0.2.
+2. v0.2: split CLI into `setup` + `init`, remove slash command assets, and move rule sync into `ae init`.
+3. Stage 3: design `ae update` for skill/template upgrades and implement `ae index-rebuild`.
+4. Add CI and Windows path validation before broader distribution.
 
 ## Limits
 
-`ae-index-rebuild` is referenced by the method but not implemented yet. Publishing to npm still requires `npm login`, scope validation, and `npm publish --access public`.
+`ae index-rebuild` and `ae update` are referenced by the roadmap but not implemented yet. Publishing to npm still requires `npm login`, scope validation, and `npm publish --access public`.
