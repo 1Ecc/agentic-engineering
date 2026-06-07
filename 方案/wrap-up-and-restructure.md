@@ -27,12 +27,12 @@
 
 | 资产 | 当前位置 | 状态 |
 |------|----------|------|
-| `/ae-init` 命令契约 | `agentic-engineering/.claude/commands/ae-init.md` | ✅ |
-| `/ae-init` 入口模板 | `agentic-engineering/.claude/commands/ae-init.templates/` | ✅(README/AGENTS/CLAUDE/handoff 四份) |
-| `/ae-init` 验收脚本 | `agentic-engineering/.claude/commands/ae-init.test.sh` | ✅ |
-| `/ae-ingest-mother` 命令契约 | `agentic-engineering/.claude/commands/ae-ingest-mother.md` | ✅ |
-| 规则注入示例 | `agentic-engineering/config/ae-rules.md.example` | ✅ |
-| 已改造的 12 个 skill | `方案/skill-candidates/{mattpocock,superpowers}/...` | ✅ |
+| `/ae-init` 命令契约 | `commands/ae-init.md` | ✅ |
+| `/ae-init` 入口模板 | `commands/ae-init.templates/` | ✅(README/AGENTS/CLAUDE/handoff 四份) |
+| `/ae-init` 验收脚本 | `commands/ae-init.test.sh` | ✅ |
+| `/ae-ingest-mother` 命令契约 | `commands/ae-ingest-mother.md` | ✅ |
+| 规则注入示例 | `config/ae-rules.md.example` | ✅ |
+| 已改造的 12 个 skill | `skills/` | ✅ |
 
 > 澄清:`ae-init.templates/` 是 `/ae-init` 命令运行时往用户项目根写的入口文件模板(README/AGENTS/CLAUDE/handoff),**保留**。之前裁掉的是 `spec/_templates/*`(PRD/design/issue 等 spec 内文档模板),不是同一回事。
 
@@ -129,35 +129,39 @@ agentic-engineering/                       # git 仓库根 = 未来 npm 包根
 
 > 每一步落地后勾选;全部完成后 git 收口。
 > **原则**:`方案/` 在本阶段全程**只读不动**;`docs/` `design/` 走"读 → 改写 → 新建"路线。
+>
+> **当前进展**:阶段 1 已完成并提交。
+> - 阶段 1 前基线提交:`9380792 chore: checkpoint before stage 1 restructure`
+> - 阶段 1 完成提交:`72f79a0 chore: restructure repo for npm CLI distribution (stage 1)`
 
 ### 4.1 资产搬迁(commands / config)
 
-- [ ] 在仓库根新建 `commands/`
-- [ ] 把 `agentic-engineering/.claude/commands/ae-init.md` 移到 `commands/ae-init.md`
-- [ ] 把 `agentic-engineering/.claude/commands/ae-init.templates/` 整目录移到 `commands/ae-init.templates/`
-- [ ] 把 `agentic-engineering/.claude/commands/ae-init.test.sh` 移到 `commands/ae-init.test.sh`
-- [ ] 把 `agentic-engineering/.claude/commands/ae-ingest-mother.md` 移到 `commands/ae-ingest-mother.md`
-- [ ] 在仓库根新建 `config/`
-- [ ] 把 `agentic-engineering/config/ae-rules.md.example` 移到 `config/ae-rules.md.example`
-- [ ] 删除空的 `agentic-engineering/` 子目录(及其 `.claude/`、`config/` 空壳)
-- [ ] 核对:`commands/ae-init.md` 中对 `ae-init.templates/` 的相对路径引用仍然成立(应该仍是相对当前文件的同层目录,无需改)
+- [x] 在仓库根新建 `commands/`
+- [x] 把 `agentic-engineering/.claude/commands/ae-init.md` 移到 `commands/ae-init.md`
+- [x] 把 `agentic-engineering/.claude/commands/ae-init.templates/` 整目录移到 `commands/ae-init.templates/`
+- [x] 把 `agentic-engineering/.claude/commands/ae-init.test.sh` 移到 `commands/ae-init.test.sh`
+- [x] 把 `agentic-engineering/.claude/commands/ae-ingest-mother.md` 移到 `commands/ae-ingest-mother.md`
+- [x] 在仓库根新建 `config/`
+- [x] 把 `agentic-engineering/config/ae-rules.md.example` 移到 `config/ae-rules.md.example`
+- [x] 删除空的 `agentic-engineering/` 子目录(及其 `.claude/`、`config/` 空壳)
+- [x] 核对:`commands/ae-init.md` 中对 `ae-init.templates/` 的相对路径引用仍然成立(应该仍是相对当前文件的同层目录,无需改)
 
 ### 4.2 资产搬迁(skills 平铺)
 
-- [ ] 在仓库根新建 `skills/`
-- [ ] 把 §2.2 的 12 个 skill **整目录拷贝**到 `skills/<skill-name>/`,源路径来自 `方案/skill-candidates/...`,保留各自的 `SKILL.md`、`assets/`、`scripts/`、附属 `*.md`
+- [x] 在仓库根新建 `skills/`
+- [x] 把 §2.2 的 12 个 skill **整目录拷贝**到 `skills/<skill-name>/`,源路径来自 `方案/skill-candidates/...`,保留各自的 `SKILL.md`、`assets/`、`scripts/`、附属 `*.md`
   - 拷贝(非移动)的目的:`方案/` 全程保留原貌,便于阶段 1 末尾人工对照
-- [ ] 拷贝完成后,`grep -rn "AE-CHANGE" skills/` 应返回空——如有残留,据 customization-plan 的人工 check 注释清理掉
-- [ ] 核对 12 个 skill 各自的 SKILL.md frontmatter 仍合法(`name:`、`description:` 必填)
+- [x] 拷贝完成后,`grep -rn "AE-CHANGE" skills/` 应返回空——如有残留,据 customization-plan 的人工 check 注释清理掉
+- [x] 核对 12 个 skill 各自的 SKILL.md frontmatter 仍合法(`name:`、`description:` 必填)
 
 ### 4.3 文档改写(docs)
 
-- [ ] 在仓库根新建 `docs/`
-- [ ] 把 `方案/spec-framework.md` **拷贝**到 `docs/spec-framework.md`(语气保持现状,后续 README 中链向它)
-- [ ] 新建 `docs/scenarios/`
-- [ ] 把 `方案/scenarios/s0-bootstrap.md` **拷贝**到 `docs/scenarios/s0-bootstrap.md`
-- [ ] 把 `方案/scenarios/s1 deep-orbiting-fog.md` **拷贝**到 `docs/scenarios/s1-main-loop.md`(文件名脱掉项目内昵称,改为语义清晰名)
-- [ ] 由 `方案/immutable-booping-sutherland.md` 改写出 `docs/framework.md`:
+- [x] 在仓库根新建 `docs/`
+- [x] 把 `方案/spec-framework.md` **拷贝**到 `docs/spec-framework.md`(语气保持现状,后续 README 中链向它)
+- [x] 新建 `docs/scenarios/`
+- [x] 把 `方案/scenarios/s0-bootstrap.md` **拷贝**到 `docs/scenarios/s0-bootstrap.md`
+- [x] 把 `方案/scenarios/s1 deep-orbiting-fog.md` **拷贝**到 `docs/scenarios/s1-main-loop.md`(文件名脱掉项目内昵称,改为语义清晰名)
+- [x] 由 `方案/immutable-booping-sutherland.md` 改写出 `docs/framework.md`:
   - 去掉"草稿口吻"和项目内昵称(immutable-booping-sutherland 这类代号)
   - 语气改为面向使用者:这套方法论是什么、三场景结构、怎么入门
   - 保留三场景 + 两道硬门禁这些固化结论
@@ -165,14 +169,14 @@ agentic-engineering/                       # git 仓库根 = 未来 npm 包根
 
 ### 4.4 设计档案(design)
 
-- [ ] 在仓库根新建 `design/skill-candidates/`
-- [ ] 把 `方案/skill-candidates/README.md` **拷贝**到 `design/skill-candidates/README.md`
-- [ ] 把 `方案/skill-candidates/customization-plan.md` **拷贝**到 `design/skill-candidates/customization-plan.md`
-- [ ] 不拷贝 12 个 skill 的源文件——它们已经在 `skills/` 落位,避免双份
+- [x] 在仓库根新建 `design/skill-candidates/`
+- [x] 把 `方案/skill-candidates/README.md` **拷贝**到 `design/skill-candidates/README.md`
+- [x] 把 `方案/skill-candidates/customization-plan.md` **拷贝**到 `design/skill-candidates/customization-plan.md`
+- [x] 不拷贝 12 个 skill 的源文件——它们已经在 `skills/` 落位,避免双份
 
 ### 4.5 顶层文档
 
-- [ ] 写 `README.md`(对外):
+- [x] 写 `README.md`(对外):
   - 一句话定义:SDD + TDD 轻量个人方法论,Claude Code skills + slash commands 形态
   - **现状声明**:npm CLI 形态待实现(阶段 2),当前可手动:
     ```bash
@@ -184,18 +188,18 @@ agentic-engineering/                       # git 仓库根 = 未来 npm 包根
   - 12 个 skill 一句话列表
   - 链到 `docs/framework.md`、`docs/spec-framework.md`、`docs/scenarios/`
   - 路线图:阶段 2 CLI、阶段 3 ae-index-rebuild
-- [ ] 写 `LICENSE`(MIT,作者署名见 §5 待拍板)
-- [ ] 更新 `handoff.md`:
+- [x] 写 `LICENSE`(MIT,作者署名见 §5 待拍板)
+- [x] 更新 `handoff.md`:
   - "已完成"段加上"阶段 1 仓库结构整理完成"
   - "下次起手建议"指向阶段 2 CLI 实现
   - 顶部"关键文件入口"表更新为新路径(`commands/...`、`skills/...`、`docs/...`)
 
 ### 4.6 .gitignore 与 git 收口
 
-- [ ] 确认 `.gitignore` 排除:`reference/`、`CES-AI-topic-9-smart-workflow/`、`历史思路/`、`.DS_Store`
-- [ ] `git status` 核对:`commands/` `skills/` `config/` `docs/` `design/` 是新增;`agentic-engineering/` 子目录消失;`方案/` 无变动
-- [ ] `git add` 上述新增目录与改动文件
-- [ ] 提交,建议信息:
+- [x] 确认 `.gitignore` 排除:`reference/`、`CES-AI-topic-9-smart-workflow/`、`历史思路/`、`.DS_Store`
+- [x] `git status` 核对:`commands/` `skills/` `config/` `docs/` `design/` 是新增;`agentic-engineering/` 子目录消失;`方案/` 无变动
+- [x] `git add` 上述新增目录与改动文件
+- [x] 提交,建议信息:
   ```
   chore: restructure repo for npm CLI distribution (stage 1)
 
@@ -203,11 +207,19 @@ agentic-engineering/                       # git 仓库根 = 未来 npm 包根
   - Copy framework docs into docs/ and design archives into design/.
   - Keep 方案/ untouched pending manual review.
   ```
-- [ ] **不打 tag**,等阶段 2 CLI 完成后 `v0.1.0`
+- [x] **不打 tag**,等阶段 2 CLI 完成后 `v0.1.0`
+
+阶段 1 验证结果:
+- `bash commands/ae-init.test.sh` 通过
+- `git diff --cached --check` 通过
+- `skills/` 与 `方案/skill-candidates/` 下 12 个源 skill 目录一致
+- `skills/` 无 `AE-CHANGE`
+- `reference/` / `CES-AI-topic-9-smart-workflow/` tracked 数量为 0,本地目录保留
+- 阶段 1 提交后 `方案/` 无变动
 
 ### 4.7 人工 check(由你完成,清单先备好)
 
-- [ ] 对比 `skills/` 与 `方案/skill-candidates/` 下 12 个 skill 的内容,确认拷贝无遗漏、无脏内容
+- [x] 对比 `skills/` 与 `方案/skill-candidates/` 下 12 个 skill 的内容,确认拷贝无遗漏、无脏内容(技术校验已完成;仍建议人工抽读)
 - [ ] 通读 `docs/framework.md`,确认对外语气可接受
 - [ ] 通读 `README.md`,确认"它是什么 / 怎么用 / 局限"三件事讲清楚了
 - [ ] check 通过后,**手动**删除 `方案/`,补一次 commit:`chore: drop 方案/ after manual review`
@@ -215,25 +227,237 @@ agentic-engineering/                       # git 仓库根 = 未来 npm 包根
 ## 5. 阶段 1 启动前待你拍板
 
 1. **作者署名**:LICENSE 用谁?(GitHub handle / 真名 / 邮箱)
+   - 已处理:`huguiyuan`
 2. **README 里的 npm scope**:阶段 2 才用,但 README 路线图段会提到。先占位 `@<your-scope>/ae`?还是先确定下来(`@huguiyuan/ae` / 别的)?
+   - 已处理:README 路线图先写 `@huguiyuan/ae`
 3. **`reference/` 是否进 `.gitignore`**:体量大、是只读素材,建议进。但要先核当前 git 是否已经 add 了——若已 tracked,需要 `git rm -r --cached reference/` 才能让 .gitignore 生效。
+   - 已处理:`reference/` 已进 `.gitignore`,且已 `git rm -r --cached reference`
 4. **handoff.md 与 commands/ae-init.templates/handoff.md 的关系**:后者是 `/ae-init` 拷给用户的初始 handoff 模板,前者是本仓库自己的会话交接。两份独立,确认 OK。
+   - 已处理:两份独立保留
 
-## 6. 阶段 2 / 阶段 3 预告(本次不做)
+## 6. 阶段 2:npm CLI 实现 + 发布
 
-### 阶段 2:npm CLI 实现 + 发布
-1. `package.json` + `bin/ae.js` + `src/`(TypeScript 或纯 JS,参照 OpenSpec)
-2. CLI 子命令:`init` / `ingest-mother` / `index-rebuild`
-3. CLI 行为:按 §1 的映射规则把 `commands/` `skills/` `config/` 拷到用户 cwd 对应位置,幂等
-4. 本地 `npm link` 自测,跑现有 `commands/ae-init.test.sh` 验收
-5. 发布到 npm
-6. README 把"手动 cp"段替换为 `npx @<scope>/ae init`
+> **已固化的关键决策**(2026-06-07):
+> 1. **CLI 职责边界 = 路线 a:只做分发**。CLI 只把 `commands/` `skills/` `config/` 拷到用户项目对应位置;真正的 spec/ 骨架创建、入口文件渲染、AE:RULES 同步,**全部交给 Claude/Codex 在用户项目里跑 `/ae-init` 时执行**。markdown contract 是事实源,CLI 不重写它的逻辑。
+> 2. **子命令仅暴露 `init` + `ingest-mother`**。`index-rebuild` 推迟到阶段 3 与 markdown contract 同步。
+> 3. **技术栈:纯 ESM JS,零依赖**。无 TypeScript 编译链,`bin/ae.js` 直接是入口。Node 内置 `node:test`、`node:fs/promises`、`node:path` 足够。
+> 4. **第一个版本号**:`0.1.0`。npm scope `@huguiyuan`(待 npm 上确认可用)。
 
-### 阶段 3:长尾
+> 原则:跟阶段 1 一样,每一步落地后勾选;全部完成后 git 收口并打 tag。
+
+### 6.1 包结构脚手架
+
+- [ ] 仓库根新建 `package.json`,字段:
+  - `name`: `@huguiyuan/ae`
+  - `version`: `0.1.0`
+  - `description`: 与 README 顶部一句话对齐
+  - `type`: `"module"`
+  - `bin`: `{ "ae": "./bin/ae.js" }`
+  - `files`: `["bin", "src", "commands", "skills", "config", "README.md", "LICENSE"]`
+  - `engines`: `{ "node": ">=18" }`(`import.meta.url` 与 `node:test` 都稳定)
+  - `scripts`: `{ "test": "node --test tests/" }`
+  - `keywords`: `["claude-code", "agentic", "skills", "tdd", "sdd"]`
+  - `repository` / `homepage` / `bugs` 指向未来 GitHub 仓库(占位 `huguiyuan/agentic-engineering`)
+  - `license`: `MIT`
+  - `author`: `huguiyuan`
+  - `publishConfig`: `{ "access": "public" }`
+- [ ] 仓库根新建 `bin/ae.js`,加 shebang `#!/usr/bin/env node`,内容只做一件事:`import('../src/cli.js').then(m => m.run(process.argv.slice(2)))`
+- [ ] `chmod +x bin/ae.js`
+- [ ] 仓库根新建 `src/` 目录及内部骨架:
+  - `src/cli.js` —— 入口路由
+  - `src/commands/init.js`
+  - `src/commands/ingest-mother.js`
+  - `src/utils/paths.js`
+  - `src/utils/copy.js`
+  - `src/utils/report.js`
+- [ ] 仓库根新建 `tests/` 目录(端到端测试放这里)
+- [ ] 更新 `.gitignore`:补充 `node_modules/`、`*.tgz`(npm pack 产物)
+
+### 6.2 工具层:路径解析 + 文件拷贝
+
+- [ ] `src/utils/paths.js`:
+  - `packageRoot()`:基于 `import.meta.url` 向上找到 `package.json` 所在目录,返回绝对路径
+  - `assetPath(name)`:返回 `packageRoot()/<name>`,name ∈ `commands` / `skills` / `config`
+- [ ] `src/utils/copy.js`:
+  - `copyTreeIdempotent(srcDir, destDir, { dryRun })` 函数:
+    - 递归遍历 srcDir
+    - 对每个文件:目标已存在 → skipped;不存在 → created(dry-run 时只记录不写)
+    - 对每个空目录:同理保留 `.gitkeep` 行为
+    - 返回 `{ created: string[], skipped: string[] }`,路径相对 destDir
+  - **不实现 `--force`**:与 `ae-init.md` 的幂等契约对齐,绝不覆盖已有文件
+  - 跨平台:全程用 `node:path` 的 `join` / `relative`,不出现裸字符串 `/`
+- [ ] `src/utils/report.js`:
+  - `formatInitReport({ created, skipped, target })` —— 输出格式对齐 `ae-init.md` 的报告 schema,便于用户感觉一致
+  - `formatIngestReport(...)` 同理
+
+### 6.3 `init` 子命令实现
+
+- [ ] `src/commands/init.js` 主流程:
+  1. 解析参数:`--target <path>`(默认 `process.cwd()`)、`--dry-run`、`--help`
+  2. 校验 target 是已存在目录;不存在则 mkdir(允许用户 `mkdir new-project && cd new-project && ae init`)
+  3. 三次拷贝调用:
+     - `copyTreeIdempotent(assetPath('commands'), target + '/.claude/commands')`
+     - `copyTreeIdempotent(assetPath('skills'),   target + '/.claude/skills')`
+     - `copyTreeIdempotent(assetPath('config'),   target + '/config')`
+  4. 汇总三组结果,调用 `formatInitReport` 输出
+  5. **末尾追加 next-step 提示**:
+     ```
+     Next: open Claude Code in this project and run `/ae-init "<one-line goal>"`
+     to create the spec/ skeleton and entry files.
+     ```
+- [ ] 错误处理:任何一次拷贝失败 → 打印失败路径与原因,exit code 1
+- [ ] **不创建** `spec/`、`AGENTS.md`、`CLAUDE.md`、`handoff.md`、`spec/INDEX.md` —— 这些是 `/ae-init` 的职责,CLI 路线 a 严格不越界
+
+### 6.4 `ingest-mother` 子命令实现
+
+> CLI 这边只做"预检 + 指引",真正的母本规则抽取由 Claude 在用户项目内执行 `/ae-ingest-mother` 时完成。
+
+- [ ] `src/commands/ingest-mother.js` 主流程:
+  1. 解析参数:`<mother-path>`(必填位置参数)、`--target <path>`(默认 `cwd`)、`--help`
+  2. 参数缺失 → 打印 usage,exit 1
+  3. 预检 mother-path:存在?是目录?至少有 `AGENTS.md` / `CLAUDE.md` / `handoff.md` 其一?三者皆无给警告但不阻断
+  4. 预检 target:`.claude/commands/ae-ingest-mother.md` 在不在?不在则提示用户"似乎未运行 `ae init`,请先运行后再试",exit 1
+  5. 输出指引信息:
+     ```
+     Mother project ready: <abs path>
+     Next: open Claude Code in <target> and run `/ae-ingest-mother <abs path>`.
+     The slash command will read mother entry files, propose AGENTS.md diffs,
+     and ask for your confirmation before writing.
+     ```
+- [ ] **不读取母本内容、不修改 target 任何文件**——纯指引性
+
+### 6.5 CLI 入口与参数路由
+
+- [ ] `src/cli.js` `run(argv)` 函数:
+  1. 提取 subcommand = argv[0],rest = argv.slice(1)
+  2. 全局 flag:`--help` / `-h`、`--version` / `-v`
+  3. 路由:
+     - `init` → `import('./commands/init.js').run(rest)`
+     - `ingest-mother` → `import('./commands/ingest-mother.js').run(rest)`
+     - 缺失或 `--help` → 打印总帮助
+     - 未知子命令 → 错误 + 总帮助,exit 1
+- [ ] 总帮助文本(参照 OpenSpec 的简洁风格):
+  ```
+  Usage: ae <command> [options]
+
+  Commands:
+    init                 Install commands/, skills/, config/ into the current project's .claude/.
+    ingest-mother <path> Pre-check a mother project before running `/ae-ingest-mother`.
+
+  Options:
+    -h, --help     Show help
+    -v, --version  Show version
+
+  After `ae init`, open Claude Code in the project and run `/ae-init` to
+  create the spec/ skeleton.
+  ```
+- [ ] `--version` 从 `package.json` 读取 `version` 字段,不硬编码
+
+### 6.6 端到端测试
+
+> 用 `node:test` 自带 runner,不引第三方框架。每个测试用例自建临时目录,跑完清理。
+
+- [ ] `tests/_helpers.js`:`makeTmpDir()` / `cleanup(dir)` / `runCli(argv, opts)` 辅助
+- [ ] `tests/init.test.js`:
+  - case A 「冷启动」:空目录跑 `ae init`,断言:
+    - `.claude/commands/ae-init.md` 存在
+    - `.claude/commands/ae-init.templates/README.md` 存在(目录拷贝递归正确)
+    - `.claude/skills/diagnose/SKILL.md` 存在(随机抽 3 个 skill 验证)
+    - `.claude/skills/improve-codebase-architecture/LANGUAGE.md` 存在(验证多文件 skill 完整)
+    - `config/ae-rules.md.example` 存在
+    - 输出包含 "Next: open Claude Code"
+    - exit code 0
+  - case B 「幂等」:case A 之后再跑一次 `ae init`,断言:
+    - 退出码 0
+    - 报告显示全部 skipped、none created
+    - 文件 mtime / 内容未被覆盖(抽 1 个文件 hash 对比)
+  - case C 「dry-run」:空目录跑 `ae init --dry-run`,断言:
+    - 报告显示 "would create" 清单
+    - 文件系统无实际写入
+  - case D 「target 参数」:`ae init --target /tmp/xxx` 写入指定目录
+- [ ] `tests/ingest-mother.test.js`:
+  - case A 「缺参数」:`ae ingest-mother`,断言:exit 1 + usage
+  - case B 「mother 路径不存在」:exit 1 + 错误信息含路径
+  - case C 「target 未 init」:在空目录跑 `ae ingest-mother <valid path>`,断言:提示先 `ae init`,exit 1
+  - case D 「正常路径」:先 `ae init`,再 `ae ingest-mother`,断言:输出指引,exit 0,文件系统不变
+- [ ] `tests/cli.test.js`:`--help` / `--version` / 未知子命令 / 无参数
+- [ ] 所有测试本地 `npm test` 通过
+
+### 6.7 本地 `npm link` 自测(端到端冒烟)
+
+- [ ] 在仓库根 `npm link`
+- [ ] `mktemp -d` 建临时项目目录,`cd` 进入
+- [ ] `ae init` —— 检查输出与 `.claude/` 结构
+- [ ] 进 Claude Code,在该临时项目跑 `/ae-init "测试目标"`,验证:
+  - `spec/` 骨架建好
+  - `AGENTS.md` / `CLAUDE.md` / `README.md` / `handoff.md` 渲染合理
+  - 跑 `bash .claude/commands/ae-init.test.sh`(已装到用户项目)通过
+- [ ] 再跑 `ae ingest-mother <abs path to CES-AI-topic-9-smart-workflow>`,检查指引输出
+- [ ] 进 Claude Code 跑 `/ae-ingest-mother` 走一遍真实抽取流程,验证 contract 仍然成立
+- [ ] `npm unlink -g @huguiyuan/ae`,确认临时目录的 `.claude/` 内容未被破坏
+
+### 6.8 README 与 handoff 同步
+
+- [ ] README 顶部"现状声明"段:
+  - 从"手动 cp"切到 `npx @huguiyuan/ae init` + `/ae-init` 两步说明
+  - 删除 `cp -r` 那段,或挪到"高级:不通过 npm"
+  - 增加一段"它在 npm CLI 里只做安装;真正的初始化逻辑在 Claude Code 跑 `/ae-init` 时执行",让用户预期一致
+- [ ] README 加 badges:`npm version`、`license`、(暂不加 CI,阶段 3 再说)
+- [ ] README 路线图:阶段 2 划掉,阶段 3 描述更新
+- [ ] `handoff.md`:
+  - "已完成"段加阶段 2 完成项
+  - "下次起手建议"指向阶段 3 `ae-index-rebuild` markdown contract
+  - "关键文件入口"表加 `package.json`、`bin/ae.js`、`src/cli.js`、`tests/`
+
+### 6.9 发布前 checklist
+
+- [ ] `npm login`(用户操作,首次)
+- [ ] `npm whoami` 确认账号
+- [ ] `npm access ls-packages @huguiyuan` 或 web 端确认 scope `@huguiyuan` 已注册可用;若未注册,先在 npmjs.com 创建
+- [ ] `npm pack --dry-run` 查看 tarball 文件清单:
+  - 必含:`bin/`、`src/`、`commands/`、`skills/`、`config/`、`README.md`、`LICENSE`、`package.json`
+  - 不应含:`tests/`、`docs/`、`design/`、`方案/`、`reference/`、`.git/`、`handoff.md`
+- [ ] `npm pack` 真打包,记录 tarball 体积。预期 < 500 KB(skills 是主体),> 2 MB 需调查
+- [ ] 解包 tarball,人工抽检:`.claude/commands/ae-init.md` 等内容正确
+
+### 6.10 npm publish
+
+- [ ] `npm publish --access public`
+- [ ] 在干净机器 / 干净目录:`npx @huguiyuan/ae@0.1.0 --version` 验证拉得到
+- [ ] 干净目录:`npx @huguiyuan/ae init` 跑一次完整链路,逐项核对 6.7 的产物
+- [ ] npmjs.com 页面信息核对:description、README 渲染、files 清单
+
+### 6.11 git 收口
+
+- [ ] `git status` 核对:`package.json`、`bin/`、`src/`、`tests/`、README/handoff 改动
+- [ ] `git add` 上述
+- [ ] 提交,信息:
+  ```
+  feat(cli): implement npm CLI for asset distribution (stage 2)
+
+  - Pure ESM, zero-dep. Commands: init, ingest-mother.
+  - Route a: CLI only copies commands/skills/config; spec/ scaffold
+    remains the job of `/ae-init` inside Claude Code.
+  - Adds tests/ with node:test end-to-end coverage.
+  ```
+- [ ] `git tag -a v0.1.0 -m "Initial npm release"`
+- [ ] `git push && git push --tags`(若已配 remote)
+
+### 6.12 阶段 2 人工 check(由你完成)
+
+- [ ] 通读 `src/cli.js` + `src/commands/*.js`,确认逻辑边界与路线 a 一致(无任何创建 spec/ 或渲染入口文件的行为)
+- [ ] `npx @huguiyuan/ae init` 在你自己一个真实新项目里跑一遍,从 npm 装到 Claude Code `/ae-init` 完成,体验顺畅
+- [ ] 检查 npmjs.com 页面没有泄露 `design/` `方案/` `handoff.md` 等仓库内文件
+- [ ] 若包体积异常或安装速度不佳,记录到 §7 阶段 3 优化清单
+
+## 7. 阶段 3:长尾
+
 - `commands/ae-index-rebuild.md` 命令本体(`spec/INDEX.md` 重建规则)
+- CLI 同步暴露 `ae index-rebuild` 子命令(路线 a 下也只是装好后让用户走 slash command;若有真正的 CLI 行为再补)
 - 12 个 skill 的最后一轮 cross-check
-- 如有意推广,补 `CONTRIBUTING.md` 与 GitHub Actions
+- 如有意推广:`CONTRIBUTING.md`、GitHub Actions(CI 跑 `npm test`)、CHANGELOG
+- 跨平台:Windows 路径与权限验证(阶段 2 仅 macOS 验证)
 
 ---
 
-回答完 §5 这 4 个问题即可开干。
+阶段 1 尾巴(删 `方案/` + 通读 `docs/framework.md` / `README.md`)由用户自行收口,不阻断阶段 2 开干。
