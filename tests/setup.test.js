@@ -18,6 +18,8 @@ test('setup installs skills for Claude Code and Codex without creating config', 
     await assertFile(path.join(target, '.codex', 'skills', 'diagnose', 'SKILL.md'));
     await assertFile(path.join(target, '.claude', 'skills', 'tdd', 'SKILL.md'));
     await assertFile(path.join(target, '.codex', 'skills', 'tdd', 'SKILL.md'));
+    await assertFile(path.join(target, '.claude', 'skills', 'using-agentic-engineering', 'SKILL.md'));
+    await assertFile(path.join(target, '.codex', 'skills', 'using-agentic-engineering', 'SKILL.md'));
     await assertMissing(path.join(target, 'config'));
     await assertMissing(path.join(target, '.claude', 'commands'));
 

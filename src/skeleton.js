@@ -27,6 +27,10 @@ const ENTRY_FILES = [
   'handoff.md',
   path.join('spec', 'README.md'),
   path.join('spec', 'INDEX.md'),
+  path.join('spec', 'AGENTS.md'),
+  path.join('spec', 'CLAUDE.md'),
+  path.join('spec', 'ADR', 'AGENTS.md'),
+  path.join('spec', 'ADR', 'CLAUDE.md'),
 ];
 
 export async function createDirectories(target, options = {}) {

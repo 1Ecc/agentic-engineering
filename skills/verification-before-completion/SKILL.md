@@ -135,8 +135,8 @@ This is non-negotiable.
 If verification passes:
 
 1. Update `spec/INDEX.md`:
-   - Recompute `当前节点` per `spec-framework.md` INDEX rules - for a fresh need this becomes "B1 user acceptance" (the next node is user-driven, not skill-driven)
-   - If unsure, run `/ae-index-rebuild`
+   - Recompute `当前节点` per `spec/AGENTS.md` INDEX rules - for a fresh need this becomes "B1 user acceptance" (the next node is user-driven, not skill-driven)
+   - If unsure, run `ae index-rebuild`
 2. Hand off to B1: tell the user the need is ready for their hands-on acceptance test. Do NOT mark anything `archived` - `archived` is reserved for needs that get superseded, not completed.
 
 If verification fails:

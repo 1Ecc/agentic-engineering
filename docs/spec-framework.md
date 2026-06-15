@@ -1,6 +1,8 @@
 # spec/ 目录规范
 
 > 框架索引:[framework.md](framework.md) · 场景定义 / [scenarios/s1-main-loop.md](scenarios/s1-main-loop.md)
+>
+> 本文件是仓库内**设计稿**(含设计立意 / 验证 / 已知限制)。其**可执行子集**由 `ae init` 渲染为用户项目的 `spec/AGENTS.md` + `spec/ADR/AGENTS.md`(渐进式披露);两者需保持同步。见 [方案/issues/006](../方案/issues/006-spec-rules-progressive-disclosure.md)。
 
 ## 设计立意
 
@@ -18,7 +20,7 @@
 
 ```
 spec/
-├── README.md                 # 给人看:项目地图 + ASCII 流程图
+├── README.md                 # spec/README.md,给人看:项目地图 + ASCII 流程图
 ├── INDEX.md                  # 给模型看:需求/ADR 索引 + 状态(由 skill 助维护)
 │
 ├── needs/                    # 需求(主体)
@@ -178,7 +180,9 @@ todo 进度用 `已勾数 / 总数` 表示;无 todo 时显示 `-`。
 
 ---
 
-## README.md 格式(给人看)
+## spec/README.md 格式(给人看)
+
+> 注:本节说的是 **spec 内层的 `spec/README.md`**(项目地图),不是项目根的 `README.md`(项目门面)。
 
 ASCII 图为主、文字为辅。建议三类图:
 
@@ -226,6 +230,8 @@ ASCII 图为主、文字为辅。建议三类图:
 
 ## 大型项目升级口子(当前不实现)
 
+> 注:下面的行数阈值只是**粗略占位**(行数≠复杂度,不应作为正式触发)。迭代方向见 [方案/roadmap.md](../方案/roadmap.md) R-01;当前阶段的拆分判断暂交给 `skills/brainstorming`。
+
 预警阈值(主观):
 - `prd.md > 200 行` → 考虑拆 `prd/overview.md + prd/<子主题>.md`
 - `design.md > 300 行` → 考虑拆 `design/overview.md + design/<子模块>.md`
@@ -249,7 +255,7 @@ ASCII 图为主、文字为辅。建议三类图:
 3. "debug 发现的'金额必须保留两位小数'规则" → 沉淀到哪?
    → 反哺原需求的 prd.md(业务规则);若多需求都用 ⇒ ADR 或独立小需求
 4. "我自己想看项目大致长什么样" → 看哪个文件?
-   → README.md(ASCII 图)
+   → spec/README.md(ASCII 图)
 5. "模型/agent 要找'当前哪些需求在做'" → 看哪个文件?
    → INDEX.md
 6. "todo.md 里有一项 design 里没提" → 怎么办?
@@ -271,7 +277,7 @@ INDEX 由各节点 skill 助维护,但为防止 skill 未触发 / 人工漏写�
 ### 2. `AGENTS.md` 规则约定(R1 级规则,所有 skill 默认遵守)
 - "落盘 `spec/needs/<需求名>/` 下任何文件后,必须同步更新 `spec/INDEX.md`(相应行)"
 - "若不确定如何更新,跑 `index-rebuild` 命令兜底"
-- 项目特定规则统一写入 `AGENTS.md` 的 `## Project-Specific Rules` 段;`CLAUDE.md` 只作为指向 `AGENTS.md` 的入口指针
+- 项目特定规则统一写入 `AGENTS.md`(小节自取,模板不预设);`CLAUDE.md` 只作为指向 `AGENTS.md` 的入口指针
 
 ---
 

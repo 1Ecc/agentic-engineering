@@ -68,8 +68,8 @@ Format summary (full rules live in [`todo-template.md`](todo-template.md)):
 
 1. Update `spec/INDEX.md`:
    - Set the `todo` column to `0/N` (where N = total tasks in `## 实施`)
-   - Recompute the `当前节点` column per the rules in `spec-framework.md` §INDEX 推导规则 (likely now `A5 执行`)
-   - If unsure, run `/ae-index-rebuild` for an idempotent rescan
+   - Recompute the `当前节点` column per the rules in `spec/AGENTS.md` §INDEX 推导规则 (likely now `A5 执行`)
+   - If unsure, run `ae index-rebuild` for an idempotent rescan
 2. Hand off to the next S1 node: A5 `tdd` will read this `todo.md` (plus `design.md`) and drive the red-green-refactor loop. Tell the user the task list is ready and recommend invoking `tdd` next.
 
 ## Boundaries

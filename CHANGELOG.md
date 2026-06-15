@@ -1,5 +1,47 @@
 # Changelog
 
+## 0.4.0 (2026-06-15)
+
+### Added
+
+- New skill `karpathy-guidelines`: an always-on coding discipline (think before
+  coding, simplicity first, surgical changes, goal-driven execution) installed by
+  `ae setup` into `.claude/skills/` and `.codex/skills/`. Not yet published to npm.
+- `ae init` now renders progressive-disclosure spec rule files: `spec/AGENTS.md`,
+  `spec/CLAUDE.md`, `spec/ADR/AGENTS.md`, `spec/ADR/CLAUDE.md`. `spec/AGENTS.md`
+  carries only the irreducible core (S1 node map, INDEX derivation table, post-write
+  INDEX sync) — the part no skill ships; ADR naming/state-machine/frontmatter live in
+  `spec/ADR/AGENTS.md`. Other rules (naming, frontmatter shape, state machine,
+  boundaries) stay single-sourced in their owning skills to avoid duplication/drift.
+  `spec/INDEX.md` carries an inline comment legend explaining how to fill each
+  column (prd/design/todo/issues), kept next to the table it documents.
+- New skill `using-agentic-engineering`: a thin **router** installed by `ae setup`.
+  At the start of a feature, bug fix, or other non-trivial change it decides whether
+  the request enters the SDD+TDD loop and dispatches to the right node skill; quick
+  fixes, questions, and throwaway scripts skip it (unsure → proceed + a one-line
+  nudge). User instructions always override AE defaults. The router is brought in by
+  its own skill `description` (no `AGENTS.md` pointer, no session hook); the S1
+  node→skill map lives single-sourced in this skill.
+- `README.md` gained a `## How It Works` ASCII diagram of the core loop (router gate
+  → S1 need/acceptance → S2) and lists the `using-agentic-engineering` router in the
+  skills table.
+
+### Changed
+
+- `ae init` now renders a **blank** `AGENTS.md` (title + goal only): no pre-seeded
+  `## Project-Specific Rules` / Stack / Structure / Operating Guidelines sections and
+  no router pointer. Each project defines its own shape; the router self-triggers via
+  its skill `description`. A reliable SessionStart-hook fallback is tracked for later.
+- The `using-agentic-engineering` router reads `handoff.md` / `spec/INDEX.md` only
+  when it lacks context (fresh session or unclear state), not on every routing turn.
+
+- Skills no longer reference the unshipped `docs/spec-framework.md`; they now point
+  to the project-local `spec/AGENTS.md`. Stale `/ae-index-rebuild` slash references
+  are corrected to the `ae index-rebuild` CLI form.
+- `ae init` root `README.md` template is now an inline-comment-guided skeleton
+  (what it is + value / why + for whom / Quick Start / examples / project map + doc
+  entries) instead of fixed sections, so authors keep only what they need.
+
 ## 0.3.0 (breaking)
 
 ### Removed

@@ -40,6 +40,10 @@ test('init creates skeleton, renders entries, keeps config absent, and avoids sl
       'handoff.md',
       'spec/README.md',
       'spec/INDEX.md',
+      'spec/AGENTS.md',
+      'spec/CLAUDE.md',
+      'spec/ADR/AGENTS.md',
+      'spec/ADR/CLAUDE.md',
       'spec/needs/.gitkeep',
       'spec/ADR/.gitkeep',
       'reference/.gitkeep',
@@ -53,11 +57,10 @@ test('init creates skeleton, renders entries, keeps config absent, and avoids sl
     await assertMissing(path.join(target, '.claude', 'commands'));
     const agents = await readFile(path.join(target, 'AGENTS.md'), 'utf8');
     const claude = await readFile(path.join(target, 'CLAUDE.md'), 'utf8');
-    assert.match(agents, /## Project-Specific Rules/);
+    assert.doesNotMatch(agents, /## Project-Specific Rules/); // AGENTS.md ships blank: no imposed sections
     assert.doesNotMatch(agents, /<!-- AE:RULES:/);
     assertClaudePointer(claude, path.basename(target));
     assert.notEqual(claude, agents);
-    assert.ok(claude.length < agents.length);
   } finally {
     await cleanup(target);
   }
@@ -129,7 +132,7 @@ test('init dry-run reports planned skeleton writes without touching files', asyn
   }
 });
 
-test('init renders AGENTS.md project rules section without AE:RULES markers', async () => {
+test('init renders a blank AGENTS.md with no imposed sections or router pointer', async () => {
   const target = await makeTmpDir();
   try {
     await setup(target);
@@ -138,10 +141,10 @@ test('init renders AGENTS.md project rules section without AE:RULES markers', as
     assert.equal(result.code, 0, result.stderr);
 
     const agents = await readFile(path.join(target, 'AGENTS.md'), 'utf8');
-    assert.match(agents, /## Project-Specific Rules/);
-    assert.match(agents, /未来新规则直接追加到本段/);
-    assert.doesNotMatch(agents, /<!-- AE:RULES:BEGIN -->/);
-    assert.doesNotMatch(agents, /<!-- AE:RULES:END -->/);
+    assert.doesNotMatch(agents, /## Project-Specific Rules/);
+    assert.doesNotMatch(agents, /## Stack/);
+    assert.doesNotMatch(agents, /using-agentic-engineering/); // no pointer; the router skill self-triggers
+    assert.doesNotMatch(agents, /<!-- AE:RULES:/);
   } finally {
     await cleanup(target);
   }
@@ -157,6 +160,50 @@ test('init renders CLAUDE.md as a short pointer to AGENTS.md', async () => {
 
     const claude = await readFile(path.join(target, 'CLAUDE.md'), 'utf8');
     assertClaudePointer(claude, path.basename(target));
+  } finally {
+    await cleanup(target);
+  }
+});
+
+test('init renders spec/ progressive-disclosure rule files', async () => {
+  const target = await makeTmpDir();
+  try {
+    await setup(target);
+
+    const result = await runCli(['init', 'Spec rules'], { cwd: target });
+    assert.equal(result.code, 0, result.stderr);
+
+    const specAgents = await readFile(path.join(target, 'spec', 'AGENTS.md'), 'utf8');
+    assert.match(specAgents, /INDEX 推导规则/);
+    assert.match(specAgents, /当前节点/);
+    assert.match(specAgents, /R1.*落盘后同步 INDEX/);
+    // Slimmed to the irreducible core: rules that skills already ship were removed.
+    assert.doesNotMatch(specAgents, /## frontmatter/);
+    assert.doesNotMatch(specAgents, /## 状态机/);
+    assert.doesNotMatch(specAgents, /## 边界规则/);
+    assert.doesNotMatch(specAgents, /docs\/spec-framework\.md/);
+
+    // README≠INDEX and the global-architecture note relocated to spec/README.md.
+    const specReadme = await readFile(path.join(target, 'spec', 'README.md'), 'utf8');
+    assert.match(specReadme, /≠ INDEX/);
+    assert.match(specReadme, /全局架构总览画在这里/);
+
+    // INDEX column legend lives inline (as a comment) in spec/INDEX.md, not in AGENTS.md.
+    const specIndex = await readFile(path.join(target, 'spec', 'INDEX.md'), 'utf8');
+    assert.match(specIndex, /各列怎么填/);
+    assert.match(specIndex, /<!--/);
+    assert.doesNotMatch(specAgents, /各列怎么填/);
+    assert.doesNotMatch(specAgents, /## INDEX 表说明/);
+
+    const specClaude = await readFile(path.join(target, 'spec', 'CLAUDE.md'), 'utf8');
+    assert.match(specClaude, /Always read/);
+    assert.match(specClaude, /\[AGENTS\.md\]\(\.\/AGENTS\.md\)/);
+
+    const adrAgents = await readFile(path.join(target, 'spec', 'ADR', 'AGENTS.md'), 'utf8');
+    assert.match(adrAgents, /proposed/);
+    assert.match(adrAgents, /accepted/);
+    assert.match(adrAgents, /superseded/);
+    assert.match(adrAgents, /NNNN-<标题>\.md/);
   } finally {
     await cleanup(target);
   }

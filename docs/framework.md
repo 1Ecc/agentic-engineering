@@ -1,112 +1,128 @@
-# Agentic Engineering Framework
+# Agentic Engineering 框架
 
-Agentic Engineering is a lightweight software development lifecycle for solo or small-team work with coding agents. It uses SDD to make "what to build" explicit, then uses TDD to make "how to prove it works" executable.
+Agentic Engineering 是一套面向个人或小团队、配合编码 agent 使用的轻量软件开发生命周期方法。它用 SDD 把"做什么"写清楚,再用 TDD 把"怎么证明它能用"变成可执行的验证。
 
-The method is markdown-first. Durable state lives in `spec/`; session state lives in `handoff.md`; reusable working habits live in skills and rules.
+方法以 markdown 为先。持久状态落在 `spec/`;会话状态落在 `handoff.md`;可复用的工作习惯沉淀为 skill 与规则。
 
-## Core Ideas
+## 核心理念
 
-| Idea | Meaning |
-|------|---------|
-| SDD owns scope | Product intent, acceptance, and boundaries are written before implementation. |
-| TDD owns correctness | Work proceeds by small vertical slices and real verification evidence. |
-| Requirement is the unit | Each need gets its own `spec/needs/<need-name>/` directory. |
-| INDEX is structure state | `spec/INDEX.md` lets agents find current needs, status, and next node. |
-| Handoff is session state | `handoff.md` is overwritten at session end and only stores the latest snapshot. |
-| Rules evolve by use | Reusable rules are promoted only after repeated use and user confirmation. |
+| 理念 | 含义 |
+|------|------|
+| SDD 管范围 | 产品意图、验收标准、边界,在动手实现前先写下来。 |
+| TDD 管正确性 | 以小的纵向切片推进,凭真实验证证据收口。 |
+| 需求是基本单元 | 每个需求有自己的 `spec/needs/<need-name>/` 目录。 |
+| INDEX 是结构态 | `spec/INDEX.md` 让 agent 找到当前需求、状态和下一个节点。 |
+| Handoff 是会话态 | `handoff.md` 在会话结束时覆盖写入,只保存最新快照。 |
+| 规则在使用中演进 | 可复用规则只有经反复使用并经用户确认后才升级。 |
 
-## The Three Scenarios
+## 三个场景
 
 ```text
-S0 Bootstrap
-  |
-  v
-S1 Main Loop
-  |
-  +--> A. Need scenario: align -> PRD -> design -> todo -> TDD -> verify
-  |
-  +--> B. Acceptance scenario: user acceptance -> debug -> fix -> re-verify -> sediment
-  |
-  v
-S2 Evolution
+   (一次性)  ─────▶  S0 Bootstrap · ae setup → ae init
+                          │
+   (每个请求) ──▶  Router · 这个请求是一个 need 吗?
+                          │
+              ┌──── 否 ────┴──── 是 ────┐
+              ▼                          ▼
+          直接做                   进入 S1 主循环
+      (问答 / 快修 /                     │
+       一次性脚本)                       ├─ A. 需求:对齐 → PRD → design → todo → TDD → verify
+                                         └─ B. 验收:验收 → debug → 修复 → 复验 → 沉淀
+                                                     │
+                                                     ▼  (沉淀规则反复有用)
+                                                S2 Evolution
+
+   图例:SDD = 对齐→PRD→design→todo   ·   TDD = TDD→verify、修复→复验
+   状态:spec/ = 做什么(持久) · INDEX.md = need@节点 · handoff.md = 会话快照
 ```
 
-### S0 Bootstrap
+入口的 Router(`using-agentic-engineering` skill)给每个非平凡请求把门:构成**需求**才进 SDD+TDD 循环,其余直接做。问答 / 快修 / 一次性脚本不付流程成本。
 
-S0 is now a two-step CLI flow:
+### S0 引导初始化
+
+S0 现在是两步 CLI 流程:
 
 ```bash
 ae setup
 ae init "one-line project goal"
 ```
 
-`ae setup` installs method assets for the current project:
+`ae setup` 为当前项目安装方法资产:
 
 - `.claude/skills/`
 - `.codex/skills/`
 
-`ae init` creates the standard project skeleton:
+`ae init` 创建标准项目骨架:
 
-- `README.md`, `AGENTS.md`, `CLAUDE.md`, `handoff.md`
-- `reference/`, `data/`, `scripts/`
-- `spec/README.md`, `spec/INDEX.md`, `spec/needs/`, `spec/ADR/`
+- `README.md`、`AGENTS.md`、`CLAUDE.md`、`handoff.md`
+- `reference/`、`data/`、`scripts/`
+- `spec/README.md`、`spec/INDEX.md`、`spec/needs/`、`spec/ADR/`
+- `spec/AGENTS.md`、`spec/CLAUDE.md`、`spec/ADR/AGENTS.md`、`spec/ADR/CLAUDE.md`(渐进式披露的 spec 规则,工作在 `spec/` 下时自动加载)
 
-Project-specific rules are written directly in `AGENTS.md` under `## Project-Specific Rules`. `CLAUDE.md` is a short pointer to `AGENTS.md`, so users maintain one canonical instructions file. The CLI is strict and idempotent: create missing files and skip existing files.
+项目专属规则直接写进 `AGENTS.md`(`ae init` 只渲染标题 + 目标、刻意留空,不预设小节——规则按需自行追加)。`CLAUDE.md` 只是指向 `AGENTS.md` 的短指针,这样用户只维护一份权威指令文件。CLI 严格且幂等:缺失的文件才创建,已存在的文件跳过。
 
-Details: [`docs/scenarios/s0-bootstrap.md`](scenarios/s0-bootstrap.md)
+详见:[`docs/scenarios/s0-bootstrap.md`](scenarios/s0-bootstrap.md)
 
-### S1 Main Loop
+### S1 主循环
 
-S1 is the normal development loop. It has two serial scenes.
+S1 是常规开发循环,由两个串行场景组成。
 
-Need scene A:
+**入口路由**:不是每个请求都进 S1。`using-agentic-engineering` skill 充当路由器——先判断请求是否构成一个**需求**(留下产品级行为、值得落 spec):是 → 进 S1 对应节点;问答 / 快修 / 一次性脚本 → 直接做,不加流程;拿不准 → 默认放行 + 一句轻提示,把决定权交回用户。用户显式"直接做"永远优先。它靠 skill 自身的 `description` 在会话中自动触发(`AGENTS.md` 不预埋指针,保持空白);真实 session 触发不稳时可上 SessionStart hook 升级,见 `方案/roadmap.md` R-02。
 
-| Node | Purpose | Skill |
-|------|---------|-------|
-| A1 | Requirement alignment | `brainstorming`, with `grill-me` for fine detail |
-| A2 | Write `prd.md` | `to-prd` |
-| A3 | Write `design.md` | `writing-plans` |
-| A4 | Write `todo.md` | `to-issues` |
-| A5 | Implement by TDD | `tdd` |
-| A6 | Real-path verification | `verification-before-completion` |
+需求场景 A:
 
-Acceptance scene B:
+| 节点 | 目的 | Skill |
+|------|------|-------|
+| A1 | 需求对齐 | `brainstorming`,涉细节时配 `grill-me` |
+| A2 | 写 `prd.md` | `to-prd` |
+| A3 | 写 `design.md` | `writing-plans` |
+| A4 | 写 `todo.md` | `to-issues` |
+| A5 | 以 TDD 实现 | `tdd` |
+| A6 | 真实路径验证 | `verification-before-completion` |
 
-| Node | Purpose | Skill |
-|------|---------|-------|
-| B1 | User acceptance | user-driven |
-| B2 | Expected-state alignment | `grill-me` |
-| B3 | Root-cause diagnosis | `diagnose` |
-| B4 | Write issue file | 7-section local format |
-| B5 | Fix by TDD | `tdd` |
-| B6 | User re-verification | user-driven |
-| B7 | Review and sediment | `review` |
+验收场景 B:
 
-Two hard gates keep the loop disciplined:
+| 节点 | 目的 | Skill |
+|------|------|-------|
+| B1 | 用户验收 | 用户驱动 |
+| B2 | 期望态对齐 | `grill-me` |
+| B3 | 根因定位 | `diagnose` |
+| B4 | 写 issue 文件 | 本地 7 段格式 |
+| B5 | 以 TDD 修复 | `tdd` |
+| B6 | 用户复验 | 用户驱动 |
+| B7 | 审查并沉淀 | `review` |
 
-- If A1 is not aligned, do not write `prd.md`.
-- If B2 expected behavior is not aligned, do not fix.
+两道硬门禁保持循环的纪律:
 
-Details: [`docs/scenarios/s1-main-loop.md`](scenarios/s1-main-loop.md)
+- A1 未对齐,不写 `prd.md`。
+- B2 期望行为未对齐,不修复。
 
-### S2 Evolution
+详见:[`docs/scenarios/s1-main-loop.md`](scenarios/s1-main-loop.md)
 
-S2 is the method improvement loop. When project-specific rules prove useful repeatedly, they can be proposed as reusable method rules or future skills. Promotion is never automatic. The user must confirm it.
+### 横切编码纪律
 
-Typical S2 inputs:
+`karpathy-guidelines` 不挂在任何节点上。它是一条全程生效的编码纪律——编码前思考、简洁优先、精准修改、目标驱动执行——在任何写或改代码时都适用,在 A5/B5 最为明显。它不需要手动触发:写代码或重构代码本身就会让它生效。
 
-- A workflow step is repeatedly awkward.
-- The same handoff recommendation appears more than once.
-- A project-specific rule survives several real uses without rollback.
+### S2 演进
 
-## Spec Layout
+S2 是方法改进循环。当项目专属规则反复证明有用时,可以把它提案为可复用的方法规则或未来的 skill。升级从不自动发生,必须由用户确认。
 
-Every initialized project uses this shape:
+典型的 S2 触发信号:
+
+- 某个工作流步骤反复别扭。
+- 同一条 handoff 建议出现不止一次。
+- 某条项目专属规则经多次真实使用而未被回滚。
+
+## Spec 布局
+
+每个初始化后的项目都用这个形态:
 
 ```text
 spec/
 ├── README.md
 ├── INDEX.md
+├── AGENTS.md
+├── CLAUDE.md
 ├── needs/
 │   └── <need-name>/
 │       ├── prd.md
@@ -115,26 +131,28 @@ spec/
 │       └── issues/
 │           └── <topic>.md
 └── ADR/
+    ├── AGENTS.md
+    ├── CLAUDE.md
     └── NNNN-<title>.md
 ```
 
-Detailed rules for frontmatter, status values, `INDEX.md`, `README.md`, ADRs, and debug issue files live in [`docs/spec-framework.md`](spec-framework.md).
+关于 frontmatter、状态取值、`INDEX.md`、`README.md`、ADR 以及 debug issue 文件的详细规则,见 [`docs/spec-framework.md`](spec-framework.md)。
 
-## Asset Model
+## 资产模型
 
-The npm package contains:
+npm 包包含:
 
-- `skills/` - selected and customized skills
-- `templates/entries/` - entry file templates rendered by `ae init`
-- `src/` and `bin/` - the zero-dependency CLI
+- `skills/` —— 选用、个性化改造和自写的 skill
+- `templates/entries/` —— 由 `ae init` 渲染的入口文件模板
+- `src/` 与 `bin/` —— 零依赖 CLI
 
-User projects receive skills under both `.claude/skills/` and `.codex/skills/`. Slash command assets are no longer installed.
+用户项目会在 `.claude/skills/` 与 `.codex/skills/` 两处收到 skill。不再安装 slash command 资产。
 
-## Operating Rules
+## 操作规范
 
-- Keep `AGENTS.md` concise because every agent session loads it.
-- Treat `AGENTS.md` as the single source of truth; `CLAUDE.md` only points Claude Code back to it.
-- Put durable project state in `spec/`, not in the conversation.
-- Update `spec/INDEX.md` after changing anything under `spec/needs/<need-name>/`.
-- If `INDEX.md` is uncertain, use the future `ae index-rebuild` command as the fallback.
-- Keep `handoff.md` as the latest snapshot only. Overwrite it, do not append.
+- 保持 `AGENTS.md` 精简,因为每个 agent session 都会加载它。
+- 把 `AGENTS.md` 当作单一信息源;`CLAUDE.md` 只把 Claude Code 指回它。
+- 把持久的项目状态放进 `spec/`,不要留在对话里。
+- 改动 `spec/needs/<need-name>/` 下任何内容后,更新 `spec/INDEX.md`。
+- 若 `INDEX.md` 不确定,用未来的 `ae index-rebuild` 命令兜底。
+- 让 `handoff.md` 只保留最新快照。覆盖它,不要追加。

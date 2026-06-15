@@ -15,7 +15,7 @@ Check with the user that these seams match their expectations.
 
 2.5. Align the `need-name` (kebab-case) with the user. This is the slug used to create `spec/needs/<need-name>/`. Surface a concrete suggestion derived from the PRD topic and confirm before writing.
 
-3. Write the PRD using the template below. Save it to `spec/needs/<need-name>/prd.md` with the frontmatter block shown below the template. After saving, update `spec/INDEX.md` (add or update the row for this need) — or run `/ae-index-rebuild` to recompute.
+3. Write the PRD using the template below. Save it to `spec/needs/<need-name>/prd.md` with the frontmatter block shown below the template. After saving, update `spec/INDEX.md` (add or update the row for this need) — or run `ae index-rebuild` to recompute.
 
 <prd-template>
 
@@ -97,8 +97,8 @@ State transitions:
 1. Update `spec/INDEX.md`:
    - If the need is new: add a row under `## 需求`
    - If updating: set the `prd` column to `active`
-   - Recompute the `当前节点` column per the rules in `spec-framework.md` §INDEX 推导规则
-   - If unsure, run `/ae-index-rebuild` for an idempotent rescan
+   - Recompute the `当前节点` column per the rules in `spec/AGENTS.md` §INDEX 推导规则
+   - If unsure, run `ae index-rebuild` for an idempotent rescan
 2. Hand off to the next S1 node: A3 `writing-plans` will read this `prd.md` and produce `spec/needs/<need-name>/design.md`. Tell the user the PRD is ready and recommend invoking `writing-plans` next.
 
 ## Boundaries

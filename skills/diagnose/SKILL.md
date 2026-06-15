@@ -18,7 +18,7 @@ If B2 has NOT been completed (the expected behavior is still ambiguous), STOP an
 
 ## Exit Contract (hand-off to B4)
 
-After Phase 6, do NOT write the issue file inline - that is B4's job. Instead, hand off a structured summary so B4 can write `spec/needs/<need-name>/issues/<topic>.md` in one pass, using the 7-section format in [assets/issue-7-sections.md](assets/issue-7-sections.md).
+After Phase 6, do NOT write the issue file inline - that is B4's job. Instead, hand off a structured summary so B4 can write `spec/needs/<need-name>/issues/<topic>.md` (`<topic>` is kebab-case) in one pass, using the 7-section format in [assets/issue-7-sections.md](assets/issue-7-sections.md).
 
 Sections this skill is expected to populate:
 

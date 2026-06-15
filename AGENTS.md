@@ -1,36 +1,44 @@
-## 目标
-设计搭建软件开发全生命周期方法论，我们以SDD进行规格管理，以TDD实现开发管理
+# agentic-engineering
 
-## 参考
-素材来源：reference 中的4个仓库内容合集
-### openspec
-主要参考SDD规格管理，但是我觉得过于冗余，且较消耗token；后续会再进行轻量化，且融入我们自己的想法
+> 轻量的个人软件全生命周期方法论:SDD 管"做什么",TDD 管"怎么做对"。本仓既是方法论本体,也是交付它的 npm CLI(`@ecc-hgy/ae`)。
+>
+> 当前态快照看 [handoff.md](./handoff.md);方法论总览看 [docs/framework.md](./docs/framework.md)。
 
-### superpowers
-已经有比较全的全生命周期方法论了，后续会吸取核心经验，取长补短
+## Project-Specific Rules
 
-### mattpocock
-基于全生命周期的核心节点，分别有核心的skills能力，让你跟工程师一样干活，取长补短
+- **handoff.md 只做覆盖,不追加**——它只承载当前态最新快照,不承载历史。
+- **抛弃历史思路**:已移入 `方案/archive/` 的方案仅作追溯,不作为当前实现依据。
+- **reference/ 不全读**:四个素材仓库(OpenSpec / andrej-karpathy-skills / mattpocock-skills / superpowers)体量大,非必要不整仓读取,防 context 爆。
+- **CES-AI-topic-9-smart-workflow/ 不全读**:个人参考项目,非必要请勿读取全部细节。
+- **未经要求不执行 `npm publish`**:改动攒齐后统一 bump 版本再发。
+- **思考与成果沉淀到 `方案/` 与 `design/`**,做好目录管理;不把项目长期状态留在对话里。
+- 文档与批注:面向用户的 `docs/` 用英文;`方案/` 与 `design/` 设计记录用中文。
 
-### comet
-实现openspec和superpower的结合。该作者的目标跟我们是一致的，只能说目标一致，但是路径和方法不一致。我们需要自己实现。
+## Stack
 
+- Node ≥ 18,**零依赖** ESM CLI,包名 `@ecc-hgy/ae`。
+- 测试用内置 `node:test`(`npm test`),无第三方框架。
+- 当前发布态:`v0.3.0`(已上 npm,npmtest 人工验证通过)。
 
-## 参考项目
-### 理念
-边做边学、边用边改
+## Structure
 
-### 项目
-会简单参考，因为这是我个人在使用中总结的一些潜在方法论
-/Users/huguiyuan/workspace/agentic-engineering/CES-AI-topic-9-smart-workflow#### 要求
-非必要 请勿读取该项目的所有细节内容
+| 路径 | 内容 |
+|------|------|
+| `bin/ae.js` | CLI 可执行入口 |
+| `src/` | 零依赖 CLI 实现(`commands/setup.js`、`commands/init.js`、`skeleton.js`、`utils/`) |
+| `skills/` | 14 个 skill 发布资产(含 `using-agentic-engineering` 路由器),随 `ae setup` 装到 `.claude/skills/` 与 `.codex/skills/` |
+| `templates/entries/` | `ae init` 渲染的入口模板(含本仓 AGENTS.md 同款 shape) |
+| `docs/` | 对外方法论文档(`framework.md`、`scenarios/`、`spec-framework.md`) |
+| `design/` | 本仓设计记录(skill 选型池 + 改造进展板) |
+| `方案/` | 方案沉淀:`issues/` 池 + `archive/` 历史归档 |
+| `tests/` | `node:test` 覆盖,21 cases |
+| `reference/` | 4 个素材仓库,只读参考 |
 
-### 进展
-请读取 handoff.md
+## Operating Guidelines
 
-### 要求
-1. 探索可稳定、具备我个人习惯的方法论
-2. 抛弃历史思路，请勿参考
-3. 方案 中会沉淀我们的思考、成果，做好其中的目录管理
-4. `handoff.md` 每次都做**覆盖**操作（不是追加）——它始终是当前态的最新快照，不承载历史
-
+- **session 开始先读 `handoff.md`** 对齐当前态,再动手。
+- 保持本文件精简——每个 agent session 都会加载它;详情下沉到 `docs/`、`handoff.md`、`design/`。
+- 改了行为就同步对应文档:CLI 行为 → `docs/` 与 `README.md`;skill → `design/skill-candidates/`;当前态 → 覆盖 `handoff.md`。
+- 声称"完成/通过"前先 `npm test` 全绿;改 CLI 行为要补/改对应用例。
+- 提交与发布是两件事:提交可随时;`npm publish` 需明确要求,且攒齐改动一次性发。
+- 方法论本身(S0/S1/S2、SDD+TDD、spec 规范)以 `docs/framework.md` 为准,不在本文件重复。

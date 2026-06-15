@@ -1,6 +1,6 @@
 ---
 name: review
-description: Two-axis review (Standards / Spec) of the changes for a need that is about to close, followed by sedimentation routing - review findings flow into prd.md / design.md / spec/ADR/ / S2 candidates per `spec-framework.md`. Used at S1 node B7.
+description: Two-axis review (Standards / Spec) of the changes for a need that is about to close, followed by sedimentation routing - review findings flow into prd.md / design.md / spec/ADR/ / S2 candidates per `spec/AGENTS.md`. Used at S1 node B7.
 ---
 
 # Review
@@ -96,7 +96,7 @@ After routing:
    - Set every `issues/*.md` referenced in this close to "已验收"
    - If any `prd.md` / `design.md` was patched, leave `status: active` and refresh `last-aligned`
    - If a new ADR was created, add a row under `## ADR` with `status: proposed`
-   - If unsure, run `/ae-index-rebuild`
+   - If unsure, run `ae index-rebuild`
 2. Print a one-block summary to the user:
    - Findings routed to prd / design / ADR / S2-candidates with counts
    - Files modified (path list)

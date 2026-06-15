@@ -135,8 +135,8 @@ After all tests pass, look for [refactor candidates](refactoring.md):
 1. Tick the corresponding `- [ ]` -> `- [x]` in `spec/needs/<need-name>/todo.md`
 2. Update `spec/INDEX.md`:
    - Bump the `todo` column counter (e.g. `2/8` -> `3/8`)
-   - If all `## 实施` items are now checked, set `当前节点` to `A6 verify` (per `spec-framework.md` INDEX rules)
-   - If unsure, run `/ae-index-rebuild`
+   - If all `## 实施` items are now checked, set `当前节点` to `A6 verify` (per `spec/AGENTS.md` INDEX rules)
+   - If unsure, run `ae index-rebuild`
 3. Commit. Suggested message: `feat(<need-name>): T<n> <title>`.
 
 ## After All Slices Checked (A5 only)

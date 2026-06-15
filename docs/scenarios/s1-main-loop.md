@@ -67,6 +67,7 @@ S1 主循环 = **两个场景**,按问题来源天然切分,不按"做什么/怎
 - **两道硬门禁**都在 SDD 内:A1 需求未对齐 ⇒ 不写 prd;A3 技术方案未对齐(若涉及关键取舍)⇒ 不写 design
 - **A5 执行节奏不锁**:内部 red/green/refactor 可来回,但要按 todo 推进、每项完成打勾
 - **A6 verify 必须非 mock**(端到端验证,不能省)
+- **A5/B5 编码全程**:`karpathy-guidelines` 编码纪律默认生效(编码前思考 / 简洁优先 / 精准修改 / 目标驱动),与 tdd 节点并行,不单列节点
 - spec 长度不强求——一句话也算合法,只要"做什么/怎么做"已显式写下并对齐
 
 ---
@@ -190,6 +191,8 @@ A 场景结束
 - **debug 7 段格式模板**:由 `diagnose` skill 的 `assets/issue-7-sections.md` 承载;不再由 S0 `ae init` 产出 `spec/_templates/issue.md`
 - **INDEX 当前节点推导规则**:已在 [../spec-framework.md](../spec-framework.md) 落定
 - **横切 / 主动触发 skill**:`improve-codebase-architecture` / `zoom-out` 由用户主动触发,不挂节点
+- **横切 / 全程编码纪律 skill**:`karpathy-guidelines` —— A5/B5 编码时默认生效(编码前思考 / 简洁优先 / 精准修改 / 目标驱动),不挂单一节点、不需用户主动触发
+- **入口路由 skill**:`using-agentic-engineering` —— 不是每个请求都进 S1。会话开始非平凡工作时判定"进不进 AE 流程"(主判据:是否构成一个需求),进则路由到起始节点(新需求→A1 / 已有需求 bug→B2 / 续做→按 INDEX 续),OUT(问答/快修/一次性)直接做。详见 [../framework.md](../framework.md) 入口路由段
 
 以上**先不动**,等场景骨架稳定后再逐项展开。
 

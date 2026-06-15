@@ -386,6 +386,24 @@ grill-me 是通用对齐工具,任何场景都能用,**无需项目个性化**�
 
 ---
 
+### karpathy-guidelines(自写)✅
+
+> 文件:[../../skills/karpathy-guidelines/SKILL.md](../../skills/karpathy-guidelines/SKILL.md)
+> 进展:✅ 已完成(**保持原样**)
+
+#### 决策
+
+`karpathy-guidelines` 是**从零自写**的全程编码纪律 skill(编码前思考 / 简洁优先 / 精准修改 / 目标驱动),不源自 mattpocock/superpowers 候选池,因此**没有"池内 skill 改造"环节**。它在写/改代码时由 description 自动吊起(always-on,非用户触发),A5/B5 贯穿,不挂单一节点。
+
+与 grill-me / zoom-out 一致:内容保持原样,不加项目专属落盘 / INDEX 同步契约——它是行为纪律,不产出任何文件。
+
+#### 🚧 状态
+- [x] 自写完成
+- [x] 文档接入(README / framework / s1-main-loop / skill-candidates)
+- [x] 保持原样,无需改造
+
+---
+
 ## 五、跨 skill 协同决策(不属于任一 skill)
 
 模板不再统一落到 `spec/_templates/*`;能内聚到具体 skill 的模板留在对应 skill 目录,避免初始化生成一套后续容易漂移的静态模板。`ae index-rebuild` 仍作为后续独立 CLI 命令 pending。
@@ -428,6 +446,7 @@ grill-me 是通用对齐工具,任何场景都能用,**无需项目个性化**�
 | handoff | ✅ | ✅ | ✅ |
 | improve-codebase-architecture | ✅ | ✅ | ✅ |
 | zoom-out | ✅ | ✅ | ✅(保持原样) |
+| karpathy-guidelines(自写) | —(自写) | ✅ | ✅(保持原样) |
 | spec/_templates/* | — | ✅(删除待做) | ✅(不需要) |
 | ae index-rebuild | — | 🟡 | 🟡 pending |
 

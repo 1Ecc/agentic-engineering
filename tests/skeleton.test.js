@@ -85,13 +85,17 @@ test('renderEntryFiles renders placeholders, skips existing files, and supports 
 });
 
 async function writeTemplates(templateRoot) {
-  await mkdir(path.join(templateRoot, 'spec'), { recursive: true });
+  await mkdir(path.join(templateRoot, 'spec', 'ADR'), { recursive: true });
   await writeFile(path.join(templateRoot, 'README.md'), '# {{PROJECT_NAME}}\n\n{{PROJECT_GOAL}}\n');
   await writeFile(path.join(templateRoot, 'AGENTS.md'), '# Agent\n\n{{PROJECT_GOAL}}\n');
   await writeFile(path.join(templateRoot, 'CLAUDE.md'), '# Claude\n\n{{PROJECT_GOAL}}\n');
   await writeFile(path.join(templateRoot, 'handoff.md'), '{{PROJECT_NAME}}\n');
   await writeFile(path.join(templateRoot, 'spec', 'README.md'), '{{PROJECT_GOAL}}\n');
   await writeFile(path.join(templateRoot, 'spec', 'INDEX.md'), '{{PROJECT_NAME}}\n');
+  await writeFile(path.join(templateRoot, 'spec', 'AGENTS.md'), '# spec rules\n');
+  await writeFile(path.join(templateRoot, 'spec', 'CLAUDE.md'), '# spec pointer\n');
+  await writeFile(path.join(templateRoot, 'spec', 'ADR', 'AGENTS.md'), '# ADR rules\n');
+  await writeFile(path.join(templateRoot, 'spec', 'ADR', 'CLAUDE.md'), '# ADR pointer\n');
 }
 
 async function assertFile(file) {

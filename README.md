@@ -5,6 +5,29 @@
 
 Agentic Engineering is a lightweight personal software lifecycle method: SDD records what to build, TDD drives how to prove it works. It is delivered as a zero-dependency npm CLI plus agent skills for Claude Code and Codex.
 
+## How It Works
+
+```text
+   (one-time)  ─────▶  S0 Bootstrap · ae setup → ae init
+                            │
+   (each request) ──▶  Router · is this request a *need*?
+                            │
+                ┌──── no ────┴──── yes ────┐
+                ▼                           ▼
+           just do it                enter S1 Main Loop
+       (Q&A / quick fix /                   │
+        throwaway script)                   ├─ A. Need:   align → PRD → design → todo → TDD → verify
+                                            └─ B. Accept: accept → debug → fix → reverify → sediment
+                                                          │
+                                                          ▼  (rules proven useful)
+                                                     S2 Evolution
+
+   Legend:  SDD = align→PRD→design→todo   ·   TDD = TDD→verify, fix→reverify
+   State:   spec/ = what to build (persistent) · INDEX.md = need@node · handoff.md = session snapshot
+```
+
+A router (the `using-agentic-engineering` skill) gates each non-trivial request: a *need* enters the SDD+TDD loop, everything else is just done. Questions, quick fixes, and throwaway scripts never pay the ceremony.
+
 ## Quick Start
 
 ```bash
@@ -37,7 +60,7 @@ Both commands are idempotent. They create missing files, skip existing files, an
 
 - `AGENTS.md` is the canonical project instructions file.
 - `CLAUDE.md` is a short pointer to `AGENTS.md`; do not maintain a separate copy there.
-- All project-specific rules live in `AGENTS.md` under `## Project-Specific Rules`.
+- `ae init` renders `AGENTS.md` nearly blank (title + goal); add your own rules and sections as the project grows — no imposed format.
 
 ## Platform Scope
 
@@ -66,6 +89,7 @@ The two hard gates are:
 
 | Skill | Role |
 |-------|------|
+| `using-agentic-engineering` | Router: at the start of a non-trivial change, decides whether it enters the SDD+TDD loop and dispatches to the right node skill. |
 | `brainstorming` | Coarse requirement alignment before writing PRD. |
 | `grill-me` | Fine-grained questioning for interface, field, parameter, or expected-state ambiguity. |
 | `to-prd` | Writes `spec/needs/<need-name>/prd.md`. |
@@ -78,6 +102,7 @@ The two hard gates are:
 | `handoff` | Writes the latest session snapshot to `handoff.md`. |
 | `improve-codebase-architecture` | User-triggered architecture deepening review. |
 | `zoom-out` | User-triggered higher-level codebase map. |
+| `karpathy-guidelines` | Always-on coding discipline during A5/B5: think before coding, simplicity first, surgical changes, goal-driven execution. |
 
 ## Documentation
 

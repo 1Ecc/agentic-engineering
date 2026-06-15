@@ -103,8 +103,8 @@ If you find issues, fix them inline. No need to re-review — just fix and move 
 
 1. Update `spec/INDEX.md`:
    - Set the `design` column to `active` (or `draft` if key trade-offs still need user approval)
-   - Recompute the `当前节点` column per the rules in `spec-framework.md` §INDEX 推导规则
-   - If unsure, run `/ae-index-rebuild` for an idempotent rescan
+   - Recompute the `当前节点` column per the rules in `spec/AGENTS.md` §INDEX 推导规则
+   - If unsure, run `ae index-rebuild` for an idempotent rescan
 2. If you promoted any decision to `spec/ADR/`, also add a row under `## ADR` in `INDEX.md`.
 3. Hand off to the next S1 node: A4 `to-issues` will read this `design.md` and produce `spec/needs/<need-name>/todo.md`. Tell the user the design is ready and recommend invoking `to-issues` next.
 

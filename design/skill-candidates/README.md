@@ -96,6 +96,8 @@
 | **会话结束 handoff** | **handoff**(mp) | 会话结束 / 跨 agent 交接时主动触发(由 foundation handoff skill 调用) |
 | **架构反思 / 改进** | **improve-codebase-architecture**(mp) | 用户主动触发——不挂任何节点,任意时刻可调 |
 | **大局视野** | **zoom-out**(mp) | 用户主动触发——A3 设计前 / B4 卡住时可手动调 |
+| **全程编码纪律** | **karpathy-guidelines**(自写) | 编码时默认生效(always-on,非用户触发)——A5/B5 写/改代码贯穿;**自写,不在 43 候选池内** |
+| **场景路由 / 编排** | **using-agentic-engineering**(自写) | 会话开始非平凡工作时,靠 skill 自身 description 自动触发(AGENTS.md 不预埋指针;触发不稳的 hook 升级见 roadmap R-02);判定"进不进 AE 流程"并分发到节点 skill(薄路由器,不承载方法论);**自写,不在 43 候选池内** |
 
 ### 不在本预选(明确不选)
 
@@ -129,8 +131,11 @@
 | 横切 handoff | handoff(mp) |
 | 主动触发 / 架构反思 | improve-codebase-architecture(mp) |
 | 主动触发 / 大局视野 | zoom-out(mp) |
+| 全程编码纪律 | karpathy-guidelines(自写) |
 
-> sp = superpowers / mp = mattpocock
+> sp = superpowers / mp = mattpocock / 自写 = 本项目从零编写,不源自候选池
+>
+> 注:`karpathy-guidelines` 与 `using-agentic-engineering` 均为**自写** skill,不源自 mattpocock/superpowers 池,故本文顶部"总计 43 个"候选数不变。
 
 ---
 

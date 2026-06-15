@@ -11,6 +11,11 @@
 | [003](003-rules-ingestion-semantics.md) | `/ae-ingest-mother` 语义与真实期望不一致 | v0.2 已发布并通过 npm/npx 验证 | P0 |
 | [004](004-rules-injection-is-redundant.md) | `config/ae-rules.md` + AE:RULES 注入与模板渲染语义重叠,机制冗余 | v0.3 已发布并通过 npmtest 人工验证 | P1 |
 | [005](005-claude-md-points-to-agents-md.md) | AGENTS.md / CLAUDE.md 内容重复长期 drift,CLAUDE.md 应改为指针 | v0.3 已发布并通过 npmtest 人工验证 | P1 |
+| [006](006-spec-rules-progressive-disclosure.md) | spec-framework 规则不随包,skill 悬空引用;改用渐进式披露下放到 spec/AGENTS.md | 已实现,本地验证通过,待发布 | P1 |
+
+## 计划中(待建 issue)
+
+- **007 `ae index-rebuild` 实现**(P2):扫 `spec/needs/*/` 的 frontmatter + todo 勾选 + issues 状态,按 `spec/AGENTS.md` 的「当前节点推导表」重算并写回 `spec/INDEX.md`(幂等,出 diff 报告)+ `src/cli.js` 加路由。是 [Issue 006](006-spec-rules-progressive-disclosure.md) 的 R1 兜底依赖;落地前用"按推导表手动重算"兜底。
 
 ## 处理原则
 
