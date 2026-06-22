@@ -5,7 +5,7 @@ import { packageRoot } from './utils/paths.js';
 const HELP = `Usage: ae <command> [options]
 
 Commands:
-  setup                Install skills to .claude/.codex.
+  setup                Install skills to selected AI coding platforms.
   init [goal]          Create spec/ skeleton and render entry files.
                        Requires \`ae setup\` to have run.
 

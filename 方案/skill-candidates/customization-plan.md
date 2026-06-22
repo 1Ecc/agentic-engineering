@@ -1,6 +1,6 @@
 # Skill 个性化改造方案 + 进展板
 
-> 主索引:[../scenarios/s1 deep-orbiting-fog.md](../scenarios/s1%20deep-orbiting-fog.md) · [../spec-framework.md](../spec-framework.md) · [README.md](README.md)
+> 主索引:[../../docs/scenarios/s1-main-loop.md](../../docs/scenarios/s1-main-loop.md) · [../../docs/spec-framework.md](../../docs/spec-framework.md) · [README.md](README.md)
 >
 > 本文档:**改造点清单 + 人工 check 进展板**。具体批注落在各 skill 的 `SKILL.md` 内,用 `<!-- AE-CHANGE[...] -->` HTML 注释包裹,grep `AE-CHANGE` 一次性扫到全部。
 

@@ -1,15 +1,28 @@
 import { mkdir, stat } from 'node:fs/promises';
 import path from 'node:path';
+import { createInterface } from 'node:readline/promises';
 import { copyTreeIdempotent } from '../utils/copy.js';
 import { skillsPath } from '../utils/paths.js';
 import { formatSetupReport } from '../utils/report.js';
+import {
+  PLATFORMS,
+  detectPlatforms,
+  getPlatformSkillsDir,
+  listPlatformIds,
+  parsePlatformList,
+  resolvePlatforms,
+} from '../platforms.js';
 
 const HELP = `Usage: ae setup [options]
 
 Options:
   --target <path>  Install AE assets into this project directory. Defaults to cwd.
+  --platform <ids> Install for comma-separated platforms, e.g. claude,codex,cursor.
   --dry-run        Show what would be installed without writing files.
-  -h, --help       Show help`;
+  -h, --help       Show help
+
+Platforms:
+  ${listPlatformIds().join(', ')}`;
 
 export async function run(argv = []) {
   const options = parseArgs(argv);
@@ -22,20 +35,20 @@ export async function run(argv = []) {
   const target = path.resolve(options.target ?? process.cwd());
 
   try {
+    const explicitPlatforms =
+      options.platformIds.length > 0 ? resolvePlatforms(options.platformIds) : undefined;
     await ensureTargetDirectory(target, options.dryRun);
+    const selectedPlatforms = explicitPlatforms ?? (await selectPlatforms(target));
 
     const created = [];
     const skipped = [];
-    const skillGroups = [
-      {
-        dest: path.join(target, '.claude', 'skills'),
-        prefix: path.join('.claude', 'skills'),
-      },
-      {
-        dest: path.join(target, '.codex', 'skills'),
-        prefix: path.join('.codex', 'skills'),
-      },
-    ];
+    const skillGroups = selectedPlatforms.map((platform) => {
+      const skillsDir = getPlatformSkillsDir(platform);
+      return {
+        dest: path.join(target, skillsDir),
+        prefix: skillsDir,
+      };
+    });
 
     for (const group of skillGroups) {
       const result = await copyTreeIdempotent(skillsPath(), group.dest, {
@@ -57,6 +70,7 @@ export async function run(argv = []) {
 function parseArgs(argv) {
   const options = {
     target: undefined,
+    platformIds: [],
     dryRun: false,
     help: false,
   };
@@ -67,6 +81,13 @@ function parseArgs(argv) {
       options.help = true;
     } else if (arg === '--dry-run') {
       options.dryRun = true;
+    } else if (arg === '--platform') {
+      const value = argv[index + 1];
+      if (!value) {
+        throw new Error('--platform requires a comma-separated platform list');
+      }
+      options.platformIds.push(...parsePlatformList(value));
+      index += 1;
     } else if (arg === '--target') {
       const value = argv[index + 1];
       if (!value) {
@@ -80,6 +101,44 @@ function parseArgs(argv) {
   }
 
   return options;
+}
+
+async function selectPlatforms(target) {
+  if (!process.stdin.isTTY || !process.stdout.isTTY) {
+    throw new Error(
+      `No platforms selected. In non-interactive mode, pass --platform <ids>. Available: ${listPlatformIds().join(', ')}`,
+    );
+  }
+
+  const detected = await detectPlatforms(target);
+  const detectedIds = detected.map((platform) => platform.id);
+  const defaultIds = detectedIds;
+
+  console.log('Select target platforms for AE skills:');
+  for (const [index, platform] of PLATFORMS.entries()) {
+    const marker = defaultIds.includes(platform.id) ? '*' : ' ';
+    console.log(`  ${index + 1}. [${marker}] ${platform.name} (${platform.id}) -> ${getPlatformSkillsDir(platform)}/`);
+  }
+
+  const defaultPrompt = defaultIds.length > 0 ? ` [${defaultIds.join(',')}]` : '';
+  const rl = createInterface({ input: process.stdin, output: process.stdout });
+  try {
+    const answer = await rl.question(`Platform ids or numbers, comma-separated${defaultPrompt}: `);
+    const selected = answer.trim() ? parseInteractivePlatformAnswer(answer) : defaultIds;
+    return resolvePlatforms(selected);
+  } finally {
+    rl.close();
+  }
+}
+
+function parseInteractivePlatformAnswer(answer) {
+  return parsePlatformList(answer).map((item) => {
+    const number = Number(item);
+    if (Number.isInteger(number) && number >= 1 && number <= PLATFORMS.length) {
+      return PLATFORMS[number - 1].id;
+    }
+    return item;
+  });
 }
 
 async function ensureTargetDirectory(target, dryRun) {

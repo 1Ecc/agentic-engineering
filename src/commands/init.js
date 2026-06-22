@@ -3,6 +3,7 @@ import path from 'node:path';
 import { createDirectories, renderEntryFiles } from '../skeleton.js';
 import { templatesPath } from '../utils/paths.js';
 import { formatInitReport } from '../utils/report.js';
+import { PLATFORMS, getPlatformSkillsDir } from '../platforms.js';
 
 const DEFAULT_GOAL = 'TODO: 用一句话说明这个项目要解决什么问题。';
 
@@ -111,10 +112,12 @@ async function ensureTargetDirectory(target, dryRun) {
 }
 
 async function hasInstalledAssets(target) {
-  return (
-    (await isDirectory(path.join(target, '.claude', 'skills'))) ||
-    (await isDirectory(path.join(target, '.codex', 'skills')))
-  );
+  for (const platform of PLATFORMS) {
+    if (await isDirectory(path.join(target, getPlatformSkillsDir(platform)))) {
+      return true;
+    }
+  }
+  return false;
 }
 
 async function statMaybe(value) {

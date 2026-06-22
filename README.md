@@ -3,7 +3,7 @@
 [![npm version](https://img.shields.io/npm/v/@ecc-hgy/ae.svg)](https://www.npmjs.com/package/@ecc-hgy/ae)
 [![license](https://img.shields.io/npm/l/@ecc-hgy/ae.svg)](LICENSE)
 
-Agentic Engineering is a lightweight personal software lifecycle method: SDD records what to build, TDD drives how to prove it works. It is delivered as a zero-dependency npm CLI plus agent skills for Claude Code and Codex.
+Agentic Engineering is a lightweight personal software lifecycle method: SDD records what to build, TDD drives how to prove it works. It is delivered as a zero-dependency npm CLI plus agent skills for multiple AI coding platforms.
 
 ## How It Works
 
@@ -36,10 +36,11 @@ npx @ecc-hgy/ae setup
 npx @ecc-hgy/ae init "one-line project goal"
 ```
 
-`ae setup` installs reusable method assets:
+`ae setup` installs reusable method assets into the AI coding platforms you select. In interactive terminals it prompts for platforms and preselects detected local platform directories. In scripts or CI, pass platforms explicitly:
 
-- `skills/` -> `.claude/skills/`
-- `skills/` -> `.codex/skills/`
+```bash
+npx @ecc-hgy/ae setup --platform claude,codex
+```
 
 `ae init` creates the platform-neutral project skeleton and renders entry files. Project-specific rules live directly in `AGENTS.md`.
 
@@ -47,6 +48,7 @@ npx @ecc-hgy/ae init "one-line project goal"
 
 ```bash
 ae setup
+ae setup --platform claude,codex,cursor
 ae init "one-line project goal"
 ae --help
 ae --version
@@ -66,10 +68,25 @@ Both commands are idempotent. They create missing files, skip existing files, an
 
 Current target platforms:
 
-- Claude Code: skills installed to `.claude/skills/`
-- Codex: skills installed to `.codex/skills/`
+| Platform | ID | Skills directory |
+|----------|----|------------------|
+| Claude Code | `claude` | `.claude/skills/` |
+| Codex | `codex` | `.codex/skills/` |
+| Windsurf | `windsurf` | `.windsurf/skills/` |
+| GitHub Copilot | `github-copilot` | `.github/skills/` |
+| Kilo Code | `kilocode` | `.kilocode/skills/` |
+| Kimi Code | `kimicode` | `.kimi-code/skills/` |
+| CodeBuddy | `codebuddy` | `.codebuddy/skills/` |
+| Qoder | `qoder` | `.qoder/skills/` |
+| Trae | `trae` | `.trae/skills/` |
+| Cursor | `cursor` | `.cursor/skills/` |
+| OpenCode | `opencode` | `.opencode/skills/` |
+| Antigravity | `antigravity` | `.agents/skills/` |
+| Gemini CLI | `gemini` | `.gemini/skills/` |
+| Qwen Code | `qwen` | `.qwen/skills/` |
+| Kiro | `kiro` | `.kiro/skills/` |
 
-Cursor and Trae support is intentionally deferred until their stable local skill/rule loading conventions are confirmed.
+The first implementation is project-scoped only. It does not generate platform-specific entry rule files such as `.cursorrules`, `GEMINI.md`, or Copilot instructions.
 
 ## Method Overview
 
@@ -110,7 +127,7 @@ The two hard gates are:
 - [Spec Framework](docs/spec-framework.md)
 - [S0 Bootstrap](docs/scenarios/s0-bootstrap.md)
 - [S1 Main Loop](docs/scenarios/s1-main-loop.md)
-- [Skill Candidate Design Notes](design/skill-candidates/README.md)
+- [Skill Candidate Design Notes](方案/skill-candidates/README.md)
 
 ## Repository Layout
 
@@ -119,8 +136,8 @@ bin/        npm executable entry
 src/        zero-dependency CLI implementation
 skills/     Selected Agentic Engineering skills
 templates/  Entry file templates
-docs/       User-facing methodology docs
-design/     Design records for this repository
+docs/       Methodology docs (framework, scenarios, spec framework)
+方案/        Design & decision records (issues, roadmap, skill candidates, archive)
 tests/      node:test coverage for CLI behavior
 ```
 

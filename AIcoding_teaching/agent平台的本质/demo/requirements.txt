@@ -1,0 +1,12 @@
+# 整套 demo 只依赖一个包：OpenAI 官方 SDK
+# 它能直接访问 OpenAI / OpenRouter / 各类 OpenAI 兼容网关（含转发 Claude 的中间商）
+openai>=1.0.0
+
+# 自动加载 .env，运行脚本前不用再手动 source
+python-dotenv>=1.0.0
+
+# step6 网页版额外需要 Flask（一个极简 Web 框架）
+flask>=3.0.0
+
+# step5_mcp（MCP 版）额外需要 MCP 官方 SDK
+mcp>=1.2.0

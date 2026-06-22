@@ -13,15 +13,17 @@ ae init "one-line project goal"
 
 `ae setup` 只做资产安装:
 
-- `skills/` -> `.claude/skills/`
-- `skills/` -> `.codex/skills/`
+- 交互终端中提示选择 AI 编码平台
+- 自动识别当前项目已有的平台目录并预选
+- 非交互场景用 `--platform <ids>` 显式指定,如 `ae setup --platform claude,codex,cursor`
+- 第一版只写项目级平台目录
 
 `ae init` 只做骨架创建与入口渲染:
 
 - 创建标准目录
 - 从 `templates/entries/` 渲染入口文件
 
-若 `.claude/skills/` 与 `.codex/skills/` 都不存在,`ae init` 会失败。先跑 `ae setup`,让 agent 资产在骨架创建前就位。
+若任何受支持平台的 `skills/` 目录都不存在,`ae init` 会失败。先跑 `ae setup`,让 agent 资产在骨架创建前就位。
 
 ## 标准骨架
 
@@ -54,11 +56,30 @@ ae init "one-line project goal"
 `ae setup` 还会创建:
 
 ```text
-.claude/skills/
-.codex/skills/
+.<platform>/skills/
 ```
 
-v0.3 中没有 `config/` 目录,也没有 `.claude/commands/` 目录。旧的 slash command 模式已移除,使初始化能在 Claude Code 之外运行。
+首批平台目录:
+
+| 平台 | ID | skills 目录 |
+|------|----|-------------|
+| Claude Code | `claude` | `.claude/skills/` |
+| Codex | `codex` | `.codex/skills/` |
+| Windsurf | `windsurf` | `.windsurf/skills/` |
+| GitHub Copilot | `github-copilot` | `.github/skills/` |
+| Kilo Code | `kilocode` | `.kilocode/skills/` |
+| Kimi Code | `kimicode` | `.kimi-code/skills/` |
+| CodeBuddy | `codebuddy` | `.codebuddy/skills/` |
+| Qoder | `qoder` | `.qoder/skills/` |
+| Trae | `trae` | `.trae/skills/` |
+| Cursor | `cursor` | `.cursor/skills/` |
+| OpenCode | `opencode` | `.opencode/skills/` |
+| Antigravity | `antigravity` | `.agents/skills/` |
+| Gemini CLI | `gemini` | `.gemini/skills/` |
+| Qwen Code | `qwen` | `.qwen/skills/` |
+| Kiro | `kiro` | `.kiro/skills/` |
+
+v0.3 之后没有 `config/` 目录,也没有 `.claude/commands/` 目录。旧的 slash command 模式已移除,使初始化能在 Claude Code 之外运行。本轮多平台适配只安装 skill,暂不生成 `.cursorrules`、`GEMINI.md`、Copilot instructions 等平台入口规则文件。
 
 ## 入口文件
 
@@ -100,8 +121,9 @@ AGENTS.md
 setup 和 init 之后可用的检查:
 
 ```bash
-test -f .claude/skills/diagnose/SKILL.md
-test -f .codex/skills/diagnose/SKILL.md
+test -f .claude/skills/diagnose/SKILL.md  # 若选择 claude
+test -f .codex/skills/diagnose/SKILL.md   # 若选择 codex
+test -f .cursor/skills/diagnose/SKILL.md  # 若选择 cursor
 test ! -d config
 test -f AGENTS.md
 test -f CLAUDE.md

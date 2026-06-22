@@ -146,7 +146,7 @@ npm 包包含:
 - `templates/entries/` —— 由 `ae init` 渲染的入口文件模板
 - `src/` 与 `bin/` —— 零依赖 CLI
 
-用户项目会在 `.claude/skills/` 与 `.codex/skills/` 两处收到 skill。不再安装 slash command 资产。
+`ae setup` 会把 skill 安装到用户选择的平台项目级目录。首批平台包括 Claude Code、Codex、Windsurf、GitHub Copilot、Kilo Code、Kimi Code、CodeBuddy、Qoder、Trae、Cursor、OpenCode、Antigravity、Gemini CLI、Qwen Code、Kiro。不再安装 slash command 资产。
 
 ## 操作规范
 

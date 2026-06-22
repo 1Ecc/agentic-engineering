@@ -10,6 +10,7 @@ Thumbs.db
 
 *.log
 node_modules/
+.venv/
 *.tgz
 .tmp/
 tmp/

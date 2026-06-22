@@ -1,5 +1,25 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- `ae setup` now supports project-level skill installation for 15 AI coding
+  platforms via a shared platform registry: Claude Code, Codex, Windsurf,
+  GitHub Copilot, Kilo Code, Kimi Code, CodeBuddy, Qoder, Trae, Cursor,
+  OpenCode, Antigravity, Gemini CLI, Qwen Code, and Kiro.
+- Added `ae setup --platform <ids>` for non-interactive installs, including
+  comma-separated platform IDs such as `claude,codex,cursor`.
+
+### Changed
+
+- In interactive terminals, `ae setup` now prompts for target platforms and
+  preselects detected project-local platform directories.
+- In non-interactive mode, `ae setup` now requires `--platform <ids>` instead
+  of silently installing only Claude Code and Codex.
+- `ae init` accepts AE assets installed for any supported platform, not only
+  `.claude/skills/` or `.codex/skills/`.
+
 ## 0.4.0 (2026-06-15)
 
 ### Added

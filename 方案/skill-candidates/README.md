@@ -83,7 +83,7 @@
 | B1 用户验收 | (被动,无 skill) | — | 用户口头/文字反馈即入产物 |
 | **B2 期望态对齐** | **grill-me** | mp | 用户口头问题 → 与开发对齐"实际看到什么 / 期望什么";与 A1 细粒度对齐复用同一个 skill |
 | **B3 根因定位** | **diagnose** | mp | 完整诊断纪律(reproduce → minimise → hypothesise → instrument → fix → regression-test);instrument 段覆盖断点/日志/二分等定位方法 |
-| **B4 issue 落盘** | (无 skill) | — | 把 B2 + B3 成果按 7 段格式一次性写到 `spec/needs/<需求名>/issues/<主题>.md`;轻量整理动作,模板见 [spec-framework.md](../spec-framework.md) |
+| **B4 issue 落盘** | (无 skill) | — | 把 B2 + B3 成果按 7 段格式一次性写到 `spec/needs/<需求名>/issues/<主题>.md`;轻量整理动作,模板见 [spec-framework.md](../../docs/spec-framework.md) |
 | **B5 修复** | **tdd** | mp | 按根因实施;新冒出的小 bug 追加到 issue 文件的 bug 段。与 A5 复用 |
 | B6 用户复验 | (被动,无 skill) | — | 计数 +1 |
 | **B6→B2 退出条件** | **grill-me** 介入 | mp | 复验失败 ≥ 2 次 ⇒ 回 B2 重新对齐期望态(答 Q-debug-loop-cap) |

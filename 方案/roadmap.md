@@ -23,6 +23,16 @@
 - **未来方向**:`ae setup` 往 `.claude/settings.json` 装 SessionStart hook 注入路由器;Codex 的 hook 机制与 Claude Code 不同,需各自接线(跨平台真工程)。
 - **优先级**:P3(路由器在真实 session 里触发不稳时再启动)。
 
+## R-03 多平台适配(扩展到更多 AI 编码平台)
+
+- **来源**:本会话参考 [rpamis/comet](https://github.com/rpamis/comet)(`comet init` 支持 29 个 AI 编码平台);README「Platform Scope」早已声明 Cursor / Trae 故意 deferred,此条把"扩平台"正式列为规划。
+- **现状**:Issue 008 已实现本地版。`ae setup` 已改为平台 registry + 交互选择 / 自动识别 + `--platform <ids>`;首批 15 平台项目级 skills 目录安装已覆盖测试。真实平台抽检与发布待做。
+- **调研落点**:见 [Issue 008](issues/008-multiplatform-skill-setup.md)。
+- **关键认知(comet 怎么做的)**:comet 的"29 平台"主路径是**平台 registry + skills 目录分发**——按"平台 → 项目级 / 全局目录"映射表把 skill 资产装进各家 `.<平台>/skills/`(`.claude/` `.cursor/` `.codex/` `.windsurf/` `.gemini/` `.github/` …),再做自动检测、已安装检查与覆盖/跳过策略。源码审计后需补正一点:comet 不只是复制 skills,还为少数平台补 rules / hooks / command bridge(OpenCode、Pi 等);但它仍**不做通用入口规则文件适配**(`AGENTS.md` / `CLAUDE.md` / `.cursorrules` 这类项目入口不作为 29 平台支持的核心)。回避入口文件大适配,是它能扩平台的关键。
+- **后续方向**:
+  - 真实平台抽检:至少 Claude Code + Codex + Cursor / Trae 之一。
+  - 视真实平台识别情况再补 command bridge / rules / hook,暂不做入口规则文件大适配。
+
 ## 其他已 deferred 项(指针,详情见各自出处)
 
 - **`ae index-rebuild` 命令** —— 见 [issues/README.md](issues/README.md)「计划中」007;是 [Issue 006](issues/006-spec-rules-progressive-disclosure.md) R1 兜底依赖,落地前用"按推导表手动重算"兜底。

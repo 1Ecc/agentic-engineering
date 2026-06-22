@@ -12,6 +12,7 @@
 | [004](004-rules-injection-is-redundant.md) | `config/ae-rules.md` + AE:RULES 注入与模板渲染语义重叠,机制冗余 | v0.3 已发布并通过 npmtest 人工验证 | P1 |
 | [005](005-claude-md-points-to-agents-md.md) | AGENTS.md / CLAUDE.md 内容重复长期 drift,CLAUDE.md 应改为指针 | v0.3 已发布并通过 npmtest 人工验证 | P1 |
 | [006](006-spec-rules-progressive-disclosure.md) | spec-framework 规则不随包,skill 悬空引用;改用渐进式披露下放到 spec/AGENTS.md | 已实现,本地验证通过,待发布 | P1 |
+| [008](008-multiplatform-skill-setup.md) | `ae setup` 多平台 skill 安装适配 | 已实现,本地测试通过;真实平台抽检与发布待做 | P2 |
 
 ## 计划中(待建 issue)
 

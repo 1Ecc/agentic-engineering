@@ -1,0 +1,50 @@
+[
+  {
+    "id": "powerautomate-email-to-sharepoint-excel",
+    "name": "邮件抓取 · Outlook → SharePoint Excel",
+    "scope": "集团",
+    "when": "需要从集团 Outlook 筛选特定邮件并取出内容，但 IMAP / 浏览器插件 / Graph 都接不进来时",
+    "input": "发件人 / 主题关键词 / 文件夹等筛选规则",
+    "output": "SharePoint Excel 表中的结构化邮件行（date / title / content / messageId …）",
+    "pitfalls": "新版 Outlook 不能本地自动化；Excel 必须先转成 Table；schema 缓存要删动作再重建",
+    "tags": ["email", "outlook", "sharepoint", "采集"],
+    "owner": "你",
+    "updated_at": "2026-06-18"
+  },
+  {
+    "id": "records-to-kb-table",
+    "name": "格式整理 · 原始记录 → 知识库上传表",
+    "scope": "团队",
+    "when": "把导出的原始记录清洗成知识库批量上传所需的标准表",
+    "input": "原始记录 CSV（字段混乱、正文带 HTML、有重复行）",
+    "output": "upload.csv（合格）+ rejected.csv（不合格 + 原因）",
+    "pitfalls": "日期多格式要统一；正文要去 HTML；按 messageId 去重；缺字段策略要先对齐",
+    "tags": ["transform", "excel", "知识库"],
+    "owner": "你",
+    "updated_at": "2026-06-19"
+  },
+  {
+    "id": "api-fetch-attachment",
+    "name": "接口补字段 · 拉取缺失附件",
+    "scope": "集团",
+    "when": "发现某字段（附件内容）没采集到，需要通过接口补全",
+    "input": "记录 id / 接口凭据",
+    "output": "补全后的附件字段内容",
+    "pitfalls": "需要接口凭据与权限；接口限流；返回结构要做容错",
+    "tags": ["api", "补全", "附件"],
+    "owner": "其他团队",
+    "updated_at": "2026-06-15"
+  },
+  {
+    "id": "drive-backend-batch-add",
+    "name": "驱动后台 · 批量新增产品树节点",
+    "scope": "团队",
+    "when": "基于 Excel 内容批量驱动后台维护产品树 / 新增驱动",
+    "input": "结构化 Excel 行 + 后台凭据",
+    "output": "后台新增的产品树 / 驱动记录",
+    "pitfalls": "需要后台凭据；批量写入要先 dry-run；失败要可回滚，别半截写脏",
+    "tags": ["驱动", "后台", "写入"],
+    "owner": "你",
+    "updated_at": "2026-06-12"
+  }
+]

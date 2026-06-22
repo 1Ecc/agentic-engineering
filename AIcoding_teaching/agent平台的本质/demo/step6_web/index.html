@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>我的小龙虾</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f6f2ea;
+      --panel: #fffdf8;
+      --ink: #1f2528;
+      --muted: #687076;
+      --line: #e4d8c6;
+      --accent: #d94625;
+      --accent-strong: #b83217;
+      --ok: #168a51;
+      --bad: #b42318;
+      --code: #171b1f;
+      --code-ink: #d7f8ee;
+      --shadow: 0 18px 45px rgba(62, 44, 22, 0.14);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        linear-gradient(135deg, rgba(217, 70, 37, 0.14), transparent 36%),
+        linear-gradient(315deg, rgba(22, 138, 81, 0.12), transparent 32%),
+        var(--bg);
+      color: var(--ink);
+    }
+
+    .app {
+      width: min(760px, 100%);
+      min-height: 100vh;
+      margin: 0 auto;
+      display: grid;
+      grid-template-rows: auto auto 1fr auto;
+      padding: 18px;
+      gap: 14px;
+    }
+
+    header {
+      background: rgba(255, 253, 248, 0.88);
+      border: 1px solid rgba(228, 216, 198, 0.9);
+      border-radius: 8px;
+      padding: 16px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+    }
+
+    .topline {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(22px, 6vw, 34px);
+      line-height: 1.05;
+      letter-spacing: 0;
+    }
+
+    .status-dot {
+      width: 12px;
+      height: 12px;
+      flex: 0 0 auto;
+      margin-top: 7px;
+      border-radius: 50%;
+      background: var(--muted);
+      box-shadow: 0 0 0 5px rgba(104, 112, 118, 0.14);
+    }
+
+    .status-dot.ok {
+      background: var(--ok);
+      box-shadow: 0 0 0 5px rgba(22, 138, 81, 0.14);
+    }
+
+    .meta {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .meta-row {
+      display: grid;
+      grid-template-columns: 72px 1fr;
+      gap: 8px;
+      align-items: start;
+    }
+
+    .meta strong {
+      color: #42494e;
+      font-weight: 650;
+    }
+
+    .mono {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      word-break: break-all;
+    }
+
+    .quick {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 2px 0 4px;
+    }
+
+    .chip {
+      flex: 0 0 auto;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 8px 11px;
+      background: rgba(255, 253, 248, 0.88);
+      color: #3d4449;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    main {
+      overflow: auto;
+      padding: 2px 0;
+      scroll-behavior: smooth;
+    }
+
+    #log {
+      display: flex;
+      min-height: 100%;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .message {
+      width: min(92%, 640px);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 11px 12px;
+      background: var(--panel);
+      box-shadow: 0 10px 25px rgba(62, 44, 22, 0.08);
+    }
+
+    .message.user {
+      align-self: flex-end;
+      border-color: rgba(217, 70, 37, 0.28);
+      background: #fff4ee;
+    }
+
+    .message.cmd {
+      background: var(--code);
+      border-color: #2b3338;
+      color: var(--code-ink);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 13px;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+
+    .message.result {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 12px;
+      line-height: 1.55;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      color: #3f474c;
+    }
+
+    .message.agent {
+      color: var(--muted);
+      background: rgba(255, 253, 248, 0.78);
+    }
+
+    .message.done {
+      border-color: rgba(22, 138, 81, 0.3);
+      background: #f0fff7;
+    }
+
+    .message.error {
+      border-color: rgba(180, 35, 24, 0.35);
+      background: #fff2f0;
+      color: var(--bad);
+    }
+
+    .label {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .composer {
+      position: sticky;
+      bottom: 0;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 253, 248, 0.94);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 48px;
+      max-height: 130px;
+      resize: vertical;
+      border: 1px solid #d6c8b5;
+      border-radius: 8px;
+      padding: 12px;
+      font: inherit;
+      color: var(--ink);
+      background: white;
+      outline: none;
+    }
+
+    textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(217, 70, 37, 0.14);
+    }
+
+    button.send {
+      width: 58px;
+      min-height: 48px;
+      border: 0;
+      border-radius: 8px;
+      background: var(--accent);
+      color: white;
+      font-size: 22px;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    button.send:disabled {
+      cursor: wait;
+      background: #b9aaa0;
+    }
+
+    @media (max-width: 520px) {
+      .app {
+        padding: 12px;
+      }
+
+      header {
+        padding: 14px;
+      }
+
+      .composer {
+        grid-template-columns: 1fr;
+      }
+
+      button.send {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div class="topline">
+        <h1>我的小龙虾</h1>
+        <span id="statusDot" class="status-dot" title="连接状态"></span>
+      </div>
+      <div class="meta">
+        <div class="meta-row">
+          <strong>手机地址</strong>
+          <span id="phoneUrl" class="mono">读取中...</span>
+        </div>
+        <div class="meta-row">
+          <strong>工作目录</strong>
+          <span id="workDir" class="mono">读取中...</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="quick" aria-label="示例任务">
+      <button class="chip" type="button" data-task="把当前目录下的文件列出来">列出文件</button>
+      <button class="chip" type="button" data-task="创建 hello.txt，内容写 hello from phone">创建文件</button>
+      <button class="chip" type="button" data-task="查看 hello.txt 的内容">查看文件</button>
+    </div>
+
+    <main>
+      <div id="log"></div>
+    </main>
+
+    <form class="composer" id="form">
+      <textarea id="task" rows="2" placeholder="输入任务，例如：把当前目录下的文件列出来"></textarea>
+      <button id="send" class="send" type="submit" title="发送">➜</button>
+    </form>
+  </div>
+
+  <script>
+    const log = document.getElementById('log');
+    const form = document.getElementById('form');
+    const input = document.getElementById('task');
+    const sendButton = document.getElementById('send');
+    const phoneUrl = document.getElementById('phoneUrl');
+    const workDir = document.getElementById('workDir');
+    const statusDot = document.getElementById('statusDot');
+    let lastEventId = 0;
+    let polling = false;
+
+    function addMessage(text, cls, label) {
+      const item = document.createElement('div');
+      item.className = `message ${cls || ''}`.trim();
+
+      if (label) {
+        const labelNode = document.createElement('span');
+        labelNode.className = 'label';
+        labelNode.textContent = label;
+        item.appendChild(labelNode);
+      }
+
+      const textNode = document.createElement('span');
+      textNode.textContent = text;
+      item.appendChild(textNode);
+      log.appendChild(item);
+      item.scrollIntoView({ block: 'end', behavior: 'smooth' });
+      return item;
+    }
+
+    function classForEvent(type) {
+      if (type === 'cmd') return 'cmd';
+      if (type === 'result') return 'result';
+      if (type === 'done') return 'done';
+      if (type === 'error') return 'error';
+      if (type === 'user') return 'user';
+      return 'agent';
+    }
+
+    function renderEvents(events) {
+      for (const event of events) {
+        lastEventId = Math.max(lastEventId, event.id);
+        addMessage(event.text, classForEvent(event.type), event.label);
+      }
+    }
+
+    async function pollEvents() {
+      if (polling) return;
+      polling = true;
+      try {
+        const res = await fetch(`/events?after=${lastEventId}`);
+        const data = await res.json();
+        renderEvents(data.events || []);
+      } catch (err) {
+        statusDot.classList.remove('ok');
+      } finally {
+        polling = false;
+      }
+    }
+
+    async function loadStatus() {
+      try {
+        const res = await fetch('/status');
+        const data = await res.json();
+        phoneUrl.textContent = data.phone_url || location.href;
+        workDir.textContent = data.work_dir || '(未知)';
+        statusDot.classList.toggle('ok', Boolean(data.ok));
+        if (!data.has_api_key) {
+          addMessage('缺少 DEEPSEEK_API_KEY，请先在终端 source ../.env 后重启服务。', 'error', '服务提示');
+        }
+      } catch (err) {
+        phoneUrl.textContent = location.href;
+        workDir.textContent = '(服务未响应)';
+        addMessage(String(err), 'error', '连接失败');
+      }
+    }
+
+    async function sendTask(task) {
+      if (!task) return;
+      input.value = '';
+      input.focus();
+      sendButton.disabled = true;
+
+      try {
+        const res = await fetch('/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ task })
+        });
+        const data = await res.json();
+
+        if (!res.ok) {
+          await pollEvents();
+          return;
+        }
+        await pollEvents();
+      } catch (err) {
+        addMessage(String(err), 'error', '请求失败');
+      } finally {
+        sendButton.disabled = false;
+      }
+    }
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      sendTask(input.value.trim());
+    });
+
+    input.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' && !event.shiftKey) {
+        event.preventDefault();
+        form.requestSubmit();
+      }
+    });
+
+    for (const chip of document.querySelectorAll('.chip')) {
+      chip.addEventListener('click', () => {
+        sendTask(chip.dataset.task);
+      });
+    }
+
+    loadStatus();
+    pollEvents();
+    window.setInterval(pollEvents, 700);
+  </script>
+</body>
+</html>

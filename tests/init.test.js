@@ -19,6 +19,23 @@ test('init fails when setup has not installed AE assets', async () => {
   }
 });
 
+test('init accepts assets installed for any supported platform', async () => {
+  const target = await makeTmpDir();
+  try {
+    const setupResult = await runCli(['setup', '--platform', 'cursor'], { cwd: target });
+    assert.equal(setupResult.code, 0, setupResult.stderr);
+
+    const result = await runCli(['init', 'Cursor only setup'], { cwd: target });
+
+    assert.equal(result.code, 0, result.stderr);
+    await assertFile(path.join(target, 'AGENTS.md'));
+    await assertFile(path.join(target, '.cursor', 'skills', 'diagnose', 'SKILL.md'));
+    await assertMissing(path.join(target, '.claude'));
+  } finally {
+    await cleanup(target);
+  }
+});
+
 test('init creates skeleton, renders entries, keeps config absent, and avoids slash commands', async () => {
   const target = await makeTmpDir();
   try {
@@ -238,7 +255,7 @@ test('init rejects removed --rules option', async () => {
 });
 
 async function setup(target) {
-  const result = await runCli(['setup', '--target', target]);
+  const result = await runCli(['setup', '--target', target, '--platform', 'claude,codex']);
   assert.equal(result.code, 0, result.stderr);
 }
 
