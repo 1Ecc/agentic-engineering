@@ -42,7 +42,7 @@ npx @ecc-hgy/ae init "one-line project goal"
 npx @ecc-hgy/ae setup --platform claude,codex
 ```
 
-`ae init` creates the platform-neutral project skeleton and renders entry files. Project-specific rules live directly in `AGENTS.md`.
+`ae init` creates the platform-neutral project skeleton and renders entry files. The default maintained roots are `src/`, `tests/`, `docs/`, and `data/`; build tools create `dist/` when needed. Project-specific rules live directly in `AGENTS.md`.
 
 ## CLI
 
@@ -62,7 +62,17 @@ Both commands are idempotent. They create missing files, skip existing files, an
 
 - `AGENTS.md` is the canonical project instructions file.
 - `CLAUDE.md` is a short pointer to `AGENTS.md`; do not maintain a separate copy there.
-- `ae init` renders `AGENTS.md` nearly blank (title + goal); add your own rules and sections as the project grows — no imposed format.
+- `ae init` renders `AGENTS.md` with the title, goal, and one default rule: organize maintained files by responsibility and disclose detail progressively. Add project-specific rules and sections as needed; no section format is imposed.
+
+## Project Structure
+
+- `src/` contains product code, entry points, and scripts. Organize it by durable responsibility rather than mirroring `spec/needs/`; one need may touch several modules and one module may serve several needs.
+- `tests/` contains tests and test fixtures, grouped by capability or scenario.
+- `docs/` contains source documents, guides, and maintained project knowledge.
+- `data/` contains project data and run results. Its internal layout grows with the project's actual needs.
+- `dist/` is reserved for generated build artifacts and is created by the build tool, not by `ae init`.
+
+If an existing project already uses a common source root (`app/`, `apps/`, `lib/`, or `packages/`) or test root (`test/` or `__tests__/`), `ae init` keeps that layout instead of adding a duplicate `src/` or `tests/` root.
 
 ## Platform Scope
 
@@ -147,6 +157,9 @@ Completed:
 
 - v0.2: split CLI into `setup` + `init` and remove slash command assets.
 - v0.3: remove rules injection; make `AGENTS.md` the single source of truth and `CLAUDE.md` a pointer.
+- v0.4: add the request router, coding discipline, and progressive spec rules.
+- v0.5: install skills for 15 project-level AI coding platforms.
+- v0.6: use a small-project skeleton with responsibility-based, progressively disclosed structure.
 
 Next:
 

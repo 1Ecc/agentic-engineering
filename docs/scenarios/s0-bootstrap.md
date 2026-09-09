@@ -34,8 +34,6 @@ ae init "one-line project goal"
 ├── CLAUDE.md
 ├── handoff.md
 │
-├── reference/
-│   └── .gitkeep
 ├── spec/
 │   ├── README.md
 │   ├── INDEX.md
@@ -49,9 +47,17 @@ ae init "one-line project goal"
 │       └── .gitkeep
 ├── data/
 │   └── .gitkeep
-└── scripts/
+├── docs/
+│   └── .gitkeep
+├── src/
+│   └── .gitkeep
+└── tests/
     └── .gitkeep
 ```
+
+`src/` 承载业务代码、程序入口与脚本,按长期职责组织,不与 `spec/needs/` 强制一一对应。`tests/` 承载测试代码与测试样例;`docs/` 承载原始文档资料、说明与长期维护的知识;`data/` 统一承载各类数据与运行结果,内部结构由具体项目渐进形成。构建产物优先使用 `dist/`,由构建工具生成,`ae init` 不预建。
+
+若已有项目存在常见源码根(`app/`、`apps/`、`lib/`、`packages/`)或测试根(`test/`、`__tests__/`),`ae init` 沿用已有布局,不再补出职责重复的 `src/` 或 `tests/`。已有文件和目录不移动、不重命名。
 
 `ae setup` 还会创建:
 
@@ -84,7 +90,7 @@ v0.3 之后没有 `config/` 目录,也没有 `.claude/commands/` 目录。旧的
 ## 入口文件
 
 - `README.md`:面向人的项目总览、安装、用法与目录地图。
-- `AGENTS.md`:权威项目指令文件,`ae init` 只渲染标题 + 目标、刻意留空——不预设小节、不预埋路由器指针;项目规则按需自行追加(每个项目/agent 不一样,不规范其格式)。
+- `AGENTS.md`:权威项目指令文件。`ae init` 渲染标题、目标与一条通用结构规则:手工维护的内容按职责聚合、信息渐进披露。它不预设章节、不预埋路由器指针;其他项目规则按需自行追加。
 - `CLAUDE.md`:短指针,告诉 Claude Code 去读 `AGENTS.md`。
 - `handoff.md`:只存最新交接快照;之后由 handoff skill 覆盖写入。
 - `spec/README.md`:项目地图与关系说明。
@@ -105,6 +111,8 @@ AGENTS.md
 ```
 
 把持久的项目习惯、约束和协作偏好写进 `AGENTS.md`(小节名自取)。`CLAUDE.md` 刻意保持简短,不应变成第二份规则文件。
+
+默认结构规则要求:除已有明确规范、框架约定或工具生成的目录外,手工维护的文件按职责或主题组织,避免无关文件长期平铺;入口保留概要与导航,细节随复杂度按需下沉,不为分层而分层。调整边界时同步引用与说明。`spec/` 继续遵守自身专门规则,`dist/` 等生成目录继续服从工具。
 
 旧的 `config/ae-rules.md`、`--rules <path>` 以及 `AE:RULES` 标记同步机制已在 v0.3 移除。
 

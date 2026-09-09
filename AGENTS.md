@@ -12,13 +12,14 @@
 - **CES-AI-topic-9-smart-workflow/ 不全读**:个人参考项目,非必要请勿读取全部细节。
 - **未经要求不执行 `npm publish`**:改动攒齐后统一 bump 版本再发。
 - **思考与成果沉淀到 `方案/`**(`issues/` 决策、`skill-candidates/` skill 选型、`roadmap.md`、`archive/` 历史),做好目录管理;不把项目长期状态留在对话里。
+- **目录按职责聚合、信息渐进披露**:除已有明确规范、框架约定或工具生成的目录外,手工维护的文件按职责或主题组织,避免无关文件长期平铺;入口保留概要与导航,细节随复杂度按需下沉,不为分层而分层;新增或修改时检查涉及范围的归属与边界,调整结构同步相关引用与说明。
 - 文档与批注:面向最终用户的 `README.md` 用英文;仓库内 `docs/`(方法论文档)与 `方案/`(设计/决策记录)用中文。
 
 ## Stack
 
 - Node ≥ 18,**零依赖** ESM CLI,包名 `@ecc-hgy/ae`。
 - 测试用内置 `node:test`(`npm test`),无第三方框架。
-- 当前发布态:`v0.3.0`(已上 npm,npmtest 人工验证通过)。
+- 当前开发版本:`v0.6.0`;npm 已发布最新版本为 `v0.5.0`,本轮验证后发布 `v0.6.0`。
 
 ## Structure
 
@@ -30,7 +31,7 @@
 | `templates/entries/` | `ae init` 渲染的入口模板(含本仓 AGENTS.md 同款 shape) |
 | `docs/` | 方法论本体文档(`framework.md`、`scenarios/`、`spec-framework.md`),仓库内、不随包 |
 | `方案/` | 方案沉淀:`issues/` 决策池 + `skill-candidates/` skill 选型 + `roadmap.md` + `archive/` 历史归档 |
-| `tests/` | `node:test` 覆盖,21 cases |
+| `tests/` | `node:test` 覆盖,当前 29 cases |
 | `reference/` | 4 个素材仓库,只读参考 |
 
 ## Operating Guidelines

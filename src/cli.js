@@ -6,7 +6,7 @@ const HELP = `Usage: ae <command> [options]
 
 Commands:
   setup                Install skills to selected AI coding platforms.
-  init [goal]          Create spec/ skeleton and render entry files.
+  init [goal]          Create the project skeleton and render entry files.
                        Requires \`ae setup\` to have run.
 
 Options:

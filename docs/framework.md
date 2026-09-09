@@ -55,11 +55,13 @@ ae init "one-line project goal"
 `ae init` 创建标准项目骨架:
 
 - `README.md`、`AGENTS.md`、`CLAUDE.md`、`handoff.md`
-- `reference/`、`data/`、`scripts/`
+- `src/`、`tests/`、`docs/`、`data/`;构建产物 `dist/` 由工具按需生成
 - `spec/README.md`、`spec/INDEX.md`、`spec/needs/`、`spec/ADR/`
 - `spec/AGENTS.md`、`spec/CLAUDE.md`、`spec/ADR/AGENTS.md`、`spec/ADR/CLAUDE.md`(渐进式披露的 spec 规则,工作在 `spec/` 下时自动加载)
 
-项目专属规则直接写进 `AGENTS.md`(`ae init` 只渲染标题 + 目标、刻意留空,不预设小节——规则按需自行追加)。`CLAUDE.md` 只是指向 `AGENTS.md` 的短指针,这样用户只维护一份权威指令文件。CLI 严格且幂等:缺失的文件才创建,已存在的文件跳过。
+项目专属规则直接写进 `AGENTS.md`。`ae init` 渲染标题、目标与一条通用结构规则:手工维护的内容按职责聚合、信息渐进披露;它不预设章节或路由器指针,其他规则按需追加。`CLAUDE.md` 只是指向 `AGENTS.md` 的短指针,这样用户只维护一份权威指令文件。CLI 严格且幂等:缺失的文件才创建,已存在的文件跳过。
+
+`src/` 按长期职责组织,与按需求生命周期组织的 `spec/needs/` 是多对多关系。`data/` 统一承载各类数据与运行结果,内部结构交给具体项目渐进形成。已有项目存在常见源码或测试布局时沿用,不补职责重复的默认目录。
 
 详见:[`docs/scenarios/s0-bootstrap.md`](scenarios/s0-bootstrap.md)
 

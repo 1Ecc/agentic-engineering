@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { access, appendFile, readFile } from 'node:fs/promises';
+import { access, appendFile, mkdir, readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { cleanup, hashFile, makeTmpDir, runCli } from './_helpers.js';
 
@@ -47,7 +47,7 @@ test('init creates skeleton, renders entries, keeps config absent, and avoids sl
     assert.match(result.stdout, /AE init complete/);
     assert.doesNotMatch(result.stdout, /Rules:/);
 
-    for (const dir of ['spec', 'spec/needs', 'spec/ADR', 'reference', 'data', 'scripts']) {
+    for (const dir of ['spec', 'spec/needs', 'spec/ADR', 'src', 'tests', 'docs', 'data']) {
       await assertDirectory(path.join(target, dir));
     }
     for (const file of [
@@ -63,18 +63,22 @@ test('init creates skeleton, renders entries, keeps config absent, and avoids sl
       'spec/ADR/CLAUDE.md',
       'spec/needs/.gitkeep',
       'spec/ADR/.gitkeep',
-      'reference/.gitkeep',
+      'src/.gitkeep',
+      'tests/.gitkeep',
+      'docs/.gitkeep',
       'data/.gitkeep',
-      'scripts/.gitkeep',
     ]) {
       await assertFile(path.join(target, file));
     }
 
     await assertMissing(path.join(target, 'config'));
+    await assertMissing(path.join(target, 'dist'));
+    await assertMissing(path.join(target, 'reference'));
+    await assertMissing(path.join(target, 'scripts'));
     await assertMissing(path.join(target, '.claude', 'commands'));
     const agents = await readFile(path.join(target, 'AGENTS.md'), 'utf8');
     const claude = await readFile(path.join(target, 'CLAUDE.md'), 'utf8');
-    assert.doesNotMatch(agents, /## Project-Specific Rules/); // AGENTS.md ships blank: no imposed sections
+    assert.doesNotMatch(agents, /## Project-Specific Rules/); // AGENTS.md imposes no section shape
     assert.doesNotMatch(agents, /<!-- AE:RULES:/);
     assertClaudePointer(claude, path.basename(target));
     assert.notEqual(claude, agents);
@@ -149,7 +153,7 @@ test('init dry-run reports planned skeleton writes without touching files', asyn
   }
 });
 
-test('init renders a blank AGENTS.md with no imposed sections or router pointer', async () => {
+test('init renders one structure rule without imposed sections or router pointer', async () => {
   const target = await makeTmpDir();
   try {
     await setup(target);
@@ -158,10 +162,30 @@ test('init renders a blank AGENTS.md with no imposed sections or router pointer'
     assert.equal(result.code, 0, result.stderr);
 
     const agents = await readFile(path.join(target, 'AGENTS.md'), 'utf8');
+    assert.match(agents, /目录按职责聚合、信息渐进披露/);
     assert.doesNotMatch(agents, /## Project-Specific Rules/);
     assert.doesNotMatch(agents, /## Stack/);
     assert.doesNotMatch(agents, /using-agentic-engineering/); // no pointer; the router skill self-triggers
     assert.doesNotMatch(agents, /<!-- AE:RULES:/);
+  } finally {
+    await cleanup(target);
+  }
+});
+
+test('init preserves common existing source and test layouts', async () => {
+  const target = await makeTmpDir();
+  try {
+    await mkdir(path.join(target, 'app'));
+    await mkdir(path.join(target, '__tests__'));
+    await setup(target);
+
+    const result = await runCli(['init', 'Existing layout'], { cwd: target });
+
+    assert.equal(result.code, 0, result.stderr);
+    await assertMissing(path.join(target, 'src'));
+    await assertMissing(path.join(target, 'tests'));
+    await assertDirectory(path.join(target, 'docs'));
+    await assertDirectory(path.join(target, 'data'));
   } finally {
     await cleanup(target);
   }

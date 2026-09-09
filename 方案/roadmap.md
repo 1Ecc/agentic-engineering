@@ -14,6 +14,7 @@
   - INDEX 显示子文件;节点 skill 写入时按子目录分发
   - 落点可并入未来的 `ae update` 或专门迁移工具
 - **优先级**:P3(出现真实大型项目压力时再启动)
+- **关联问题**:[Issue 009 项目骨架职责与持续结构治理](issues/009-project-skeleton-and-structure-governance.md) 来自业务实践反馈,覆盖源码/文档/数据/产物的职责与持续约束。当前为建议稿;这部分无需等到大型项目才考虑,与本条 spec 大规模拆分分开推进。
 
 ## R-02 SessionStart hook 引导(路由器可靠触发升级)
 

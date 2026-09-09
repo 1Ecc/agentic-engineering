@@ -3,22 +3,23 @@ import path from 'node:path';
 
 const DEFAULT_DRY_RUN = false;
 
-const SKELETON_DIRS = [
+const CORE_DIRS = [
   'spec',
   path.join('spec', 'needs'),
   path.join('spec', 'ADR'),
-  'reference',
+  'docs',
   'data',
-  'scripts',
 ];
 
-const GITKEEP_DIRS = [
+const CORE_GITKEEP_DIRS = [
   path.join('spec', 'needs'),
   path.join('spec', 'ADR'),
-  'reference',
+  'docs',
   'data',
-  'scripts',
 ];
+
+const ALTERNATE_SOURCE_ROOTS = ['app', 'apps', 'lib', 'packages'];
+const ALTERNATE_TEST_ROOTS = ['test', '__tests__'];
 
 const ENTRY_FILES = [
   'README.md',
@@ -38,8 +39,20 @@ export async function createDirectories(target, options = {}) {
   const created = [];
   const skipped = [];
   const updated = [];
+  const skeletonDirs = [...CORE_DIRS];
+  const gitkeepDirs = [...CORE_GITKEEP_DIRS];
 
-  for (const dir of SKELETON_DIRS) {
+  if (await shouldIncludeDefaultRoot(target, 'src', ALTERNATE_SOURCE_ROOTS)) {
+    skeletonDirs.push('src');
+    gitkeepDirs.push('src');
+  }
+
+  if (await shouldIncludeDefaultRoot(target, 'tests', ALTERNATE_TEST_ROOTS)) {
+    skeletonDirs.push('tests');
+    gitkeepDirs.push('tests');
+  }
+
+  for (const dir of skeletonDirs) {
     const absolute = path.join(target, dir);
     const display = `${normalizeRelative(dir)}/`;
 
@@ -57,7 +70,7 @@ export async function createDirectories(target, options = {}) {
     }
   }
 
-  for (const dir of GITKEEP_DIRS) {
+  for (const dir of gitkeepDirs) {
     const file = path.join(target, dir, '.gitkeep');
     const display = normalizeRelative(path.join(dir, '.gitkeep'));
 
@@ -122,6 +135,28 @@ async function exists(value) {
     }
     throw error;
   }
+}
+
+async function hasDirectory(target, candidates) {
+  for (const candidate of candidates) {
+    try {
+      if ((await stat(path.join(target, candidate))).isDirectory()) {
+        return true;
+      }
+    } catch (error) {
+      if (error?.code !== 'ENOENT') {
+        throw error;
+      }
+    }
+  }
+  return false;
+}
+
+async function shouldIncludeDefaultRoot(target, defaultRoot, alternatives) {
+  if (await exists(path.join(target, defaultRoot))) {
+    return true;
+  }
+  return !(await hasDirectory(target, alternatives));
 }
 
 function normalizeRelative(value) {

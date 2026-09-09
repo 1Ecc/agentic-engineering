@@ -277,7 +277,7 @@ INDEX 由各节点 skill 助维护,但为防止 skill 未触发 / 人工漏写�
 ### 2. `AGENTS.md` 规则约定(R1 级规则,所有 skill 默认遵守)
 - "落盘 `spec/needs/<需求名>/` 下任何文件后,必须同步更新 `spec/INDEX.md`(相应行)"
 - "若不确定如何更新,跑 `index-rebuild` 命令兜底"
-- 项目特定规则统一写入 `AGENTS.md`(小节自取,模板不预设);`CLAUDE.md` 只作为指向 `AGENTS.md` 的入口指针
+- 项目特定规则统一写入 `AGENTS.md`(小节自取,模板只带一条通用结构规则);`CLAUDE.md` 只作为指向 `AGENTS.md` 的入口指针
 
 ---
 

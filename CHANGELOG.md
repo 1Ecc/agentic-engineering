@@ -1,6 +1,27 @@
 # Changelog
 
-## Unreleased
+## 0.6.0 (2026-09-09)
+
+### Added
+
+- `ae init` now creates `src/`, `tests/`, `docs/`, and `data/` as the small-project
+  working skeleton. `data/` covers project data and run results without imposing an
+  internal layout; build tools create `dist/` when needed.
+- Generated `AGENTS.md` files now include one concise structure rule: organize
+  maintained files by responsibility and disclose detail progressively.
+
+### Changed
+
+- The default skeleton no longer creates `scripts/` or `reference/`; code and scripts
+  live in `src/`, while source documents and maintained knowledge live in `docs/`.
+- `src/` is organized by durable responsibility rather than mirroring
+  `spec/needs/`. Existing projects with common source or test roots keep their layout
+  instead of receiving duplicate `src/` or `tests/` roots.
+- Documentation now distinguishes maintained content from generated `dist/` output
+  and applies the same progressive organization rule across `src/`, `tests/`,
+  `docs/`, and `data/`.
+
+## 0.5.0 (2026-06-22)
 
 ### Added
 

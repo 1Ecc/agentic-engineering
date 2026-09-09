@@ -12,20 +12,25 @@ test('createDirectories creates the standard skeleton and is idempotent', async 
     assert.ok(first.created.includes('spec/'));
     assert.ok(first.created.includes('spec/needs/.gitkeep'));
     assert.ok(first.created.includes('spec/ADR/.gitkeep'));
-    assert.ok(first.created.includes('reference/.gitkeep'));
+    assert.ok(first.created.includes('src/.gitkeep'));
+    assert.ok(first.created.includes('tests/.gitkeep'));
+    assert.ok(first.created.includes('docs/.gitkeep'));
     assert.ok(first.created.includes('data/.gitkeep'));
-    assert.ok(first.created.includes('scripts/.gitkeep'));
 
     await assertFile(path.join(target, 'spec', 'needs', '.gitkeep'));
     await assertFile(path.join(target, 'spec', 'ADR', '.gitkeep'));
-    await assertFile(path.join(target, 'reference', '.gitkeep'));
+    await assertFile(path.join(target, 'src', '.gitkeep'));
+    await assertFile(path.join(target, 'tests', '.gitkeep'));
+    await assertFile(path.join(target, 'docs', '.gitkeep'));
     await assertFile(path.join(target, 'data', '.gitkeep'));
-    await assertFile(path.join(target, 'scripts', '.gitkeep'));
+    await assertMissing(path.join(target, 'dist'));
+    await assertMissing(path.join(target, 'reference'));
+    await assertMissing(path.join(target, 'scripts'));
 
     const second = await createDirectories(target);
     assert.equal(second.created.length, 0);
     assert.ok(second.skipped.includes('spec/'));
-    assert.ok(second.skipped.includes('scripts/.gitkeep'));
+    assert.ok(second.skipped.includes('src/.gitkeep'));
   } finally {
     await cleanup(target);
   }
@@ -36,9 +41,28 @@ test('createDirectories supports dry-run without touching the filesystem', async
   try {
     const result = await createDirectories(target, { dryRun: true });
     assert.ok(result.created.includes('spec/'));
-    assert.ok(result.created.includes('reference/.gitkeep'));
+    assert.ok(result.created.includes('src/.gitkeep'));
     await assertMissing(path.join(target, 'spec'));
-    await assertMissing(path.join(target, 'reference'));
+    await assertMissing(path.join(target, 'src'));
+  } finally {
+    await cleanup(target);
+  }
+});
+
+test('createDirectories respects common existing source and test roots', async () => {
+  const target = await makeTmpDir();
+  try {
+    await mkdir(path.join(target, 'app'));
+    await mkdir(path.join(target, 'test'));
+
+    const result = await createDirectories(target);
+
+    assert.ok(!result.created.includes('src/'));
+    assert.ok(!result.created.includes('tests/'));
+    await assertMissing(path.join(target, 'src'));
+    await assertMissing(path.join(target, 'tests'));
+    await assertFile(path.join(target, 'docs', '.gitkeep'));
+    await assertFile(path.join(target, 'data', '.gitkeep'));
   } finally {
     await cleanup(target);
   }
