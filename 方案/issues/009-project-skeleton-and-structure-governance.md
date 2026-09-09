@@ -2,7 +2,7 @@
 
 ## 状态
 
-- 状态:已对齐并实现;本地测试与 tarball 真实链路通过,npm / Git 发布收口进行中
+- 状态:已实现并发布于 `v0.6.0`;本地测试、tarball 与 npm 远端安装验证通过
 - 优先级:P2(建议)
 - 发现时间:2026-09-09
 - 适用背景:个人或小团队、非专业开发者为主、通常不是大型项目,优先减少需要理解和维护的目录种类
@@ -150,4 +150,6 @@ project/
 - 产物核对:`src/.gitkeep`、`tests/.gitkeep`、`docs/.gitkeep`、`data/.gitkeep`、spec 规则与根 AGENTS.md 均存在;`scripts/`、`reference/`、`outputs/`、`dist/` 均未由 init 创建;根结构规则存在。
 - npm 远端已存在 `0.5.0`(2026-06-22 发布),而本地此前仍为 `0.4.0`;本次版本采用 `0.6.0`,并在 CHANGELOG 补齐 `0.5.0` 发布记录。
 
-npm 发布、Git 提交/标签/推送结果在完成后补入本节和 `handoff.md`。
+- npm 发布:`@ecc-hgy/ae@0.6.0`,registry `latest=0.6.0`,发布时间 `2026-09-09T09:59:52.6Z`;registry integrity 与本地发布 tarball 一致。
+- npm 远端实包验证:独立目录安装 `@ecc-hgy/ae@0.6.0`,执行 CLI 输出 `0.6.0`。
+- Git 实现提交:`360c539 feat: refine small-project skeleton for v0.6.0`;Git 发布以 `v0.6.0` 标签为准。
