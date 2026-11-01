@@ -24,6 +24,10 @@ from dotenv import load_dotenv
 
 load_dotenv()                                  # 自动加载 .env（向上找到 demo/.env，省去手动 source）
 
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(errors="replace")
+    sys.stderr.reconfigure(errors="replace")
+
 llm = OpenAI(
     api_key=os.environ.get('DEEPSEEK_API_KEY'),
     base_url="https://api.deepseek.com")

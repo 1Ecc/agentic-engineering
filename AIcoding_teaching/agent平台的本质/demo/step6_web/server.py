@@ -75,7 +75,18 @@ def append_event(kind, text, label=None, run_id=None):
     return event
 
 
-def local_ip():
+def local_ips():
+    ips = []
+
+    def add(ip):
+        if (
+            ip
+            and ip not in ips
+            and not ip.startswith("127.")
+            and not ip.startswith("169.254.")
+        ):
+            ips.append(ip)
+
     for interface in ("en0", "en1"):
         try:
             ip = subprocess.check_output(
@@ -86,14 +97,42 @@ def local_ip():
         except (OSError, subprocess.CalledProcessError):
             continue
         if ip:
-            return ip
+            add(ip)
+
+    try:
+        output = subprocess.check_output(
+            ["ipconfig"],
+            text=True,
+            encoding="utf-8",
+            errors="ignore",
+            stderr=subprocess.DEVNULL,
+        )
+        for line in output.splitlines():
+            if "IPv4" not in line:
+                continue
+            _, _, value = line.partition(":")
+            add(value.strip())
+    except (OSError, subprocess.CalledProcessError):
+        pass
+
+    try:
+        for ip in socket.gethostbyname_ex(socket.gethostname())[2]:
+            add(ip)
+    except OSError:
+        pass
 
     try:
         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
             s.connect(("8.8.8.8", 80))
-            return s.getsockname()[0]
+            add(s.getsockname()[0])
     except OSError:
-        return "127.0.0.1"
+        pass
+
+    return ips or ["127.0.0.1"]
+
+
+def local_ip():
+    return local_ips()[0]
 
 
 def extract_command(reply):
@@ -141,7 +180,7 @@ def home():
 
 @app.get("/status")
 def status():
-    ip = local_ip()
+    ips = local_ips()
     return jsonify({
         "ok": True,
         "model": MODEL,
@@ -149,7 +188,8 @@ def status():
         "max_steps": MAX_STEPS,
         "command_timeout": COMMAND_TIMEOUT,
         "local_url": f"http://127.0.0.1:{PORT}",
-        "phone_url": f"http://{ip}:{PORT}",
+        "phone_url": f"http://{ips[0]}:{PORT}",
+        "phone_urls": [f"http://{ip}:{PORT}" for ip in ips],
         "has_api_key": bool(os.environ.get("DEEPSEEK_API_KEY")),
     })
 
@@ -226,10 +266,12 @@ def chat():
 
 if __name__ == "__main__":
     os.makedirs(WORK_DIR, exist_ok=True)
-    ip = local_ip()
+    ips = local_ips()
     print("---- step6 web 小龙虾 ----")
     print(f"电脑访问: http://127.0.0.1:{PORT}")
-    print(f"手机访问: http://{ip}:{PORT}  （手机和电脑需在同一 Wi-Fi）")
+    print("手机访问候选（手机和电脑需在同一 Wi-Fi）：")
+    for ip in ips:
+        print(f"  http://{ip}:{PORT}")
     print(f"命令执行目录: {WORK_DIR}")
     if not os.environ.get("DEEPSEEK_API_KEY"):
         print("提示: 当前没有 DEEPSEEK_API_KEY，聊天接口会返回错误。")

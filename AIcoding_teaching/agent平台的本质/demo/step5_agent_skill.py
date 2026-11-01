@@ -15,12 +15,16 @@
 
 运行：python step5_agent_skill.py
 """
-import os, subprocess
+import os, subprocess, sys
 from openai import OpenAI
 from dotenv import load_dotenv
 
 _here = os.path.dirname(os.path.abspath(__file__))
 load_dotenv(os.path.join(_here, ".env"))       # 自动加载同目录 .env（省去手动 source）
+
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(errors="replace")
+    sys.stderr.reconfigure(errors="replace")
 
 client = OpenAI(
     api_key=os.environ.get("DEEPSEEK_API_KEY"),
@@ -43,8 +47,15 @@ while True:
     print("AI >", reply)
     if "命令:" in reply[:4] or "命令：" in reply[:4]:
         cmd = reply.split("命令:", 1)[-1].split("命令：", 1)[-1].strip()
-        out = subprocess.run(cmd, shell=True, capture_output=True, text=True)
-        result = (out.stdout + out.stderr).strip() or "(无输出)"
+        out = subprocess.run(
+            cmd,
+            shell=True,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+        )
+        result = ((out.stdout or "") + (out.stderr or "")).strip() or "(无输出)"
         print(f"[执行] {cmd}\n[结果] {result}")
         messages.append({"role": "user", "content": f"命令执行结果:\n{result}"})
     else:

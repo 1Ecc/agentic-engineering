@@ -21,7 +21,7 @@ response = client.chat.completions.create(
     model="deepseek-v4-pro",
     messages=[
         {"role": "system", "content": "You are a helpful assistant"},
-        {"role": "user", "content": "你好"},          # ← 你要问的问题，改这里
+        {"role": "user", "content": "你是谁"},          # ← 你要问的问题，改这里
     ],
     stream=False,
     reasoning_effort="high",

@@ -7,6 +7,7 @@
 - `issues/`:真实使用中发现的问题、决策、实施和收口记录。
 - `skill-candidates/`:S1 各节点 skill 选型与个性化改造记录(原 `design/`,已并入)。
 - `roadmap.md`:有意 deferred 的后续迭代项(当前不做、重要、后续迭代)。
+- [项目展示.md](项目展示.md):简历定位、上游对比、已核对指标与效果测量口径。
 - `../docs/`:方法论本体文档(framework / scenarios / spec-framework)。
 - `../handoff.md`:当前态最新快照。
 
